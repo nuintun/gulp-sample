@@ -5,6 +5,7 @@
 'use strict';
 
 var gulp = require('gulp');
+var rimraf = require('del');
 var colors = require('colors/safe');
 var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
@@ -47,8 +48,13 @@ function complete(){
   );
 }
 
+// clean task
+gulp.task('clean', function (callback){
+  rimraf('online', callback);
+});
+
 // online task
-gulp.task('online', function (){
+gulp.task('online', ['clean'], function (){
   // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(transport({
@@ -65,7 +71,7 @@ gulp.task('online', function (){
 });
 
 // develop task
-gulp.task('default', function (){
+gulp.task('default', ['clean'], function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(transport({ alias: alias, include: 'self' }))
