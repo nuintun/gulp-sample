@@ -5,19 +5,37 @@
 'use strict';
 
 var gulp = require('gulp');
-var colors = require('colors');
+var colors = require('colors/safe');
 var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
 var plumber = require('gulp-plumber');
 
-var alias = { 'base': 'base/base/1.2.0/base' };
-var options = {
-  alias: alias,
-  include: function (id){
-    return id.indexOf('view') === 0 ? 'all' : 'relative';
-  }
-};
+// set colors theme
+colors.setTheme({
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'green',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red',
+  inputBold: ['grey', 'bold'],
+  verboseBold: ['cyan', 'bold'],
+  promptBold: ['grey', 'bold'],
+  infoBold: ['green', 'bold'],
+  dataBold: ['grey', 'bold'],
+  helpBold: ['cyan', 'bold'],
+  warnBold: ['yellow', 'bold'],
+  debugBold: ['blue', 'bold'],
+  errorBold: ['red', 'bold']
+});
 
+// alias
+var alias = { 'base': 'base/base/1.2.0/base' };
+
+// complete callback
 function complete(){
   var now = new Date();
 
@@ -29,9 +47,13 @@ function complete(){
   );
 }
 
+// online task
 gulp.task('online', function (){
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
-    .pipe(transport(options))
+    .pipe(transport({
+      alias: alias,
+      include: function (id){ return id.indexOf('view') === 0 ? 'all' : 'relative'; }
+    }))
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'))
     .on('end', complete);
@@ -40,6 +62,7 @@ gulp.task('online', function (){
     .pipe(gulp.dest('dist/js'));
 });
 
+// develop task
 gulp.task('default', function (){
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(transport({ alias: alias, include: 'self' }))
@@ -47,6 +70,7 @@ gulp.task('default', function (){
     .on('end', complete);
 });
 
+// develop watch task
 gulp.task('watch', ['default'], function (){
   gulp.watch('assets/js/**/*.*', function (e){
     if (e.type !== 'deleted') {
