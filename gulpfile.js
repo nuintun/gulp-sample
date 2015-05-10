@@ -4,6 +4,7 @@
 
 'use strict';
 
+var path = require('path');
 var gulp = require('gulp');
 var rimraf = require('del');
 var colors = require('colors/safe');
@@ -81,10 +82,12 @@ gulp.task('default', ['clean'], function (){
 
 // develop watch task
 gulp.task('watch', ['default'], function (){
+  var base = path.join(process.cwd(), 'assets');
+
   // watch all file
   gulp.watch('assets/js/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(e.path);
+      rimraf(path.resolve('online', path.relative(base, e.path)));
     } else {
       gulp.src(e.path, { base: 'assets/js' })
         .pipe(plumber())
