@@ -56,12 +56,12 @@ gulp.task('online', function (){
       include: function (id){ return id.indexOf('view') === 0 ? 'all' : 'relative'; }
     }))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/js'))
+    .pipe(gulp.dest('online/js'))
     .on('end', complete);
 
   // other file
   gulp.src('assets/js/**/*.!(js|css|json|tpl|html)')
-    .pipe(gulp.dest('dist/js'));
+    .pipe(gulp.dest('online/js'));
 });
 
 // develop task
@@ -69,7 +69,7 @@ gulp.task('default', function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(transport({ alias: alias, include: 'self' }))
-    .pipe(gulp.dest('dist/js'))
+    .pipe(gulp.dest('online/js'))
     .on('end', complete);
 });
 
@@ -82,7 +82,7 @@ gulp.task('watch', ['default'], function (){
       gulp.src(e.path, { base: 'assets/js' })
         .pipe(plumber())
         .pipe(transport({ alias: alias, include: 'self', cache: false }))
-        .pipe(gulp.dest('dist/js'))
+        .pipe(gulp.dest('online/js'))
         .on('end', complete);
     }
   });
