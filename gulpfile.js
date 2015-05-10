@@ -49,6 +49,7 @@ function complete(){
 
 // online task
 gulp.task('online', function (){
+  // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(transport({
       alias: alias,
@@ -58,12 +59,14 @@ gulp.task('online', function (){
     .pipe(gulp.dest('dist/js'))
     .on('end', complete);
 
+  // other file
   gulp.src('assets/js/**/*.!(js|css|json|tpl|html)')
     .pipe(gulp.dest('dist/js'));
 });
 
 // develop task
 gulp.task('default', function (){
+  // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(transport({ alias: alias, include: 'self' }))
     .pipe(gulp.dest('dist/js'))
@@ -72,6 +75,7 @@ gulp.task('default', function (){
 
 // develop watch task
 gulp.task('watch', ['default'], function (){
+  // watch all file
   gulp.watch('assets/js/**/*.*', function (e){
     if (e.type !== 'deleted') {
 
