@@ -1,7 +1,7 @@
 {
   "name": "gulp-sample",
   "version": "0.0.1",
-  "description": "A gulp plugin for cmd transport and concat",
+  "description": "The gulp-cmd and gulp-css sample",
   "author": {
     "name": "nuintun",
     "email": "nuintun@qq.com"
