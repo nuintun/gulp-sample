@@ -21,10 +21,6 @@
       "url": "https://github.com/Nuintun/gulp-sample/blob/master/LICENSE"
     }
   ],
-  "main": "index",
-  "engines": {
-    "node": ">=0.10.0"
-  },
   "keywords": [
     "gulp",
     "cmd",
