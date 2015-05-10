@@ -1,0 +1,50 @@
+{
+  "name": "gulp-sample",
+  "version": "0.0.1",
+  "description": "A gulp plugin for cmd transport and concat",
+  "author": {
+    "name": "nuintun",
+    "email": "nuintun@qq.com"
+  },
+  "homepage": "https://nuintun.github.io/gulp-sample",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nuintun/gulp-sample.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nuintun/gulp-sample/issues",
+    "email": "nuintun@qq.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/Nuintun/gulp-sample/blob/master/LICENSE"
+    }
+  ],
+  "main": "index",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "keywords": [
+    "gulp",
+    "cmd",
+    "concat",
+    "commonjs",
+    "transport"
+  ],
+  "dependencies": {
+    "gulp": "^3.8.11",
+    "colors": "^1.1.0",
+    "gulp-uglify": "^1.2.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-cmd": "https://github.com/Nuintun/gulp-cmd/archive/0.0.1.tar.gz"
+  },
+  "devDependencies": {
+  },
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "mocha --check-leaks --reporter spec --bail",
+    "test-ci": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --check-leaks --reporter spec",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --check-leaks --reporter dot"
+  }
+}
