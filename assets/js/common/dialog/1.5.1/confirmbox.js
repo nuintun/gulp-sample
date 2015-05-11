@@ -65,7 +65,7 @@ var ConfirmBox = Dialog.extend({
 ConfirmBox.alert = function (message, callback, options){
   var defaults = {
     message: message,
-    title: '',
+    title: '提示',
     cancelTpl: '',
     closeTpl: '',
     onConfirm: function (){
