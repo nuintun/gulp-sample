@@ -9,3 +9,5 @@ require('base');
 module.exports = function (){
   console.log('view module'); // 首页脚本
 };
+
+module.exports();

@@ -11,3 +11,5 @@ require('./base.json');
 module.exports = function (){
   console.log('base module');
 };
+
+module.exports();

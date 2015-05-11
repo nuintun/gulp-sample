@@ -7,3 +7,5 @@
 module.exports = function (){
   console.log('class module');
 };
+
+module.exports();

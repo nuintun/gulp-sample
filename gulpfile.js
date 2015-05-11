@@ -54,8 +54,16 @@ gulp.task('clean', function (callback){
   rimraf('online', callback);
 });
 
+// runtime task
+gulp.task('runtime', ['clean'], function (){
+  // all js
+  gulp.src('assets/loader/*.*')
+    .pipe(gulp.dest('online/loader'))
+    .on('end', complete);
+});
+
 // online task
-gulp.task('online', ['clean'], function (){
+gulp.task('online', ['runtime'], function (){
   // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(transport({
@@ -72,7 +80,7 @@ gulp.task('online', ['clean'], function (){
 });
 
 // develop task
-gulp.task('default', ['clean'], function (){
+gulp.task('default', ['runtime'], function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(transport({ alias: alias, include: 'self' }))
