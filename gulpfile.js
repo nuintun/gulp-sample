@@ -86,6 +86,7 @@ gulp.task('online', ['runtime'], function (){
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(transport({
       alias: alias,
+      ignore: ['jquery'],
       include: function (id){
         return id.indexOf('view') === 0 ? 'all' : 'relative';
       },
