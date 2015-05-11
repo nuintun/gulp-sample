@@ -72,7 +72,12 @@ gulp.task('clean', function (callback){
 
 // runtime task
 gulp.task('runtime', ['clean'], function (){
-  gulp.src('assets/?(loader|images)/**/*.*', { base: 'assets' })
+  gulp.src('assets/loader/**/*.js', { base: 'assets' })
+    .pipe(uglify())
+    .pipe(gulp.dest('online'))
+    .on('end', complete);
+
+  gulp.src('assets/?(loader|images)/**/*.!(js)', { base: 'assets' })
     .pipe(gulp.dest('online'))
     .on('end', complete);
 });
