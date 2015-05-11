@@ -4,7 +4,7 @@
 
 'use strict';
 
-require('base');
+require('dialog');
 
 module.exports = function (){
   console.log('view module'); // 首页脚本

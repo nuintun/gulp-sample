@@ -70,7 +70,15 @@ gulp.task('clean', function (callback){
 });
 
 // runtime task
-gulp.task('runtime', ['clean'], function (){
+gulp.task('images', ['clean'], function (){
+  // all js
+  gulp.src('assets/images/*.*')
+    .pipe(gulp.dest('online/images'))
+    .on('end', complete);
+});
+
+// runtime task
+gulp.task('runtime', ['images'], function (){
   // all js
   gulp.src('assets/loader/*.*')
     .pipe(gulp.dest('online/loader'))
@@ -83,7 +91,12 @@ gulp.task('online', ['runtime'], function (){
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(transport({
       alias: alias,
-      include: function (id){ return id.indexOf('view') === 0 ? 'all' : 'relative'; }
+      include: function (id){
+        return id.indexOf('view') === 0 ? 'all' : 'relative';
+      },
+      oncsspath: function (path){
+        return path.replace('assets/', 'online/')
+      }
     }))
     .pipe(uglify())
     .pipe(gulp.dest('online/js'))
@@ -98,7 +111,13 @@ gulp.task('online', ['runtime'], function (){
 gulp.task('default', ['runtime'], function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
-    .pipe(transport({ alias: alias, include: 'self' }))
+    .pipe(transport({
+      alias: alias,
+      include: 'self',
+      oncsspath: function (path){
+        return path.replace('assets/', 'online/')
+      }
+    }))
     .pipe(gulp.dest('online/js'))
     .on('end', complete);
 });
@@ -114,8 +133,27 @@ gulp.task('watch', ['default'], function (){
     } else {
       gulp.src(e.path, { base: 'assets/js' })
         .pipe(plumber())
-        .pipe(transport({ alias: alias, include: 'self', cache: false }))
+        .pipe(transport({
+          alias: alias,
+          include: 'self',
+          cache: false,
+          oncsspath: function (path){
+            return path.replace('assets/', 'online/')
+          }
+        }))
         .pipe(gulp.dest('online/js'))
+        .on('end', complete);
+    }
+  });
+
+  // watch all file
+  gulp.watch('assets/?(images|loader)/**/*.*', function (e){
+    if (e.type === 'deleted') {
+      rimraf(path.resolve('online', path.relative(base, e.path)));
+    } else {
+      gulp.src(e.path, { base: 'assets' })
+        .pipe(plumber())
+        .pipe(gulp.dest('online'))
         .on('end', complete);
     }
   });
