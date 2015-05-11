@@ -74,12 +74,10 @@ gulp.task('clean', function (callback){
 gulp.task('runtime', ['clean'], function (){
   gulp.src('assets/loader/**/*.js', { base: 'assets' })
     .pipe(uglify())
-    .pipe(gulp.dest('online'))
-    .on('end', complete);
+    .pipe(gulp.dest('online'));
 
   gulp.src('assets/?(loader|images)/**/*.!(js)', { base: 'assets' })
-    .pipe(gulp.dest('online'))
-    .on('end', complete);
+    .pipe(gulp.dest('online'));
 });
 
 // online task
@@ -106,8 +104,7 @@ gulp.task('online', ['runtime'], function (){
   // css
   gulp.src('assets/css/**/*.*')
     .pipe(css({ compatibility: 'ie8' }))
-    .pipe(gulp.dest('online/css'))
-    .on('end', complete);
+    .pipe(gulp.dest('online/css'));
 });
 
 // develop task
@@ -125,8 +122,7 @@ gulp.task('default', ['runtime'], function (){
     .on('end', complete);
 
   gulp.src('assets/css/**/*.*', { base: 'assets' })
-    .pipe(gulp.dest('online'))
-    .on('end', complete);
+    .pipe(gulp.dest('online'));
 });
 
 // develop watch task
