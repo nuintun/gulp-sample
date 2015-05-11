@@ -4,10 +4,12 @@
 
 'use strict';
 
-require('dialog');
+var $ = require('jquery');
+var Dialog = require('dialog');
 
-module.exports = function (){
-  console.log('view module'); // 首页脚本
-};
+var dialog = new Dialog();
 
-module.exports();
+$('#open-dialog').on('click', function (){
+  dialog.set('content', '<div style="height: 300px; text-align: center; line-height: 300px;">sample</div>');
+  dialog.show();
+});

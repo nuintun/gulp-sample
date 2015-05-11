@@ -1,0 +1,95 @@
+body, dd, div, dt, li, p, span, td {
+  font-size: 13px;
+  font-family: Microsoft Yahei, SimHei, tahoma, arial, Hiragino Sans GB, SimSun, sans-serif;
+  font-weight: 400;
+  color: #424242;
+}
+body {
+  text-align: center;
+  padding: 66px 0 0;
+}
+.ui-button * {
+  margin: 0;
+  padding: 0;
+}
+.ui-button {
+  display: inline-block;
+  *display: inline;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit; /* Correct font family not being inherited in all browsers for <button> <input> */
+  font-weight: bold;
+  border-radius: 2px;
+  padding: 0 20px;
+  *zoom: 1;
+  *overflow: visible; /* for a ie6/7 bug http://blog.csdn.net/jyy_12/article/details/6636099 */
+  background-image: none; /* for old alice button style conflict */
+}
+.ui-button .ui-button-text {
+  background: none;
+  padding: 0;
+  height: auto;
+  line-height: normal;
+}
+.ui-button:hover {
+  text-decoration: none;
+  background-image: none; /* for old alice button style conflict */
+}
+input.ui-button-text,
+button.ui-button-text {
+  *vertical-align: top; /* for a ie7 bug */
+}
+.ui-button:active {
+  position: relative;
+  top: 1px;
+  box-shadow: 1px 1px 3px #999 inset;
+}
+.ui-button-lorange,
+.ui-button-morange,
+.ui-button-sorange {
+  color: #fff;
+  border: 1px solid #d66500;
+  background-color: #f57403;
+}
+.ui-button-lorange:hover,
+.ui-button-morange:hover,
+.ui-button-sorange:hover {
+  background-color: #fb8318;
+}
+a.ui-button-lorange,
+a.ui-button-morange,
+a.ui-button-sorange,
+a.ui-button-lorange:hover,
+a.ui-button-morange:hover,
+a.ui-button-sorange:hover,
+a.ui-button-lorange:active,
+a.ui-button-morange:active,
+a.ui-button-sorange:active {
+  color: #fff;
+}
+.ui-button-lorange {
+  height: 32px;
+}
+.ui-button-morange {
+  height: 28px;
+}
+.ui-button-sorange {
+  padding: 0 12px;
+  height: 24px;
+  font-size: 12px;
+}
+a.ui-button-lorange {
+  line-height: 30px;
+  height: 30px;
+}
+a.ui-button-morange {
+  line-height: 26px;
+  height: 26px;
+}
+a.ui-button-sorange {
+  line-height: 22px;
+  height: 22px;
+}

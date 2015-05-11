@@ -10,6 +10,7 @@ var rimraf = require('del');
 var colors = require('colors/safe');
 var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
+var css = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 
 // set colors theme
@@ -70,18 +71,9 @@ gulp.task('clean', function (callback){
 });
 
 // runtime task
-gulp.task('images', ['clean'], function (){
-  // all js
-  gulp.src('assets/images/*.*')
-    .pipe(gulp.dest('online/images'))
-    .on('end', complete);
-});
-
-// runtime task
-gulp.task('runtime', ['images'], function (){
-  // all js
-  gulp.src('assets/loader/*.*')
-    .pipe(gulp.dest('online/loader'))
+gulp.task('runtime', ['clean'], function (){
+  gulp.src('assets/?(loader|images)/**/*.*', { base: 'assets' })
+    .pipe(gulp.dest('online'))
     .on('end', complete);
 });
 
@@ -105,6 +97,12 @@ gulp.task('online', ['runtime'], function (){
   // other file
   gulp.src('assets/js/**/*.!(js|css|json|tpl|html)')
     .pipe(gulp.dest('online/js'));
+
+  // css
+  gulp.src('assets/css/**/*.*')
+    .pipe(css({ compatibility: 'ie8' }))
+    .pipe(gulp.dest('online/css'))
+    .on('end', complete);
 });
 
 // develop task
@@ -119,6 +117,10 @@ gulp.task('default', ['runtime'], function (){
       }
     }))
     .pipe(gulp.dest('online/js'))
+    .on('end', complete);
+
+  gulp.src('assets/css/**/*.*', { base: 'assets' })
+    .pipe(gulp.dest('online'))
     .on('end', complete);
 });
 
@@ -147,7 +149,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch all file
-  gulp.watch('assets/?(images|loader)/**/*.*', function (e){
+  gulp.watch('assets/?(images|loader|css)/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(path.resolve('online', path.relative(base, e.path)));
     } else {

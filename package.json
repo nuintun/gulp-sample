@@ -34,6 +34,7 @@
     "colors": "^1.1.0",
     "gulp-uglify": "^1.2.0",
     "gulp-plumber": "^1.0.0",
+    "gulp-minify-css": "^1.1.1",
     "gulp-cmd": "https://github.com/Nuintun/gulp-cmd/archive/0.0.1.tar.gz"
   },
   "devDependencies": {
