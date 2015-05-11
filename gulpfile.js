@@ -53,15 +53,18 @@ var alias = {
   'confirmbox': 'common/dialog/1.5.1/confirmbox'
 };
 
+var startTime = Date.now();
+
 // complete callback
 function complete(){
   var now = new Date();
 
   console.log(
-    '  %s [%s] %s',
+    '  %s [%s] build complete ... %s %s',
     colors.verboseBold('gulp-cmd'),
     now.toLocaleString(),
-    colors.infoBold('build complete ...')
+    colors.infoBold(now - startTime),
+    colors.verboseBold('ms')
   );
 }
 
