@@ -38,11 +38,11 @@ function complete(){
   var now = new Date();
 
   console.log(
-    '  %s [%s] build complete ... %s %s',
+    '  %s [%s] build complete ... +%s%s',
     colors.verbose('gulp-cmd'),
     now.toLocaleString(),
-    colors.input(now - startTime),
-    colors.info('ms')
+    colors.info(now - startTime),
+    colors.verbose('ms')
   );
 }
 
