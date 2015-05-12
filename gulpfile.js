@@ -7,33 +7,11 @@
 var path = require('path');
 var gulp = require('gulp');
 var rimraf = require('del');
-var colors = require('colors/safe');
 var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
 var css = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
-
-// set colors theme
-colors.setTheme({
-  input: 'grey',
-  verbose: 'cyan',
-  prompt: 'grey',
-  info: 'green',
-  data: 'grey',
-  help: 'cyan',
-  warn: 'yellow',
-  debug: 'blue',
-  error: 'red',
-  inputBold: ['grey', 'bold'],
-  verboseBold: ['cyan', 'bold'],
-  promptBold: ['grey', 'bold'],
-  infoBold: ['green', 'bold'],
-  dataBold: ['grey', 'bold'],
-  helpBold: ['cyan', 'bold'],
-  warnBold: ['yellow', 'bold'],
-  debugBold: ['blue', 'bold'],
-  errorBold: ['red', 'bold']
-});
+var colors = transport.colors;
 
 // alias
 var alias = {
@@ -61,10 +39,10 @@ function complete(){
 
   console.log(
     '  %s [%s] build complete ... %s %s',
-    colors.verboseBold('gulp-cmd'),
+    colors.verbose('gulp-cmd'),
     now.toLocaleString(),
-    colors.infoBold(now - startTime),
-    colors.verboseBold('ms')
+    colors.input(now - startTime),
+    colors.info('ms')
   );
 }
 
