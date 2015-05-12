@@ -160,9 +160,12 @@ gulp.task('watch', ['default'], function (){
     if (e.type === 'deleted') {
       rimraf(path.resolve('online', path.relative(base, e.path)));
     } else {
+      startTime = Date.now();
+
       gulp.src(e.path, { base: 'assets' })
         .pipe(plumber())
-        .pipe(gulp.dest('online'));
+        .pipe(gulp.dest('online'))
+        .on('end', complete);
     }
   });
 });
