@@ -71,8 +71,10 @@ gulp.task('online', ['runtime'], function (){
       include: function (id){
         return id.indexOf('view') === 0 ? 'all' : 'relative';
       },
-      oncsspath: function (path){
-        return path.replace('assets/', 'online/')
+      css: {
+        onpath: function (path){
+          return path.replace('assets/', 'online/')
+        }
       }
     }))
     .pipe(uglify())
