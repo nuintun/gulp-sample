@@ -9,7 +9,7 @@ var gulp = require('gulp');
 var rimraf = require('del');
 var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
-var css = require('gulp-minify-css');
+var css = require('gulp-css');
 var plumber = require('gulp-plumber');
 var colors = transport.colors;
 
@@ -95,20 +95,21 @@ gulp.task('online', ['runtime'], function (){
 // develop task
 gulp.task('default', ['runtime'], function (){
   // all file
-  gulp.src('assets/js/**/*.*', { base: 'assets/js' })
-    .pipe(transport({
-      alias: alias,
-      include: 'self',
-      css: {
-        onpath: function (path){
-          return path.replace('assets/', 'online/')
-        }
-      }
-    }))
-    .pipe(gulp.dest('online/js'))
-    .on('end', complete);
+  //gulp.src('assets/js/**/*.*', { base: 'assets/js' })
+  //  .pipe(transport({
+  //    alias: alias,
+  //    include: 'self',
+  //    css: {
+  //      onpath: function (path){
+  //        return path.replace('assets/', 'online/')
+  //      }
+  //    }
+  //  }))
+  //  .pipe(gulp.dest('online/js'))
+  //  .on('end', complete);
 
   gulp.src('assets/css/**/*.*', { base: 'assets' })
+    .pipe(css({ compress: true }))
     .pipe(gulp.dest('online'));
 });
 
