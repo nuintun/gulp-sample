@@ -39,10 +39,10 @@ function complete(){
 
   console.log(
     '  %s [%s] build complete ... %s%s',
-    colors.verbose('gulp-cmd'),
+    colors.cyan.bold('gulp-cmd'),
     now.toLocaleString(),
-    colors.info(now - startTime),
-    colors.verbose('ms')
+    colors.green(now - startTime),
+    colors.cyan('ms')
   );
 }
 
