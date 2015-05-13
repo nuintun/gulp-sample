@@ -15,6 +15,7 @@ var colors = transport.colors;
 
 // alias
 var alias = {
+  'import-style': '/online/loader/import-style',
   'jquery': 'base/jquery/1.11.2/jquery',
   'base': 'base/base/1.2.0/base',
   'class': 'base/class/1.2.0/class',
