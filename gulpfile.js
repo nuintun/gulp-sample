@@ -98,8 +98,10 @@ gulp.task('default', ['runtime'], function (){
     .pipe(transport({
       alias: alias,
       include: 'self',
-      oncsspath: function (path){
-        return path.replace('assets/', 'online/')
+      css: {
+        onpath: function (path){
+          return path.replace('assets/', 'online/')
+        }
       }
     }))
     .pipe(gulp.dest('online/js'))
@@ -126,8 +128,10 @@ gulp.task('watch', ['default'], function (){
           alias: alias,
           include: 'self',
           cache: false,
-          oncsspath: function (path){
-            return path.replace('assets/', 'online/')
+          css: {
+            onpath: function (path){
+              return path.replace('assets/', 'online/')
+            }
           }
         }))
         .pipe(gulp.dest('online/js'))
