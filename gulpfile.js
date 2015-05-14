@@ -7,11 +7,11 @@
 var path = require('path');
 var gulp = require('gulp');
 var rimraf = require('del');
-var transport = require('gulp-cmd');
 var uglify = require('gulp-uglify');
 var css = require('gulp-css');
+var js = require('gulp-cmd');
 var plumber = require('gulp-plumber');
-var colors = transport.colors;
+var colors = js.colors;
 
 // alias
 var alias = {
@@ -58,7 +58,7 @@ gulp.task('runtime', ['clean'], function (){
     .pipe(uglify())
     .pipe(gulp.dest('online'));
 
-  gulp.src('assets/?(loader|images)/**/*.!(js)', { base: 'assets' })
+  gulp.src('assets/!(loader|js|css)/**/*.*', { base: 'assets' })
     .pipe(gulp.dest('online'));
 });
 
@@ -66,7 +66,7 @@ gulp.task('runtime', ['clean'], function (){
 gulp.task('online', ['runtime'], function (){
   // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
-    .pipe(transport({
+    .pipe(js({
       alias: alias,
       ignore: ['jquery'],
       include: function (id){
@@ -101,7 +101,7 @@ gulp.task('online', ['runtime'], function (){
 gulp.task('default', ['runtime'], function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
-    .pipe(transport({
+    .pipe(js({
       alias: alias,
       include: 'self',
       css: {
@@ -135,7 +135,7 @@ gulp.task('watch', ['default'], function (){
 
       gulp.src(e.path, { base: 'assets/js' })
         .pipe(plumber())
-        .pipe(transport({
+        .pipe(js({
           alias: alias,
           include: 'self',
           cache: false,
@@ -151,7 +151,26 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch all file
-  gulp.watch('assets/?(images|loader|css)/**/*.*', function (e){
+  gulp.watch(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], function (e){
+    if (e.type === 'deleted') {
+      rimraf(path.resolve('online', path.relative(base, e.path)));
+    } else {
+      startTime = Date.now();
+
+      gulp.src(e.path, { base: 'assets' })
+        .pipe(plumber())
+        .pipe(css({
+          onpath: function (path){
+            return path.replace('assets/', 'online/')
+          }
+        }))
+        .pipe(gulp.dest('online'))
+        .on('end', complete);
+    }
+  });
+
+  // watch all file
+  gulp.watch('assets/!(loader|js|css)/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(path.resolve('online', path.relative(base, e.path)));
     } else {
