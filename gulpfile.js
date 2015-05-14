@@ -34,21 +34,10 @@ var alias = {
 
 var startTime = Date.now();
 
-// complete callback
-function complete(){
-  var now = new Date();
-
-  console.log(
-    '  %s [%s] build complete ... %s%s',
-    colors.green.bold('gulp-task'),
-    now.toLocaleString(),
-    colors.green(now - startTime),
-    colors.cyan('ms')
-  );
-}
-
 // clean task
 gulp.task('clean', function (callback){
+  startTime = Date.now();
+
   rimraf('online', callback);
 });
 
@@ -64,6 +53,23 @@ gulp.task('runtime', ['clean'], function (){
 
 // online task
 gulp.task('online', ['runtime'], function (){
+  var tasks = 3;
+
+  // complete callback
+  function complete(){
+    if (--tasks) return;
+
+    var now = new Date();
+
+    console.log(
+      '  %s [%s] build complete ... %s%s',
+      colors.green.bold('gulp-online'),
+      now.toLocaleString(),
+      colors.green(now - startTime),
+      colors.cyan('ms')
+    );
+  }
+
   // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
     .pipe(cmd({
@@ -84,21 +90,40 @@ gulp.task('online', ['runtime'], function (){
 
   // other file
   gulp.src('assets/js/**/*.!(js|css|json|tpl|html)')
-    .pipe(gulp.dest('online/js'));
+    .pipe(gulp.dest('online/js'))
+    .on('end', complete);
 
   // css
-  gulp.src(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], { base: 'assets' })
+  gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
     .pipe(css({
       compress: true,
       onpath: function (path){
         return path.replace('assets/', 'online/')
       }
     }))
-    .pipe(gulp.dest('online'));
+    .pipe(gulp.dest('online'))
+    .on('end', complete);
 });
 
 // develop task
 gulp.task('default', ['runtime'], function (){
+  var tasks = 2;
+
+  // complete callback
+  function complete(){
+    if (--tasks) return;
+
+    var now = new Date();
+
+    console.log(
+      '  %s [%s] build complete ... %s%s',
+      colors.green.bold('gulp-default'),
+      now.toLocaleString(),
+      colors.green(now - startTime),
+      colors.cyan('ms')
+    );
+  }
+
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
     .pipe(cmd({
@@ -113,18 +138,32 @@ gulp.task('default', ['runtime'], function (){
     .pipe(gulp.dest('online/js'))
     .on('end', complete);
 
-  gulp.src(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], { base: 'assets' })
+  gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
     .pipe(css({
       onpath: function (path){
         return path.replace('assets/', 'online/')
       }
     }))
-    .pipe(gulp.dest('online'));
+    .pipe(gulp.dest('online'))
+    .on('end', complete);
 });
 
 // develop watch task
 gulp.task('watch', ['default'], function (){
   var base = path.join(process.cwd(), 'assets');
+
+  // complete callback
+  function complete(){
+    var now = new Date();
+
+    console.log(
+      '  %s [%s] build complete ... %s%s',
+      colors.green.bold('gulp-watch'),
+      now.toLocaleString(),
+      colors.green(now - startTime),
+      colors.cyan('ms')
+    );
+  }
 
   // watch all file
   gulp.watch('assets/js/**/*.*', function (e){
@@ -151,7 +190,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch all file
-  gulp.watch(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], function (e){
+  gulp.watch('assets/css/?(base|view)/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(path.resolve('online', path.relative(base, e.path)));
     } else {
