@@ -87,7 +87,7 @@ gulp.task('online', ['runtime'], function (){
     .pipe(gulp.dest('online/js'));
 
   // css
-  gulp.src('assets/css/view/**/*.*', { base: 'assets' })
+  gulp.src('assets/css/**/*.*', { base: 'assets' })
     .pipe(css({
       compress: true,
       onpath: function (path){
