@@ -95,18 +95,18 @@ gulp.task('online', ['runtime'], function (){
 // develop task
 gulp.task('default', ['runtime'], function (){
   // all file
-  //gulp.src('assets/js/**/*.*', { base: 'assets/js' })
-  //  .pipe(transport({
-  //    alias: alias,
-  //    include: 'self',
-  //    css: {
-  //      onpath: function (path){
-  //        return path.replace('assets/', 'online/')
-  //      }
-  //    }
-  //  }))
-  //  .pipe(gulp.dest('online/js'))
-  //  .on('end', complete);
+  gulp.src('assets/js/**/*.*', { base: 'assets/js' })
+    .pipe(transport({
+      alias: alias,
+      include: 'self',
+      css: {
+        onpath: function (path){
+          return path.replace('assets/', 'online/')
+        }
+      }
+    }))
+    .pipe(gulp.dest('online/js'))
+    .on('end', complete);
 
   gulp.src('assets/css/**/*.*', { base: 'assets' })
     .pipe(css({ compress: true }))
