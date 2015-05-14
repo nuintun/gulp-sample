@@ -87,7 +87,7 @@ gulp.task('online', ['runtime'], function (){
     .pipe(gulp.dest('online/js'));
 
   // css
-  gulp.src('assets/css/**/*.*', { base: 'assets' })
+  gulp.src(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], { base: 'assets' })
     .pipe(css({
       compress: true,
       onpath: function (path){
@@ -113,7 +113,7 @@ gulp.task('default', ['runtime'], function (){
     .pipe(gulp.dest('online/js'))
     .on('end', complete);
 
-  gulp.src('assets/css/**/*.*', { base: 'assets' })
+  gulp.src(['assets/css/view/**/*.*', 'assets/css/base/**/*.css'], { base: 'assets' })
     .pipe(css({
       onpath: function (path){
         return path.replace('assets/', 'online/')
