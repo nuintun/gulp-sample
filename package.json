@@ -24,6 +24,7 @@
   "keywords": [
     "gulp",
     "cmd",
+    "css",
     "concat",
     "commonjs",
     "transport"
