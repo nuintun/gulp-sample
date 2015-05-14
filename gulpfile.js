@@ -87,9 +87,14 @@ gulp.task('online', ['runtime'], function (){
     .pipe(gulp.dest('online/js'));
 
   // css
-  gulp.src('assets/css/**/*.*')
-    .pipe(css({ compatibility: 'ie8' }))
-    .pipe(gulp.dest('online/css'));
+  gulp.src('assets/css/view/**/*.*', { base: 'assets' })
+    .pipe(css({
+      compress: true,
+      onpath: function (path){
+        return path.replace('assets/', 'online/')
+      }
+    }))
+    .pipe(gulp.dest('online'));
 });
 
 // develop task
@@ -109,7 +114,11 @@ gulp.task('default', ['runtime'], function (){
     .on('end', complete);
 
   gulp.src('assets/css/**/*.*', { base: 'assets' })
-    .pipe(css({ compress: true }))
+    .pipe(css({
+      onpath: function (path){
+        return path.replace('assets/', 'online/')
+      }
+    }))
     .pipe(gulp.dest('online'));
 });
 
