@@ -40,7 +40,7 @@ function complete(){
 
   console.log(
     '  %s [%s] build complete ... %s%s',
-    colors.cyan.bold('gulp-cmd'),
+    colors.green.bold('gulp-task'),
     now.toLocaleString(),
     colors.green(now - startTime),
     colors.cyan('ms')
