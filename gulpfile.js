@@ -9,9 +9,9 @@ var gulp = require('gulp');
 var rimraf = require('del');
 var uglify = require('gulp-uglify');
 var css = require('gulp-css');
-var js = require('gulp-cmd');
+var cmd = require('gulp-cmd');
 var plumber = require('gulp-plumber');
-var colors = js.colors;
+var colors = cmd.colors;
 
 // alias
 var alias = {
@@ -66,7 +66,7 @@ gulp.task('runtime', ['clean'], function (){
 gulp.task('online', ['runtime'], function (){
   // all js
   gulp.src('assets/js/**/*.js', { base: 'assets/js' })
-    .pipe(js({
+    .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
       include: function (id){
@@ -101,7 +101,7 @@ gulp.task('online', ['runtime'], function (){
 gulp.task('default', ['runtime'], function (){
   // all file
   gulp.src('assets/js/**/*.*', { base: 'assets/js' })
-    .pipe(js({
+    .pipe(cmd({
       alias: alias,
       include: 'self',
       css: {
@@ -135,7 +135,7 @@ gulp.task('watch', ['default'], function (){
 
       gulp.src(e.path, { base: 'assets/js' })
         .pipe(plumber())
-        .pipe(js({
+        .pipe(cmd({
           alias: alias,
           include: 'self',
           cache: false,
