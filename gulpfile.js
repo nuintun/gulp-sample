@@ -76,7 +76,7 @@ gulp.task('online', ['runtime'], function (){
       alias: alias,
       ignore: ['jquery'],
       include: function (id){
-        return id.indexOf('view') === 0 ? 'all' : 'relative';
+        return id.indexOf('view') === 0 ? 'all' : 'self';
       },
       css: {
         onpath: function (path){
