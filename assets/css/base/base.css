@@ -151,7 +151,7 @@ body .fn-hide {
 }
 /* 人民币符号 */
 .fn-rmb {
-  font-family: arial;
+  font-family: arial, sans-serif;
   font-style: normal;
   padding-right: 4px;
 }
