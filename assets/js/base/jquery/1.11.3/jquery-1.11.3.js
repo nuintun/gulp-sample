@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v1.11.2
+ * jQuery JavaScript Library v1.11.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-12-17T15:27Z
+ * Date: 2015-04-28T16:19Z
  */
 
 function jQuery(window, noGlobal){
@@ -18,6 +18,7 @@ function jQuery(window, noGlobal){
   // you try to trace through "use strict" call chains. (#13335)
   // Support: Firefox 18+
   //
+
   var deletedIds = [];
 
   var slice = deletedIds.slice;
@@ -37,7 +38,7 @@ function jQuery(window, noGlobal){
   var support = {};
 
   var
-    version = "1.11.2",
+    version = "1.11.3",
 
   // Define a local copy of jQuery
     jQuery = function (selector, context){
@@ -540,7 +541,12 @@ function jQuery(window, noGlobal){
   });
 
   function isArraylike(obj){
-    var length = obj.length,
+
+    // Support: iOS 8.2 (not reproducible in simulator)
+    // `in` check used to prevent JIT error (gh-2145)
+    // hasOwn isn't used here due to false negatives
+    // regarding Nodelist length in IE
+    var length = "length" in obj && obj.length,
       type = jQuery.type(obj);
 
     if (type === "function" || jQuery.isWindow(obj)) {
@@ -10216,6 +10222,6 @@ function jQuery(window, noGlobal){
   }
 
   return jQuery;
-}
+};
 
-module.exports = jQuery(window, false);
+module.exports = jQuery(this, true);
