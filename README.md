@@ -6,4 +6,4 @@ gulp-sample
 >[![Dependencies][david-image]][david-url]
 
 [david-image]: http://img.shields.io/david/nuintun/gulp-sample.svg?style=flat-square
-[david-url]: https://david-dm.org/Nuintun/gulp-sample
+[david-url]: https://david-dm.org/nuintun/gulp-sample

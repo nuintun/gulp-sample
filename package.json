@@ -18,7 +18,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/Nuintun/gulp-sample/blob/master/LICENSE"
+      "url": "https://github.com/nuintun/gulp-sample/blob/master/LICENSE"
     }
   ],
   "keywords": [
@@ -34,8 +34,8 @@
     "gulp": "^3.8.11",
     "gulp-uglify": "^1.2.0",
     "gulp-plumber": "^1.0.0",
-    "gulp-cmd": "https://github.com/Nuintun/gulp-cmd/archive/0.0.1.tar.gz",
-    "gulp-css": "https://github.com/Nuintun/gulp-css/archive/0.0.1.tar.gz"
+    "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/0.0.1.tar.gz",
+    "gulp-css": "https://github.com/nuintun/gulp-css/archive/0.0.1.tar.gz"
   },
   "devDependencies": {
   },
