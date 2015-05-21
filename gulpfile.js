@@ -15,7 +15,7 @@ var colors = cmd.colors;
 
 // alias
 var alias = {
-  'import-style': '/online/loader/import-style',
+  'import-style': 'util/import-style/1.0.0/import-style',
   'jquery': 'base/jquery/1.11.3/jquery',
   'base': 'base/base/1.2.0/base',
   'class': 'base/class/1.2.0/class',

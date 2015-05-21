@@ -13,6 +13,7 @@
  */
 
 function jQuery(window, noGlobal){
+
   // Can't do this because several apps including ASP.NET trace
   // the stack via arguments.caller.callee and Firefox dies if
   // you try to trace through "use strict" call chains. (#13335)
@@ -10222,6 +10223,6 @@ function jQuery(window, noGlobal){
   }
 
   return jQuery;
-};
+}
 
-module.exports = jQuery(this, true);
+module.exports = jQuery(window, true);
