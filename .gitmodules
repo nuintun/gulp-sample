@@ -1,0 +1,3 @@
+[submodule "assets/js/util/import-style/1.0.0"]
+	path = assets/js/util/import-style/1.0.0
+	url = git://github.com/nuintun/import-style.git
