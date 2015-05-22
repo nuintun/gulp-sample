@@ -4,6 +4,7 @@
 
 'use strict';
 
+var timer;
 var styleNode;
 var doc = document;
 var importsStack = '';
@@ -60,22 +61,28 @@ function getNode(){
  */
 
 function insertStyle(){
-  var element = getNode();
+  // clear timer
+  clearTimeout(timer);
 
-  // IE
-  if (element.styleSheet !== undefined) {
-    element.styleSheet.cssText = importsStack + cssTextStack;
-  }
-  // W3C
-  else {
-    var style = doc.createTextNode(importsStack + cssTextStack);
+  // async insert
+  timer = setTimeout(function (){
+    var element = getNode();
 
-    if (element.firstChild) {
-      element.replaceChild(style, element.firstChild);
-    } else {
-      element.appendChild(style);
+    // IE
+    if (element.styleSheet !== undefined) {
+      element.styleSheet.cssText = importsStack + cssTextStack;
     }
-  }
+    // W3C
+    else {
+      var style = doc.createTextNode(importsStack + cssTextStack);
+
+      if (element.firstChild) {
+        element.replaceChild(style, element.firstChild);
+      } else {
+        element.appendChild(style);
+      }
+    }
+  }, 0);
 }
 
 /**
