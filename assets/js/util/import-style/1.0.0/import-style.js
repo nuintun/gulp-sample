@@ -6,7 +6,6 @@
 
 var styleNode;
 var doc = document;
-var toString = ({}).property.toString;
 var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
 /**
