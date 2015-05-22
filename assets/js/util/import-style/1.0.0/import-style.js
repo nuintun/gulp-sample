@@ -4,26 +4,29 @@
 
 'use strict';
 
-var RE_NON_WORD = /\W/g;
-var doc = document;
-var head = document.getElementsByTagName('head')[0] || document.documentElement;
 var styleNode;
+var doc = document;
+var toString = ({}).property.toString;
+var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
-module.exports = function (cssText, id){
-  if (id) {
-    // Convert id to valid string
-    id = id.replace(RE_NON_WORD, '-');
+/**
+ * Is string
+ * @param value
+ * @returns {boolean}
+ */
 
-    // Don't add multiple times
-    if (doc.getElementById(id)) return;
-  }
+function isString(value){
+  return {}.toString.call(value) === "[object String]";
+}
 
+module.exports = function (cssText, imports){
   var element;
 
+  imports = isString(imports) ? imports : '';
+
   // Don't share styleNode when id is spectied
-  if (!styleNode || id) {
+  if (!styleNode) {
     element = doc.createElement('style');
-    id && (element.id = id);
 
     // Adds to DOM first to avoid the css hack invalid
     head.appendChild(element);
@@ -39,10 +42,11 @@ module.exports = function (cssText, id){
       throw new Error('Exceed the maximal count of style tags in IE');
     }
 
-    element.styleSheet.cssText += cssText;
+    element.styleSheet.cssText = imports + element.styleSheet.cssText + cssText;
   }
   // W3C
   else {
+    element.insertBefore(doc.createTextNode(imports), element.firstChild);
     element.appendChild(doc.createTextNode(cssText));
   }
 
