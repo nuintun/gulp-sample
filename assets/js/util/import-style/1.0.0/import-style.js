@@ -19,6 +19,7 @@ function isString(value){
   return {}.toString.call(value) === "[object String]";
 }
 
+// Exports
 module.exports = function (cssText, imports){
   var element;
 
@@ -30,6 +31,9 @@ module.exports = function (cssText, imports){
 
     // Adds to DOM first to avoid the css hack invalid
     head.appendChild(element);
+
+    // Cache style node
+    styleNode = element;
   } else {
     element = styleNode;
   }
@@ -48,9 +52,5 @@ module.exports = function (cssText, imports){
   else {
     element.insertBefore(doc.createTextNode(imports), element.firstChild);
     element.appendChild(doc.createTextNode(cssText));
-  }
-
-  if (!id) {
-    styleNode = element;
   }
 };
