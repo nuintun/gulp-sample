@@ -6,6 +6,8 @@
 
 var styleNode;
 var doc = document;
+var importsStack = '';
+var cssTextStack = '';
 var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
 /**
@@ -18,11 +20,13 @@ function isString(value){
   return {}.toString.call(value) === "[object String]";
 }
 
-// Exports
-module.exports = function (cssText, imports){
-  var element;
+/**
+ * Get style node
+ * @returns {*}
+ */
 
-  imports = isString(imports) ? imports : '';
+function getNode(){
+  var element;
 
   // Don't share styleNode when id is spectied
   if (!styleNode) {
@@ -31,25 +35,76 @@ module.exports = function (cssText, imports){
     // Adds to DOM first to avoid the css hack invalid
     head.appendChild(element);
 
+    // IE
+    if (element.styleSheet !== undefined) {
+      // http://support.microsoft.com/kb/262161
+      if (doc.getElementsByTagName('style').length > 31) {
+        throw new Error('Exceed the maximal count of style tags in IE');
+      }
+    }
+
     // Cache style node
     styleNode = element;
   } else {
     element = styleNode;
   }
 
+  return element;
+}
+
+/**
+ * Insert style
+ */
+
+function insertStyle(){
+  var element = getNode();
+
   // IE
   if (element.styleSheet !== undefined) {
-
-    // http://support.microsoft.com/kb/262161
-    if (doc.getElementsByTagName('style').length > 31) {
-      throw new Error('Exceed the maximal count of style tags in IE');
-    }
-
-    element.styleSheet.cssText = imports + element.styleSheet.cssText + cssText;
+    element.styleSheet.cssText = importsStack + cssTextStack;
   }
   // W3C
   else {
-    element.insertBefore(doc.createTextNode(imports), element.firstChild);
-    element.appendChild(doc.createTextNode(cssText));
+    var style = doc.createTextNode(importsStack + cssTextStack);
+
+    if (element.firstChild) {
+      element.replaceChild(style, element.firstChild);
+    } else {
+      element.appendChild(style);
+    }
   }
-};
+}
+
+/**
+ * Insert import
+ * @param imports
+ */
+
+function imports(imports){
+  imports = isString(imports) ? imports : '';
+
+  if (imports) {
+    importsStack += imports;
+
+    insertStyle();
+  }
+}
+
+/**
+ * Insert css text
+ * @param cssText
+ */
+
+function cssText(cssText){
+  cssText = isString(cssText) ? cssText : '';
+
+  if (cssText) {
+    cssTextStack += cssText;
+
+    insertStyle();
+  }
+}
+
+// Exports
+module.exports.imports = imports;
+module.exports.cssText = cssText;
