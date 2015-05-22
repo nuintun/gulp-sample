@@ -32,6 +32,9 @@ function getNode(){
   if (!styleNode) {
     element = doc.createElement('style');
 
+    // Set type
+    element.type = 'text/css';
+
     // Adds to DOM first to avoid the css hack invalid
     head.appendChild(element);
 
