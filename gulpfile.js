@@ -75,6 +75,7 @@ gulp.task('online', ['runtime'], function (){
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
+      map: [[/^\/assets\//, '/online/']],
       include: function (id){
         return id.indexOf('view') === 0 ? 'all' : 'self';
       },
@@ -129,6 +130,7 @@ gulp.task('default', ['runtime'], function (){
     .pipe(cmd({
       alias: alias,
       include: 'self',
+      map: [[/^\/assets\//, '/online/']],
       css: {
         onpath: function (path){
           return path.replace('assets/', 'online/')
