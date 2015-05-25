@@ -75,12 +75,12 @@ gulp.task('online', ['runtime'], function (){
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
-      map: [[/^\/assets\//, '/online/']],
       include: function (id){
         return id.indexOf('view') === 0 ? 'all' : 'self';
       },
       css: {
         onpath: function (path){
+          // TODO 注意相对路径要转换为绝对路径，建议样式中的资源路径使用绝对路径
           return path.replace('assets/', 'online/')
         }
       }
@@ -130,9 +130,9 @@ gulp.task('default', ['runtime'], function (){
     .pipe(cmd({
       alias: alias,
       include: 'self',
-      map: [[/^\/assets\//, '/online/']],
       css: {
         onpath: function (path){
+          // TODO 注意相对路径要转换为绝对路径，建议样式中的资源路径使用绝对路径
           return path.replace('assets/', 'online/')
         }
       }
