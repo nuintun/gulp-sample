@@ -5,6 +5,10 @@
 'use strict';
 
 var path = require('path');
+var join = path.join;
+var relative = path.relative;
+var dirname = path.dirname;
+var resolve = path.resolve;
 var gulp = require('gulp');
 var rimraf = require('del');
 var uglify = require('gulp-uglify');
@@ -33,6 +37,24 @@ var alias = {
 };
 
 var startTime = Date.now();
+
+// css resource path
+function onpath(path, property, file, wwwroot){
+  if (/^[^./\\]/.test(path)) {
+    path = './' + path;
+  }
+
+  if (path.indexOf('.') === 0) {
+    path = join(dirname(file), path);
+    path = relative(wwwroot, path);
+    path = '/' + path;
+    path = path.replace(/\\+/g, '/');
+  }
+
+  path = path.replace('assets/', 'online/');
+
+  return path;
+}
 
 // clean task
 gulp.task('clean', function (callback){
@@ -78,12 +100,7 @@ gulp.task('online', ['runtime'], function (){
       include: function (id){
         return id.indexOf('view') === 0 ? 'all' : 'self';
       },
-      css: {
-        onpath: function (path){
-          // TODO 注意相对路径要转换为绝对路径，建议样式中的资源路径使用绝对路径
-          return path.replace('assets/', 'online/')
-        }
-      }
+      css: { onpath: onpath }
     }))
     .pipe(uglify())
     .pipe(gulp.dest('online/js'))
@@ -98,9 +115,7 @@ gulp.task('online', ['runtime'], function (){
   gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
     .pipe(css({
       compress: true,
-      onpath: function (path){
-        return path.replace('assets/', 'online/')
-      }
+      onpath: onpath
     }))
     .pipe(gulp.dest('online'))
     .on('end', complete);
@@ -130,29 +145,20 @@ gulp.task('default', ['runtime'], function (){
     .pipe(cmd({
       alias: alias,
       include: 'self',
-      css: {
-        onpath: function (path){
-          // TODO 注意相对路径要转换为绝对路径，建议样式中的资源路径使用绝对路径
-          return path.replace('assets/', 'online/')
-        }
-      }
+      css: { onpath: onpath }
     }))
     .pipe(gulp.dest('online/js'))
     .on('end', complete);
 
   gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
-    .pipe(css({
-      onpath: function (path){
-        return path.replace('assets/', 'online/')
-      }
-    }))
+    .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('online'))
     .on('end', complete);
 });
 
 // develop watch task
 gulp.task('watch', ['default'], function (){
-  var base = path.join(process.cwd(), 'assets');
+  var base = join(process.cwd(), 'assets');
 
   // complete callback
   function complete(){
@@ -170,7 +176,7 @@ gulp.task('watch', ['default'], function (){
   // watch all file
   gulp.watch('assets/js/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(path.resolve('online', path.relative(base, e.path)));
+      rimraf(resolve('online', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
@@ -194,7 +200,7 @@ gulp.task('watch', ['default'], function (){
   // watch all file
   gulp.watch('assets/css/?(base|view)/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(path.resolve('online', path.relative(base, e.path)));
+      rimraf(resolve('online', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
@@ -213,7 +219,7 @@ gulp.task('watch', ['default'], function (){
   // watch all file
   gulp.watch('assets/!(loader|js|css)/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(path.resolve('online', path.relative(base, e.path)));
+      rimraf(resolve('online', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
