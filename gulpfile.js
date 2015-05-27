@@ -16,8 +16,6 @@ var css = require('gulp-css');
 var cmd = require('gulp-cmd');
 var colors = cmd.colors;
 var plumber = require('gulp-plumber');
-var imagemin = require('gulp-imagemin');
-var pngquant = require('imagemin-pngquant');
 
 // alias
 var alias = {
@@ -74,11 +72,6 @@ gulp.task('runtime', ['clean'], function (){
 
   // image file
   gulp.src('static/develop/images/**/*.*', { base: 'static/develop' })
-    .pipe(imagemin({
-      progressive: true,
-      svgoPlugins: [{ removeViewBox: false }],
-      use: [pngquant()]
-    }))
     .pipe(gulp.dest('static/product'));
 });
 
@@ -230,12 +223,6 @@ gulp.task('watch', ['default'], function (){
       startTime = Date.now();
 
       gulp.src(e.path, { base: 'static/develop' })
-        .pipe(plumber())
-        .pipe(imagemin({
-          progressive: true,
-          svgoPlugins: [{ removeViewBox: false }],
-          use: [pngquant()]
-        }))
         .pipe(gulp.dest('static/product'))
         .on('end', complete);
     }
