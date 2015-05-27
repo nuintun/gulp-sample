@@ -14,8 +14,10 @@ var rimraf = require('del');
 var uglify = require('gulp-uglify');
 var css = require('gulp-css');
 var cmd = require('gulp-cmd');
-var plumber = require('gulp-plumber');
 var colors = cmd.colors;
+var plumber = require('gulp-plumber');
+var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 
 // alias
 var alias = {
@@ -69,7 +71,12 @@ gulp.task('runtime', ['clean'], function (){
     .pipe(uglify())
     .pipe(gulp.dest('static/product'));
 
-  gulp.src('static/develop/!(loader|js|css)/**/*.*', { base: 'static/develop' })
+  gulp.src('static/develop/images/**/*.*', { base: 'static/develop' })
+    .pipe(imagemin({
+      progressive: true,
+      svgoPlugins: [{ removeViewBox: false }],
+      use: [pngquant()]
+    }))
     .pipe(gulp.dest('static/product'));
 });
 
@@ -212,8 +219,8 @@ gulp.task('watch', ['default'], function (){
     }
   });
 
-  // watch all file
-  gulp.watch('static/develop/!(loader|js|css)/**/*.*', function (e){
+  // watch images file
+  gulp.watch('static/develop/images/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(resolve('static/product', relative(base, e.path)));
     } else {
@@ -221,6 +228,11 @@ gulp.task('watch', ['default'], function (){
 
       gulp.src(e.path, { base: 'static/develop' })
         .pipe(plumber())
+        .pipe(imagemin({
+          progressive: true,
+          svgoPlugins: [{ removeViewBox: false }],
+          use: [pngquant()]
+        }))
         .pipe(gulp.dest('static/product'))
         .on('end', complete);
     }
