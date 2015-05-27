@@ -55,6 +55,45 @@ function onpath(path, property, file, wwwroot){
   return path;
 }
 
+// date format
+function dateFormat(date, format){
+  // 参数错误
+  if (!date instanceof Date) {
+    throw new TypeError('Param date must be a Date');
+  }
+
+  format = format || 'yyyy-MM-dd hh:mm:ss';
+
+  var map = {
+    'M': date.getMonth() + 1, //月份
+    'd': date.getDate(), //日
+    'h': date.getHours(), //小时
+    'm': date.getMinutes(), //分
+    's': date.getSeconds(), //秒
+    'q': Math.floor((date.getMonth() + 3) / 3), //季度
+    'S': date.getMilliseconds() //毫秒
+  };
+
+  format = format.replace(/([yMdhmsqS])+/g, function (all, t){
+    var v = map[t];
+
+    if (v !== undefined) {
+      if (all.length > 1) {
+        v = '0' + v;
+        v = v.substr(v.length - 2);
+      }
+
+      return v;
+    } else if (t === 'y') {
+      return (date.getFullYear() + '').substr(4 - all.length);
+    }
+
+    return all;
+  });
+
+  return format;
+}
+
 // clean task
 gulp.task('clean', function (callback){
   startTime = Date.now();
@@ -87,7 +126,7 @@ gulp.task('product', ['runtime'], function (){
     console.log(
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-product'),
-      now.toLocaleString(),
+      dateFormat(now),
       colors.green(now - startTime),
       colors.cyan('ms')
     );
@@ -135,7 +174,7 @@ gulp.task('default', ['runtime'], function (){
     console.log(
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-default'),
-      now.toLocaleString(),
+      dateFormat(now),
       colors.green(now - startTime),
       colors.cyan('ms')
     );
@@ -169,7 +208,7 @@ gulp.task('watch', ['default'], function (){
     console.log(
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-watch'),
-      now.toLocaleString(),
+      dateFormat(now),
       colors.green(now - startTime),
       colors.cyan('ms')
     );
