@@ -17,7 +17,7 @@ var Dialog = Overlay.extend({
 
   attrs: {
     // 模板
-    template: require('./dialog.handlebars'),
+    template: require('./dialog.tpl'),
 
     // 对话框触发点
     trigger: {

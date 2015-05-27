@@ -30,8 +30,7 @@ var alias = {
   'iframe-shim': 'util/iframe-shim/1.1.0/iframe-shim',
   'position': 'util/position/1.1.0/position',
   'messenger': 'util/messenger/2.1.0/messenger',
-  'mask': 'common/overlay/1.2.0/mask',
-  'overlay': 'common/overlay/1.2.0/overlay',
+  'overlay': 'common/overlay/1.2.0/',
   'dialog': 'common/dialog/1.5.1/dialog',
   'confirmbox': 'common/dialog/1.5.1/confirmbox'
 };
