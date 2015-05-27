@@ -67,10 +67,12 @@ gulp.task('clean', function (callback){
 
 // runtime task
 gulp.task('runtime', ['clean'], function (){
+  // loader file
   gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
     .pipe(uglify())
     .pipe(gulp.dest('static/product'));
 
+  // image file
   gulp.src('static/develop/images/**/*.*', { base: 'static/develop' })
     .pipe(imagemin({
       progressive: true,
@@ -118,7 +120,7 @@ gulp.task('product', ['runtime'], function (){
     .pipe(gulp.dest('static/product/js'))
     .on('end', complete);
 
-  // css
+  // css file
   gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
     .pipe(css({
       compress: true,
@@ -147,7 +149,7 @@ gulp.task('default', ['runtime'], function (){
     );
   }
 
-  // all file
+  // js file
   gulp.src('static/develop/js/**/*.*', { base: 'static/develop/js' })
     .pipe(cmd({
       alias: alias,
@@ -157,6 +159,7 @@ gulp.task('default', ['runtime'], function (){
     .pipe(gulp.dest('static/product/js'))
     .on('end', complete);
 
+  // css file
   gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
     .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('static/product'))
@@ -180,7 +183,7 @@ gulp.task('watch', ['default'], function (){
     );
   }
 
-  // watch all file
+  // watch js file
   gulp.watch('static/develop/js/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(resolve('static/product', relative(base, e.path)));
@@ -200,7 +203,7 @@ gulp.task('watch', ['default'], function (){
     }
   });
 
-  // watch all file
+  // watch css file
   gulp.watch('static/develop/css/?(base|view)/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(resolve('static/product', relative(base, e.path)));
@@ -219,7 +222,7 @@ gulp.task('watch', ['default'], function (){
     }
   });
 
-  // watch images file
+  // watch image file
   gulp.watch('static/develop/images/**/*.*', function (e){
     if (e.type === 'deleted') {
       rimraf(resolve('static/product', relative(base, e.path)));
