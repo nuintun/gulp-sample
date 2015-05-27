@@ -27,7 +27,8 @@
     "css",
     "concat",
     "commonjs",
-    "transport"
+    "transport",
+    "gulpplugin"
   ],
   "dependencies": {
     "del": "^1.2.0",
