@@ -102,5 +102,5 @@ a.ui-dialog-button-white:hover {
   color: #676d70;
 }
 .ui-mask {
-  background-image: url(/assets/images/background_stripe.png);
+  background-image: url(/static/develop/images/background_stripe.png);
 }

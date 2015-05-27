@@ -51,7 +51,7 @@ function onpath(path, property, file, wwwroot){
     path = path.replace(/\\+/g, '/');
   }
 
-  path = path.replace('assets/', 'online/');
+  path = path.replace('/static/develop/', '/static/product/');
 
   return path;
 }
@@ -60,21 +60,21 @@ function onpath(path, property, file, wwwroot){
 gulp.task('clean', function (callback){
   startTime = Date.now();
 
-  rimraf('online', callback);
+  rimraf('static/product', callback);
 });
 
 // runtime task
 gulp.task('runtime', ['clean'], function (){
-  gulp.src('assets/loader/**/*.js', { base: 'assets' })
+  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
     .pipe(uglify())
-    .pipe(gulp.dest('online'));
+    .pipe(gulp.dest('static/product'));
 
-  gulp.src('assets/!(loader|js|css)/**/*.*', { base: 'assets' })
-    .pipe(gulp.dest('online'));
+  gulp.src('static/develop/!(loader|js|css)/**/*.*', { base: 'static/develop' })
+    .pipe(gulp.dest('static/product'));
 });
 
-// online task
-gulp.task('online', ['runtime'], function (){
+// product task
+gulp.task('product', ['runtime'], function (){
   var tasks = 3;
 
   // complete callback
@@ -85,7 +85,7 @@ gulp.task('online', ['runtime'], function (){
 
     console.log(
       '  %s [%s] build complete ... %s%s',
-      colors.green.bold('gulp-online'),
+      colors.green.bold('gulp-product'),
       now.toLocaleString(),
       colors.green(now - startTime),
       colors.cyan('ms')
@@ -93,7 +93,7 @@ gulp.task('online', ['runtime'], function (){
   }
 
   // all js
-  gulp.src('assets/js/**/*.js', { base: 'assets/js' })
+  gulp.src('static/develop/js/**/*.js', { base: 'static/develop/js' })
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
@@ -103,21 +103,21 @@ gulp.task('online', ['runtime'], function (){
       css: { onpath: onpath }
     }))
     .pipe(uglify())
-    .pipe(gulp.dest('online/js'))
+    .pipe(gulp.dest('static/product/js'))
     .on('end', complete);
 
   // other file
-  gulp.src('assets/js/**/*.!(js|css|json|tpl|html)')
-    .pipe(gulp.dest('online/js'))
+  gulp.src('static/develop/js/**/*.!(js|css|json|tpl|html)')
+    .pipe(gulp.dest('static/product/js'))
     .on('end', complete);
 
   // css
-  gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
+  gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
     .pipe(css({
       compress: true,
       onpath: onpath
     }))
-    .pipe(gulp.dest('online'))
+    .pipe(gulp.dest('static/product'))
     .on('end', complete);
 });
 
@@ -141,24 +141,24 @@ gulp.task('default', ['runtime'], function (){
   }
 
   // all file
-  gulp.src('assets/js/**/*.*', { base: 'assets/js' })
+  gulp.src('static/develop/js/**/*.*', { base: 'static/develop/js' })
     .pipe(cmd({
       alias: alias,
       include: 'self',
       css: { onpath: onpath }
     }))
-    .pipe(gulp.dest('online/js'))
+    .pipe(gulp.dest('static/product/js'))
     .on('end', complete);
 
-  gulp.src('assets/css/?(base|view)/**/*.*', { base: 'assets' })
+  gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
     .pipe(css({ onpath: onpath }))
-    .pipe(gulp.dest('online'))
+    .pipe(gulp.dest('static/product'))
     .on('end', complete);
 });
 
 // develop watch task
 gulp.task('watch', ['default'], function (){
-  var base = join(process.cwd(), 'assets');
+  var base = join(process.cwd(), 'static/develop');
 
   // complete callback
   function complete(){
@@ -174,58 +174,54 @@ gulp.task('watch', ['default'], function (){
   }
 
   // watch all file
-  gulp.watch('assets/js/**/*.*', function (e){
+  gulp.watch('static/develop/js/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(resolve('online', relative(base, e.path)));
+      rimraf(resolve('static/product', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
-      gulp.src(e.path, { base: 'assets/js' })
+      gulp.src(e.path, { base: 'static/develop/js' })
         .pipe(plumber())
         .pipe(cmd({
           alias: alias,
           include: 'self',
           cache: false,
-          css: {
-            onpath: function (path){
-              return path.replace('assets/', 'online/')
-            }
-          }
+          css: { onpath: onpath }
         }))
-        .pipe(gulp.dest('online/js'))
+        .pipe(gulp.dest('static/product/js'))
         .on('end', complete);
     }
   });
 
   // watch all file
-  gulp.watch('assets/css/?(base|view)/**/*.*', function (e){
+  gulp.watch('static/develop/css/?(base|view)/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(resolve('online', relative(base, e.path)));
+      rimraf(resolve('static/product', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
-      gulp.src(e.path, { base: 'assets' })
+      gulp.src(e.path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(css({
           onpath: function (path){
-            return path.replace('assets/', 'online/')
+            return path.replace('static/develop/', 'static/product/')
           }
         }))
-        .pipe(gulp.dest('online'))
+        .pipe(gulp.dest('static/product'))
         .on('end', complete);
     }
   });
 
   // watch all file
-  gulp.watch('assets/!(loader|js|css)/**/*.*', function (e){
+  gulp.watch('static/develop/!(loader|js|css)/**/*.*', function (e){
     if (e.type === 'deleted') {
-      rimraf(resolve('online', relative(base, e.path)));
+      rimraf(resolve('static/product', relative(base, e.path)));
     } else {
       startTime = Date.now();
 
-      gulp.src(e.path, { base: 'assets' })
+      gulp.src(e.path, { base: 'static/develop' })
         .pipe(plumber())
-        .pipe(gulp.dest('online'))
+        .pipe(gulp.dest('static/product'))
         .on('end', complete);
     }
   });
