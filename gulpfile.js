@@ -128,7 +128,8 @@ gulp.task('product', ['runtime'], function (){
       colors.green.bold('gulp-product'),
       dateFormat(now),
       colors.green(now - startTime),
-      colors.cyan('ms')
+      colors.cyan('ms'),
+      '\x07'
     );
   }
 
@@ -176,7 +177,8 @@ gulp.task('default', ['runtime'], function (){
       colors.green.bold('gulp-default'),
       dateFormat(now),
       colors.green(now - startTime),
-      colors.cyan('ms')
+      colors.cyan('ms'),
+      '\x07'
     );
   }
 
@@ -210,7 +212,8 @@ gulp.task('watch', ['default'], function (){
       colors.green.bold('gulp-watch'),
       dateFormat(now),
       colors.green(now - startTime),
-      colors.cyan('ms')
+      colors.cyan('ms'),
+      '\x07'
     );
   }
 
