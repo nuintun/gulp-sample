@@ -11,7 +11,6 @@ var content = require('./dialog.tpl');
 function trim(){
   // http://perfectionkills.com/whitespace-deviations/
   var whiteSpaces = [
-
     '\\s',
     //'0009', // 'HORIZONTAL TAB'
     //'000A', // 'LINE FEED OR NEW LINE'
@@ -43,7 +42,6 @@ function trim(){
     '202F', // 'NARROW NO-BREAK SPACE'
     '205F', // 'MEDIUM MATHEMATICAL SPACE'
     '3000' // 'IDEOGRAPHIC SPACE'
-
   ].join('\\u');
 
   var trimLeftReg = new RegExp('^[' + whiteSpaces + ']+');

@@ -22,7 +22,6 @@ input[type=password]:focus {
   box-shadow: 0 0 rgba(34, 25, 25, 0.15) inset, 0 0 rgba(255, 255, 255, 0.8), 0 0 6px rgba(82, 162, 235, 1);
 }
 /* /css3 sugar */
-
 .ui-content {
   text-align: center;
   padding: 66px 0 0;
