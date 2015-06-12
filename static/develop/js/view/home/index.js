@@ -12,6 +12,7 @@ function trim(){
   // http://perfectionkills.com/whitespace-deviations/
   var whiteSpaces = [
     '\\s',
+
     //'0009', // 'HORIZONTAL TAB'
     //'000A', // 'LINE FEED OR NEW LINE'
     //'000B', // 'VERTICAL TAB'
@@ -22,8 +23,8 @@ function trim(){
     '00A0', // 'NO-BREAK SPACE'
     '1680', // 'OGHAM SPACE MARK'
     '180E', // 'MONGOLIAN VOWEL SEPARATOR'
-
     '2000-\\u200A',
+
     //'2000', // 'EN QUAD'
     //'2001', // 'EM QUAD'
     //'2002', // 'EN SPACE'
