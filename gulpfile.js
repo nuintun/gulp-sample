@@ -95,10 +95,10 @@ function dateFormat(date, format){
 }
 
 // clean task
-gulp.task('clean', function (callback){
+gulp.task('clean', function (){
   startTime = Date.now();
 
-  rimraf('static/product', callback);
+  rimraf.sync('static/product');
 });
 
 // runtime task
@@ -219,11 +219,12 @@ gulp.task('watch', ['default'], function (){
 
   // watch js file
   gulp.watch('static/develop/js/**/*.*', function (e){
+    startTime = Date.now();
+    
     if (e.type === 'deleted') {
-      rimraf(resolve('static/product', relative(base, e.path)));
+      rimraf.sync(resolve('static/product', relative(base, e.path)));
+      complete();
     } else {
-      startTime = Date.now();
-
       gulp.src(e.path, { base: 'static/develop/js' })
         .pipe(plumber())
         .pipe(cmd({
@@ -239,11 +240,12 @@ gulp.task('watch', ['default'], function (){
 
   // watch css file
   gulp.watch('static/develop/css/?(base|view)/**/*.*', function (e){
+    startTime = Date.now();
+    
     if (e.type === 'deleted') {
-      rimraf(resolve('static/product', relative(base, e.path)));
+      rimraf.sync(resolve('static/product', relative(base, e.path)));
+      complete();
     } else {
-      startTime = Date.now();
-
       gulp.src(e.path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(css({
@@ -258,11 +260,12 @@ gulp.task('watch', ['default'], function (){
 
   // watch image file
   gulp.watch('static/develop/images/**/*.*', function (e){
+    startTime = Date.now();
+    
     if (e.type === 'deleted') {
-      rimraf(resolve('static/product', relative(base, e.path)));
+      rimraf.sync(resolve('static/product', relative(base, e.path)));
+      complete();
     } else {
-      startTime = Date.now();
-
       gulp.src(e.path, { base: 'static/develop' })
         .pipe(gulp.dest('static/product'))
         .on('end', complete);
