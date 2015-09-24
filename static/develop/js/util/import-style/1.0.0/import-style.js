@@ -4,117 +4,110 @@
 
 'use strict';
 
-var timer;
-var styleNode;
+// doc and head
 var doc = document;
-var importsStack = '';
-var cssTextStack = '';
 var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
 /**
- * Is string
+ * is string
  * @param value
  * @returns {boolean}
  */
-
 function isString(value){
   return {}.toString.call(value) === "[object String]";
 }
 
 /**
- * Get style node
- * @returns {*}
+ * create a style node
+ * @returns {HTMLStyleElement}
  */
+function createStyle(){
+  var node = doc.createElement('style');
 
-function getNode(){
-  var element;
+  // set type
+  node.type = 'text/css';
 
-  // Don't share styleNode when id is spectied
-  if (!styleNode) {
-    element = doc.createElement('style');
-
-    // Set type
-    element.type = 'text/css';
-
-    // Adds to DOM first to avoid the css hack invalid
-    head.appendChild(element);
-
-    // IE
-    if (element.styleSheet !== undefined) {
-      // http://support.microsoft.com/kb/262161
-      if (doc.getElementsByTagName('style').length > 31) {
-        throw new Error('Exceed the maximal count of style tags in IE');
-      }
+  // ie
+  if (node.styleSheet !== undefined) {
+    // http://support.microsoft.com/kb/262161
+    if (doc.getElementsByTagName('style').length > 31) {
+      throw new Error('Exceed the maximal count of style tags in IE');
     }
-
-    // Cache style node
-    styleNode = element;
-  } else {
-    element = styleNode;
   }
 
-  return element;
+  // adds to dom first to avoid the css hack invalid
+  head.appendChild(node);
+
+  return node;
 }
 
-/**
- * Insert style
- */
-
-function insertStyle(){
-  // clear timer
-  clearTimeout(timer);
-
-  // async insert
-  timer = setTimeout(function (){
-    var element = getNode();
-
-    // IE
-    if (element.styleSheet !== undefined) {
-      element.styleSheet.cssText = importsStack + cssTextStack;
-    }
-    // W3C
-    else {
-      var style = doc.createTextNode(importsStack + cssTextStack);
-
-      if (element.firstChild) {
-        element.replaceChild(style, element.firstChild);
-      } else {
-        element.appendChild(style);
-      }
-    }
-  }, 0);
-}
+// declare variable
+var cssNode;
+var linkNode;
+var cssCahce = '';
+var linkCahce = '';
 
 /**
- * Insert import
- * @param imports
+ * insert style
+ * @param node
+ * @param css
  */
+function insertStyle(node, css){
+  // ie
+  if (node.styleSheet !== undefined) {
+    node.styleSheet.cssText = css;
+  }
+  // w3c
+  else {
+    css = doc.createTextNode(css);
 
-function imports(imports){
-  imports = isString(imports) ? imports : '';
-
-  if (imports) {
-    importsStack += imports;
-
-    insertStyle();
+    // insert text node
+    if (node.firstChild) {
+      node.replaceChild(css, node.firstChild);
+    } else {
+      node.appendChild(css);
+    }
   }
 }
 
 /**
- * Insert css text
- * @param cssText
+ * insert css text
+ * @param css
  */
+function css(css){
+  if (css && isString(css)) {
+    // cache css
+    cssCahce += css;
 
-function cssText(cssText){
-  cssText = isString(cssText) ? cssText : '';
+    // create style node
+    if (!cssNode) {
+      cssNode = createStyle();
+    }
 
-  if (cssText) {
-    cssTextStack += cssText;
-
-    insertStyle();
+    // insert css
+    insertStyle(cssNode, cssCahce);
   }
 }
 
-// Exports
-module.exports.imports = imports;
-module.exports.cssText = cssText;
+/**
+ * insert import url
+ * @param link
+ */
+function link(link){
+  if (link && isString(link)) {
+    // cache css
+    linkCahce += link;
+
+    // create style node
+    if (!linkNode) {
+      linkNode = createStyle();
+    }
+
+    // insert css
+    insertStyle(linkNode, linkCahce);
+  }
+}
+
+// exports
+module.exports.css = css;
+module.exports.link = link;
