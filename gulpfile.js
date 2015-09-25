@@ -145,12 +145,12 @@ gulp.task('product', ['runtime'], function (){
     }))
     .pipe(uglify())
     .pipe(gulp.dest('static/product/js'))
-    .on('end', complete);
+    .on('finish', complete);
 
   // other file
   gulp.src('static/develop/js/**/*.!(js|css|json|tpl|html)')
     .pipe(gulp.dest('static/product/js'))
-    .on('end', complete);
+    .on('finish', complete);
 
   // css file
   gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
@@ -159,7 +159,7 @@ gulp.task('product', ['runtime'], function (){
       onpath: onpath
     }))
     .pipe(gulp.dest('static/product'))
-    .on('end', complete);
+    .on('finish', complete);
 });
 
 // develop task
@@ -190,13 +190,13 @@ gulp.task('default', ['runtime'], function (){
       css: { onpath: onpath }
     }))
     .pipe(gulp.dest('static/product/js'))
-    .on('end', complete);
+    .on('finish', complete);
 
   // css file
   gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
     .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('static/product'))
-    .on('end', complete);
+    .on('finish', complete);
 });
 
 // develop watch task
@@ -220,7 +220,7 @@ gulp.task('watch', ['default'], function (){
   // watch js file
   gulp.watch('static/develop/js/**/*.*', function (e){
     startTime = Date.now();
-    
+
     if (e.type === 'deleted') {
       rimraf.sync(resolve('static/product', relative(base, e.path)));
       complete();
@@ -234,14 +234,14 @@ gulp.task('watch', ['default'], function (){
           css: { onpath: onpath }
         }))
         .pipe(gulp.dest('static/product/js'))
-        .on('end', complete);
+        .on('finish', complete);
     }
   });
 
   // watch css file
   gulp.watch('static/develop/css/?(base|view)/**/*.*', function (e){
     startTime = Date.now();
-    
+
     if (e.type === 'deleted') {
       rimraf.sync(resolve('static/product', relative(base, e.path)));
       complete();
@@ -254,21 +254,21 @@ gulp.task('watch', ['default'], function (){
           }
         }))
         .pipe(gulp.dest('static/product'))
-        .on('end', complete);
+        .on('finish', complete);
     }
   });
 
   // watch image file
   gulp.watch('static/develop/images/**/*.*', function (e){
     startTime = Date.now();
-    
+
     if (e.type === 'deleted') {
       rimraf.sync(resolve('static/product', relative(base, e.path)));
       complete();
     } else {
       gulp.src(e.path, { base: 'static/develop' })
         .pipe(gulp.dest('static/product'))
-        .on('end', complete);
+        .on('finish', complete);
     }
   });
 });
