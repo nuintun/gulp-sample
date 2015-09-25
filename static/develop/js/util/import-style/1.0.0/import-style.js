@@ -44,8 +44,8 @@ function createStyle(){
 // declare variable
 var cssNode;
 var linkNode;
-var cssCahce = '';
-var linkCahce = '';
+var cssCache = '';
+var linkCache = '';
 
 /**
  * insert style
@@ -77,7 +77,7 @@ function insertStyle(node, css){
 function css(css){
   if (css && isString(css)) {
     // cache css
-    cssCahce += css;
+    cssCache += css;
 
     // create style node
     if (!cssNode) {
@@ -85,7 +85,7 @@ function css(css){
     }
 
     // insert css
-    insertStyle(cssNode, cssCahce);
+    insertStyle(cssNode, cssCache);
   }
 }
 
@@ -96,7 +96,7 @@ function css(css){
 function link(link){
   if (link && isString(link)) {
     // cache css
-    linkCahce += link;
+    linkCache += link;
 
     // create style node
     if (!linkNode) {
@@ -104,7 +104,7 @@ function link(link){
     }
 
     // insert css
-    insertStyle(linkNode, linkCahce);
+    insertStyle(linkNode, linkCache);
   }
 }
 
