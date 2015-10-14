@@ -4,6 +4,12 @@
 
 'use strict';
 
+// 开启 DEBUG 开关
+process.env.DEBUG = 'gulp-*';
+
+// 关闭 DEBUG 开关
+//process.env.DEBUG = 'false';
+
 var path = require('path');
 var join = path.join;
 var relative = path.relative;
