@@ -28,6 +28,7 @@
   "dependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.0",
+    "pedding": "^1.0.0",
     "gulp-uglify": "^1.4.1",
     "gulp-plumber": "^1.0.1",
     "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/0.0.1.tar.gz",

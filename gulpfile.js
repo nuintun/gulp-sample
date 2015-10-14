@@ -15,6 +15,7 @@ var uglify = require('gulp-uglify');
 var css = require('gulp-css');
 var cmd = require('gulp-cmd');
 var colors = cmd.colors;
+var pedding = require('pedding');
 var plumber = require('gulp-plumber');
 
 // alias
@@ -115,12 +116,8 @@ gulp.task('runtime', ['clean'], function (){
 
 // product task
 gulp.task('product', ['runtime'], function (){
-  var tasks = 3;
-
   // complete callback
-  function complete(){
-    if (--tasks) return;
-
+  var complete = pedding(3, function (){
     var now = new Date();
 
     console.log(
@@ -131,7 +128,7 @@ gulp.task('product', ['runtime'], function (){
       colors.cyan('ms'),
       '\x07'
     );
-  }
+  });
 
   // all js
   gulp.src('static/develop/js/**/*.js', { base: 'static/develop/js' })
@@ -164,12 +161,8 @@ gulp.task('product', ['runtime'], function (){
 
 // develop task
 gulp.task('default', ['runtime'], function (){
-  var tasks = 2;
-
   // complete callback
-  function complete(){
-    if (--tasks) return;
-
+  var complete = pedding(2, function (){
     var now = new Date();
 
     console.log(
@@ -180,7 +173,7 @@ gulp.task('default', ['runtime'], function (){
       colors.cyan('ms'),
       '\x07'
     );
-  }
+  });
 
   // js file
   gulp.src('static/develop/js/**/*.*', { base: 'static/develop/js' })
