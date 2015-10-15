@@ -137,7 +137,7 @@ gulp.task('product', ['runtime'], function (){
   });
 
   // all js
-  gulp.src('static/develop/js/**/*.@(js|css|json|tpl|html)', { base: 'static/develop/js' })
+  gulp.src('static/develop/js/**/*.?(js|css|json|tpl|html)', { base: 'static/develop/js' })
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
