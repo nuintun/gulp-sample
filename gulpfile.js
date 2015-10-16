@@ -14,6 +14,7 @@ var path = require('path');
 var join = path.join;
 var relative = path.relative;
 var dirname = path.dirname;
+var extname = path.extname;
 var resolve = path.resolve;
 var gulp = require('gulp');
 var rimraf = require('del');
@@ -23,6 +24,7 @@ var cmd = require('gulp-cmd');
 var colors = cmd.colors;
 var pedding = require('pedding');
 var plumber = require('gulp-plumber');
+var switchStream = require('switch-stream');
 
 // alias
 var alias = {
@@ -123,7 +125,7 @@ gulp.task('runtime', ['clean'], function (){
 // product task
 gulp.task('product', ['runtime'], function (){
   // complete callback
-  var complete = pedding(3, function (){
+  var complete = pedding(2, function (){
     var now = new Date();
 
     console.log(
@@ -136,8 +138,22 @@ gulp.task('product', ['runtime'], function (){
     );
   });
 
+  // compress javascript file
+  function compress(){
+    return switchStream(function (vinyl){
+      if (extname(vinyl.path) === '.js') {
+        return 'js';
+      }
+
+      return 'other';
+    }, {
+      'js': uglify(),
+      'other': switchStream.through()
+    });
+  }
+
   // all js
-  gulp.src('static/develop/js/**/*.@(js|css|json|tpl|html)', { base: 'static/develop/js' })
+  gulp.src('static/develop/js/**/*.*', { base: 'static/develop/js' })
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
@@ -146,12 +162,7 @@ gulp.task('product', ['runtime'], function (){
       },
       css: { onpath: onpath }
     }))
-    .pipe(uglify())
-    .pipe(gulp.dest('static/product/js'))
-    .on('finish', complete);
-
-  // other file
-  gulp.src('static/develop/js/**/*.!(js|css|json|tpl|html)')
+    .pipe(compress())
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
