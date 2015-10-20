@@ -160,7 +160,10 @@ gulp.task('product', ['runtime'], function (){
       include: function (id){
         return id && id.indexOf('view') === 0 ? 'all' : 'self';
       },
-      css: { onpath: onpath }
+      css: {
+        compress: true,
+        onpath: onpath
+      }
     }))
     .pipe(compress())
     .pipe(gulp.dest('static/product/js'))
