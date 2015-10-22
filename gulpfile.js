@@ -144,11 +144,8 @@ gulp.task('product', ['runtime'], function (){
       if (extname(vinyl.path) === '.js') {
         return 'js';
       }
-
-      return 'other';
     }, {
-      'js': uglify(),
-      'other': switchStream.through()
+      'js': uglify()
     });
   }
 
