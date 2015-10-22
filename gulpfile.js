@@ -203,7 +203,7 @@ gulp.task('default', ['runtime'], function (){
     .on('finish', complete);
 
   // css file
-  gulp.src('static/develop/css/?(base|view)/**/*.*', { base: 'static/develop' })
+  gulp.src('static/develop/css/**/*.*', { base: 'static/develop' })
     .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('static/product'))
     .on('finish', complete);
@@ -228,7 +228,7 @@ gulp.task('watch', ['default'], function (){
   }
 
   // watch js file
-  gulp.watch('static/develop/js/**/*.*', function (e){
+  gulp.watch('static/develop/js/**/*', function (e){
     startTime = Date.now();
 
     if (e.type === 'deleted') {
@@ -249,7 +249,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch css file
-  gulp.watch('static/develop/css/?(base|view)/**/*.*', function (e){
+  gulp.watch('static/develop/css/**/*', function (e){
     startTime = Date.now();
 
     if (e.type === 'deleted') {
@@ -269,7 +269,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch image file
-  gulp.watch('static/develop/images/**/*.*', function (e){
+  gulp.watch('static/develop/images/**/*', function (e){
     startTime = Date.now();
 
     if (e.type === 'deleted') {
