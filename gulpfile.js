@@ -23,6 +23,7 @@ var css = require('gulp-css');
 var cmd = require('gulp-cmd');
 var colors = cmd.colors;
 var pedding = require('pedding');
+var chokidar = require('chokidar');
 var plumber = require('gulp-plumber');
 var switchStream = require('switch-stream');
 
@@ -43,8 +44,25 @@ var alias = {
   'dialog': 'common/dialog/1.5.1/dialog',
   'confirmbox': 'common/dialog/1.5.1/confirmbox'
 };
+// bookmark
+var bookmark = Date.now();
 
-var startTime = Date.now();
+// file watch
+function watch(glob, options, callabck){
+  if (typeof options === 'function') {
+    callabck = options;
+    options = {};
+  }
+
+  // get watcher
+  var watcher = chokidar.watch(glob, options);
+
+  if (callabck) {
+    watcher.on('all', callabck);
+  }
+
+  return watcher;
+}
 
 // css resource path
 function onpath(path, property, file, wwwroot){
@@ -105,7 +123,7 @@ function dateFormat(date, format){
 
 // clean task
 gulp.task('clean', function (){
-  startTime = Date.now();
+  bookmark = Date.now();
 
   rimraf.sync('static/product');
 });
@@ -132,7 +150,7 @@ gulp.task('product', ['runtime'], function (){
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-product'),
       dateFormat(now),
-      colors.green(now - startTime),
+      colors.green(now - bookmark),
       colors.cyan('ms'),
       '\x07'
     );
@@ -186,7 +204,7 @@ gulp.task('default', ['runtime'], function (){
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-default'),
       dateFormat(now),
-      colors.green(now - startTime),
+      colors.green(now - bookmark),
       colors.cyan('ms'),
       '\x07'
     );
@@ -213,6 +231,17 @@ gulp.task('default', ['runtime'], function (){
 gulp.task('watch', ['default'], function (){
   var base = join(process.cwd(), 'static/develop');
 
+  // debug watcher
+  function debugWatcher(event, path){
+    console.log(
+      '  %s [%s] %s: %s',
+      colors.green.bold('gulp-watch'),
+      dateFormat(new Date()),
+      colors.cyan(event),
+      colors.magenta(join('static/develop', path).replace(/\\/g, '/'))
+    );
+  }
+
   // complete callback
   function complete(){
     var now = new Date();
@@ -221,21 +250,26 @@ gulp.task('watch', ['default'], function (){
       '  %s [%s] build complete ... %s%s',
       colors.green.bold('gulp-watch'),
       dateFormat(now),
-      colors.green(now - startTime),
+      colors.green(now - bookmark),
       colors.cyan('ms'),
       '\x07'
     );
   }
 
   // watch js file
-  gulp.watch('static/develop/js/**/*', function (e){
-    startTime = Date.now();
+  watch('static/develop/js/**/*', function (event, path){
+    var rpath = relative(base, path);
 
-    if (e.type === 'deleted') {
-      rimraf.sync(resolve('static/product', relative(base, e.path)));
+    bookmark = Date.now();
+    event = event.toLowerCase();
+
+    debugWatcher(event, rpath);
+
+    if (event === 'unlink' || event === 'unlinkdir') {
+      rimraf.sync(resolve('static/product', rpath));
       complete();
     } else {
-      gulp.src(e.path, { base: 'static/develop/js' })
+      gulp.src(path, { base: 'static/develop/js' })
         .pipe(plumber())
         .pipe(cmd({
           alias: alias,
@@ -249,14 +283,19 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch css file
-  gulp.watch('static/develop/css/**/*', function (e){
-    startTime = Date.now();
+  watch('static/develop/css/**/*', function (event, path){
+    var rpath = relative(base, path);
 
-    if (e.type === 'deleted') {
-      rimraf.sync(resolve('static/product', relative(base, e.path)));
+    bookmark = Date.now();
+    event = event.toLowerCase();
+
+    debugWatcher(event, rpath);
+
+    if (event === 'unlink' || event === 'unlinkdir') {
+      rimraf.sync(resolve('static/product', relative(base, path)));
       complete();
     } else {
-      gulp.src(e.path, { base: 'static/develop' })
+      gulp.src(path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(css({
           onpath: function (path){
@@ -269,14 +308,19 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch image file
-  gulp.watch('static/develop/images/**/*', function (e){
-    startTime = Date.now();
+  watch('static/develop/images/**/*', function (event, path){
+    var rpath = relative(base, path);
 
-    if (e.type === 'deleted') {
-      rimraf.sync(resolve('static/product', relative(base, e.path)));
+    bookmark = Date.now();
+    event = event.toLowerCase();
+
+    debugWatcher(event, rpath);
+
+    if (event === 'unlink' || event === 'unlinkdir') {
+      rimraf.sync(resolve('static/product', relative(base, path)));
       complete();
     } else {
-      gulp.src(e.path, { base: 'static/develop' })
+      gulp.src(path, { base: 'static/develop' })
         .pipe(gulp.dest('static/product'))
         .on('finish', complete);
     }

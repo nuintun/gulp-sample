@@ -29,11 +29,12 @@
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "pedding": "^1.0.0",
+    "chokidar": "^1.2.0",
     "gulp-uglify": "^1.4.2",
     "gulp-plumber": "^1.0.1",
-    "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/0.0.1.tar.gz",
-    "gulp-css": "https://github.com/nuintun/gulp-css/archive/0.0.1.tar.gz",
-    "switch-stream": "https://github.com/nuintun/switch-stream/archive/0.0.1.tar.gz"
+    "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz",
+    "gulp-css": "https://github.com/nuintun/gulp-css/archive/master.tar.gz",
+    "switch-stream": "https://github.com/nuintun/switch-stream/archive/master.tar.gz"
   },
   "devDependencies": {},
   "readmeFilename": "README.md"
