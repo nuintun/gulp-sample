@@ -57,20 +57,16 @@ function watch(glob, options, callabck){
   // ignore initial add event
   options.ignoreInitial = true;
 
+  // get watcher
   var watcher = chokidar.watch(glob, options);
-  var unwatch = function (path){ this.unwatch(path); };
 
+  // bing event
   if (callabck) {
     watcher
-      .on('unlink', unwatch)
-      .on('unlinkDir', unwatch)
       .on('all', callabck);
   }
 
-  if (callabck) {
-    watcher.on('all', callabck);
-  }
-
+  // return watcher
   return watcher;
 }
 
@@ -263,7 +259,7 @@ gulp.task('watch', ['default'], function (){
   }
 
   // watch js file
-  watch('static/develop/js/**/*', function (event, path){
+  watch('static/develop/js', function (event, path){
     var rpath = relative(base, path);
 
     bookmark = Date.now();
@@ -289,7 +285,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch css file
-  watch('static/develop/css/**/*', function (event, path){
+  watch('static/develop/css', function (event, path){
     var rpath = relative(base, path);
 
     bookmark = Date.now();
@@ -314,7 +310,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch image file
-  watch('static/develop/images/**/*', function (event, path){
+  watch('static/develop/images', function (event, path){
     var rpath = relative(base, path);
 
     bookmark = Date.now();
