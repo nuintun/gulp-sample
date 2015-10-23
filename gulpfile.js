@@ -56,7 +56,7 @@ function watch(glob, options, callabck){
 
   // ignore initial add event
   options.ignoreInitial = true;
-  
+
   // get watcher
   var watcher = chokidar.watch(glob, options);
 
@@ -235,10 +235,9 @@ gulp.task('watch', ['default'], function (){
     var now = new Date();
 
     console.log(
-      '  %s [%s] %s: %s %s',
+      '  %s %s: %s %s',
       colors.green.bold('gulp-watch'),
-      dateFormat(now),
-      colors.cyan(event),
+      event,
       colors.magenta(join('static/develop', path).replace(/\\/g, '/')),
       colors.green('+' + (now - bookmark) + 'ms')
     );
