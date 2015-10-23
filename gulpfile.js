@@ -246,7 +246,7 @@ gulp.task('watch', ['default'], function (){
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete... √ %s',
+      '  %s [%s] build complete... √ %s\x07',
       colors.green('gulp-watch'),
       dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
