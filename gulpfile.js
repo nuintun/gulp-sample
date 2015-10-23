@@ -54,6 +54,9 @@ function watch(glob, options, callabck){
     options = {};
   }
 
+  // ignore initial add event
+  options.ignoreInitial = true;
+  
   // get watcher
   var watcher = chokidar.watch(glob, options);
 
