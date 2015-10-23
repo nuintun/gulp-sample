@@ -57,8 +57,15 @@ function watch(glob, options, callabck){
   // ignore initial add event
   options.ignoreInitial = true;
 
-  // get watcher
   var watcher = chokidar.watch(glob, options);
+  var unwatch = function (path){ this.unwatch(path); };
+
+  if (callabck) {
+    watcher
+      .on('unlink', unwatch)
+      .on('unlinkDir', unwatch)
+      .on('all', callabck);
+  }
 
   if (callabck) {
     watcher.on('all', callabck);
