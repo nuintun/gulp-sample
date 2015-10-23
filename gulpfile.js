@@ -147,12 +147,10 @@ gulp.task('product', ['runtime'], function (){
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete ... %s%s',
-      colors.green.bold('gulp-product'),
+      '  %s [%s] build complete... √ %s\x07',
+      colors.green('gulp-product'),
       dateFormat(now),
-      colors.green(now - bookmark),
-      colors.cyan('ms'),
-      '\x07'
+      colors.green('+' + (now - bookmark) + 'ms')
     );
   });
 
@@ -201,12 +199,10 @@ gulp.task('default', ['runtime'], function (){
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete ... %s%s',
-      colors.green.bold('gulp-default'),
+      '  %s [%s] build complete... √ %s\x07',
+      colors.green('gulp-default'),
       dateFormat(now),
-      colors.green(now - bookmark),
-      colors.cyan('ms'),
-      '\x07'
+      colors.green('+' + (now - bookmark) + 'ms')
     );
   });
 
@@ -233,12 +229,15 @@ gulp.task('watch', ['default'], function (){
 
   // debug watcher
   function debugWatcher(event, path){
+    var now = new Date();
+
     console.log(
-      '  %s [%s] %s: %s',
+      '  %s [%s] %s: %s %s',
       colors.green.bold('gulp-watch'),
-      dateFormat(new Date()),
+      dateFormat(now),
       colors.cyan(event),
-      colors.magenta(join('static/develop', path).replace(/\\/g, '/'))
+      colors.magenta(join('static/develop', path).replace(/\\/g, '/')),
+      colors.green('+' + (now - bookmark) + 'ms')
     );
   }
 
@@ -247,12 +246,10 @@ gulp.task('watch', ['default'], function (){
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete ... %s%s',
-      colors.green.bold('gulp-watch'),
+      '  %s [%s] build complete... √ %s',
+      colors.green('gulp-watch'),
       dateFormat(now),
-      colors.green(now - bookmark),
-      colors.cyan('ms'),
-      '\x07'
+      colors.green('+' + (now - bookmark) + 'ms')
     );
   }
 
