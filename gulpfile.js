@@ -138,6 +138,17 @@ gulp.task('clean', function (){
 gulp.task('runtime', ['clean'], function (){
   // loader file
   gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
+    .pipe(gulp.dest('static/product'));
+
+  // image file
+  gulp.src('static/develop/images/**/*', { base: 'static/develop' })
+    .pipe(gulp.dest('static/product'));
+});
+
+// runtime product task
+gulp.task('runtime-product', ['clean'], function (){
+  // loader file
+  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
     .pipe(uglify())
     .pipe(gulp.dest('static/product'));
 
@@ -147,7 +158,7 @@ gulp.task('runtime', ['clean'], function (){
 });
 
 // product task
-gulp.task('product', ['runtime'], function (){
+gulp.task('product', ['runtime-product'], function (){
   // complete callback
   var complete = pedding(2, function (){
     var now = new Date();

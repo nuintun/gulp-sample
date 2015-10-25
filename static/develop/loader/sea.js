@@ -11,7 +11,6 @@
     // The current version of Sea.js being used
     version: "3.0.1"
   };
-
   var data = seajs.data = {};
 
   /**
