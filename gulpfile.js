@@ -251,7 +251,7 @@ gulp.task('watch', ['default'], function (){
 
     console.log(
       '  %s %s: %s %s',
-      colors.green.bold('gulp-watch'),
+      colors.green('gulp-watch'),
       event,
       colors.magenta(join('static/develop', path).replace(/\\/g, '/')),
       colors.green('+' + (now - bookmark) + 'ms')
