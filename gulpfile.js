@@ -202,6 +202,7 @@ gulp.task('product', ['runtime-product'], function (){
   // css file
   gulp.src('static/develop/css/?(base|view)/**/*', { base: 'static/develop' })
     .pipe(css({
+      include: true,
       compress: true,
       onpath: onpath
     }))
