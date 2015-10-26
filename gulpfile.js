@@ -137,23 +137,23 @@ gulp.task('clean', function (){
 // runtime task
 gulp.task('runtime', ['clean'], function (){
   // loader file
-  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
+  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
     .pipe(gulp.dest('static/product'));
 
   // image file
-  gulp.src('static/develop/images/**/*', { base: 'static/develop' })
+  gulp.src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
     .pipe(gulp.dest('static/product'));
 });
 
 // runtime product task
 gulp.task('runtime-product', ['clean'], function (){
   // loader file
-  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop' })
+  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
     .pipe(uglify())
     .pipe(gulp.dest('static/product'));
 
   // image file
-  gulp.src('static/develop/images/**/*', { base: 'static/develop' })
+  gulp.src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
     .pipe(gulp.dest('static/product'));
 });
 
@@ -183,7 +183,7 @@ gulp.task('product', ['runtime-product'], function (){
   }
 
   // all js
-  gulp.src('static/develop/js/**/*', { base: 'static/develop/js' })
+  gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
       ignore: ['jquery'],
@@ -200,7 +200,7 @@ gulp.task('product', ['runtime-product'], function (){
     .on('finish', complete);
 
   // css file
-  gulp.src('static/develop/css/?(base|view)/**/*', { base: 'static/develop' })
+  gulp.src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
     .pipe(css({
       include: true,
       compress: true,
@@ -225,7 +225,7 @@ gulp.task('default', ['runtime'], function (){
   });
 
   // js file
-  gulp.src('static/develop/js/**/*', { base: 'static/develop/js' })
+  gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
       include: 'self',
@@ -235,7 +235,7 @@ gulp.task('default', ['runtime'], function (){
     .on('finish', complete);
 
   // css file
-  gulp.src('static/develop/css/**/*', { base: 'static/develop' })
+  gulp.src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
     .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('static/product'))
     .on('finish', complete);
