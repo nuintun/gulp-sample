@@ -60,8 +60,12 @@ function compress(){
     }
   }, {
     js: switchStream.through(function (vinyl, encoding, next){
-      var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
-      vinyl.contents = new Buffer(result.code);
+      try {
+        var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
+        vinyl.contents = new Buffer(result.code);
+      } catch (error) {
+        // no nothing
+      }
 
       this.push(vinyl);
       next();
@@ -88,8 +92,12 @@ var CMDPLUGINS = {
       vinyl.contents = new Buffer(result.css);
 
       cmd.defaults.plugins.css.exec(vinyl, options, function (vinyl){
-        var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
-        vinyl.contents = new Buffer(result.code);
+        try {
+          var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
+          vinyl.contents = new Buffer(result.code);
+        } catch (error) {
+          // no nothing
+        }
 
         context.push(vinyl);
         next();
@@ -103,8 +111,12 @@ var CMDPLUGINS = {
     var context = this;
     // transform
     cmd.defaults.plugins[name].exec(vinyl, options, function (vinyl){
-      var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
-      vinyl.contents = new Buffer(result.code);
+      try {
+        var result = uglify.minify(vinyl.contents.toString(), { fromString: true });
+        vinyl.contents = new Buffer(result.code);
+      } catch (error) {
+        // no nothing
+      }
 
       context.push(vinyl);
       next();
