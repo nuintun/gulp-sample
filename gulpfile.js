@@ -155,8 +155,7 @@ function watch(glob, options, callabck){
 
   // bing event
   if (callabck) {
-    watcher
-      .on('all', callabck);
+    watcher.on('all', callabck);
   }
 
   // return watcher
