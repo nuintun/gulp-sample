@@ -4,9 +4,10 @@
 
 'use strict';
 
+// 强制打开彩色控制台
+process.env.DEBUG_COLORS = 'true';
 // 开启 DEBUG 开关
-process.env.DEBUG = 'gulp-*';
-
+process.env.DEBUG = 'gulp-css,gulp-cmd';
 // 关闭 DEBUG 开关
 //process.env.DEBUG = 'false';
 
@@ -242,12 +243,10 @@ gulp.task('runtime', ['clean'], function (){
 gulp.task('runtime-product', ['clean'], function (){
   // loader file
   gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
-    //.pipe(compress())
     .pipe(gulp.dest('static/product'));
 
   // image file
   gulp.src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
-    //.pipe(compress())
     .pipe(gulp.dest('static/product'));
 });
 
@@ -265,7 +264,7 @@ gulp.task('product', ['runtime-product'], function (){
     );
   });
 
-  // all js
+  // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
@@ -281,7 +280,7 @@ gulp.task('product', ['runtime-product'], function (){
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
-  // css file
+  // css files
   gulp.src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
     .pipe(css({
       include: true,
@@ -306,7 +305,7 @@ gulp.task('default', ['runtime'], function (){
     );
   });
 
-  // js file
+  // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
@@ -316,7 +315,7 @@ gulp.task('default', ['runtime'], function (){
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
-  // css file
+  // css files
   gulp.src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
     .pipe(css({ onpath: onpath }))
     .pipe(gulp.dest('static/product'))
@@ -352,7 +351,7 @@ gulp.task('watch', ['default'], function (){
     );
   }
 
-  // watch js file
+  // watch js files
   watch('static/develop/js', function (event, path){
     var rpath = relative(base, path);
 
@@ -378,7 +377,7 @@ gulp.task('watch', ['default'], function (){
     }
   });
 
-  // watch css file
+  // watch css files
   watch('static/develop/css', function (event, path){
     var rpath = relative(base, path);
 
@@ -403,7 +402,7 @@ gulp.task('watch', ['default'], function (){
     }
   });
 
-  // watch image file
+  // watch image files
   watch('static/develop/images', function (event, path){
     var rpath = relative(base, path);
 
