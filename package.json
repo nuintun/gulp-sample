@@ -26,10 +26,10 @@
     "gulpplugin"
   ],
   "dependencies": {
-    "del": "^2.1.0",
+    "del": "^2.2.0",
     "gulp": "^3.9.0",
     "pedding": "^1.0.0",
-    "chokidar": "^1.2.0",
+    "chokidar": "^1.4.0",
     "cssnano": "^3.3.2",
     "uglify-js": "^2.6.1",
     "gulp-plumber": "^1.0.1",
