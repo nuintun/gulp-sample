@@ -74,7 +74,7 @@ function compress(){
     css: switchStream.through(function (vinyl, encoding, next){
       var context = this;
 
-      cssnano.process(vinyl.contents.toString(), { safe: false }).then(function (result){
+      cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
         vinyl.contents = new Buffer(result.css);
 
         context.push(vinyl);
@@ -89,7 +89,7 @@ var CMDPLUGINS = {
   css: function (vinyl, options, next){
     var context = this;
 
-    cssnano.process(vinyl.contents.toString(), { safe: false }).then(function (result){
+    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
       vinyl.contents = new Buffer(result.css);
 
       cmd.defaults.plugins.css.exec(vinyl, options, function (vinyl){
@@ -130,7 +130,7 @@ var CSSPLUGINS = {
   css: function (vinyl, options, next){
     var context = this;
 
-    cssnano.process(vinyl.contents.toString(), { safe: false }).then(function (result){
+    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
       vinyl.contents = new Buffer(result.css);
 
       css.defaults.plugins.css.exec(vinyl, options, function (vinyl){
