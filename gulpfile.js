@@ -150,6 +150,8 @@ function watch(glob, options, callabck){
 
   // ignore initial add event
   options.ignoreInitial = true;
+  // ignore permission errors
+  options.ignorePermissionErrors = true;
 
   // get watcher
   var watcher = chokidar.watch(glob, options);
