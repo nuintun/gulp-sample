@@ -260,7 +260,7 @@ gulp.task('product', ['runtime-product'], function (){
 
     console.log(
       '  %s [%s] build complete... √ %s\x07',
-      colors.green('gulp-product'),
+      colors.green.bold('gulp-product'),
       dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
@@ -301,7 +301,7 @@ gulp.task('default', ['runtime'], function (){
 
     console.log(
       '  %s [%s] build complete... √ %s\x07',
-      colors.green('gulp-default'),
+      colors.green.bold('gulp-default'),
       dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
@@ -334,7 +334,7 @@ gulp.task('watch', ['default'], function (){
 
     console.log(
       '  %s %s: %s %s',
-      colors.green('gulp-watch'),
+      colors.green.bold('gulp-watch'),
       event,
       colors.magenta(join('static/develop', path).replace(/\\/g, '/')),
       colors.green('+' + (now - bookmark) + 'ms')
@@ -347,7 +347,7 @@ gulp.task('watch', ['default'], function (){
 
     console.log(
       '  %s [%s] build complete... √ %s\x07',
-      colors.green('gulp-watch'),
+      colors.green.bold('gulp-watch'),
       dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
