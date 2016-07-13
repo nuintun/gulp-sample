@@ -30,7 +30,7 @@
     "gulp": "^3.9.1",
     "pedding": "^1.0.0",
     "chokidar": "^1.6.0",
-    "cssnano": "^3.7.1",
+    "cssnano": "^3.7.2",
     "uglify-js": "^2.7.0",
     "gulp-plumber": "^1.1.0",
     "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz",
