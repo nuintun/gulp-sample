@@ -30,13 +30,12 @@
     "gulp": "^3.9.1",
     "pedding": "^1.0.0",
     "chokidar": "^1.6.0",
-    "cssnano": "^3.7.4",
+    "cssnano": "^3.7.6",
     "uglify-js": "^2.7.3",
     "gulp-plumber": "^1.1.0",
     "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz",
     "gulp-css": "https://github.com/nuintun/gulp-css/archive/master.tar.gz",
     "switch-stream": "https://github.com/nuintun/switch-stream/archive/master.tar.gz"
   },
-  "devDependencies": {},
   "readmeFilename": "README.md"
 }
