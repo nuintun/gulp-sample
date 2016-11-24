@@ -8,7 +8,7 @@ var $ = require('jquery');
 var confirmbox = require('confirmbox');
 var content = require('./dialog.tpl');
 
-function trim(){
+function trim() {
   // http://perfectionkills.com/whitespace-deviations/
   var whiteSpaces = [
     '\\s',
@@ -48,15 +48,15 @@ function trim(){
   var trimLeftReg = new RegExp('^[' + whiteSpaces + ']+');
   var trimRightReg = new RegExp('[' + whiteSpaces + ']+$');
 
-  return function (string){
+  return function(string) {
     return String(string).replace(trimLeftReg, '').replace(trimRightReg, '');
   }
 }
 
 trim = trim();
 
-$('#open-dialog').on('click', function (){
-  confirmbox.confirm(content, '亲，你来了~', function (){
+$('#open-dialog').on('click', function() {
+  confirmbox.confirm(content, '亲，你来了~', function() {
     var value = this.element
       .find('.ui-popup-remark').val();
 

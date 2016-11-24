@@ -13,7 +13,7 @@
  * @param   {Object, String} content    数据。如果为字符串则编译并缓存编译结果
  * @return  {String, Function}          渲染好的HTML字符串或者渲染方法
  */
-var template = function (filename, content){
+var template = function(filename, content) {
   return typeof content === 'string' ?
     compile(content, {
       filename: filename
@@ -23,12 +23,12 @@ var template = function (filename, content){
 template.version = '3.0.3';
 
 var defaults = template.defaults = {
-  openTag: '<?',       // 逻辑语法开始标签
-  closeTag: '?>',      // 逻辑语法结束标签
-  escape: true,        // 是否编码输出变量的 HTML 字符
-  cache: true,         // 是否开启缓存（依赖 options 的 filename 字段）
-  compress: false,     // 是否压缩输出
-  parser: null         // 自定义语法格式器 @see: template-syntax.js
+  openTag: '<?', // 逻辑语法开始标签
+  closeTag: '?>', // 逻辑语法结束标签
+  escape: true, // 是否编码输出变量的 HTML 字符
+  cache: true, // 是否开启缓存（依赖 options 的 filename 字段）
+  compress: false, // 是否压缩输出
+  parser: null // 自定义语法格式器 @see: template-syntax.js
 };
 
 var cacheStore = template.cache = {};
@@ -39,7 +39,7 @@ var cacheStore = template.cache = {};
  * @param   {String} name    名称
  * @param   {*} value      值
  */
-template.config = function (name, value){
+template.config = function(name, value) {
   defaults[name] = value;
 };
 
@@ -50,7 +50,7 @@ template.config = function (name, value){
  * @param   {Object} options   数据
  * @return  {String}           渲染好的字符串
  */
-template.render = function (source, options){
+template.render = function(source, options) {
   return compile(source, options);
 };
 
@@ -61,12 +61,12 @@ template.render = function (source, options){
  * @param   {Object}    数据
  * @return  {String}    渲染好的字符串
  */
-var renderFile = template.renderFile = function (filename, data){
+var renderFile = template.renderFile = function(filename, data) {
   var fn = template.get(filename) || showDebugInfo({
-      filename: filename,
-      name: 'Render Error',
-      message: 'Template not found'
-    });
+    filename: filename,
+    name: 'Render Error',
+    message: 'Template not found'
+  });
 
   return data ? fn(data) : fn;
 };
@@ -76,7 +76,7 @@ var renderFile = template.renderFile = function (filename, data){
  * @param   {String} filename   模板名
  * @return   {Function}         编译好的函数
  */
-template.get = function (filename){
+template.get = function(filename) {
   var cache;
 
   if (cacheStore[filename]) {
@@ -98,7 +98,7 @@ template.get = function (filename){
   return cache;
 };
 
-var toString = function (value, type){
+var toString = function(value, type) {
   if (typeof value !== 'string') {
 
     type = typeof value;
@@ -122,20 +122,20 @@ var escapeMap = {
   "&": "&#38;"
 };
 
-var escapeFn = function (s){
+var escapeFn = function(s) {
   return escapeMap[s];
 };
 
-var escapeHTML = function (content){
+var escapeHTML = function(content) {
   return toString(content)
     .replace(/&(?![\w#]+;)|[<>"']/g, escapeFn);
 };
 
-var isArray = Array.isArray || function (obj){
-    return ({}).toString.call(obj) === '[object Array]';
-  };
+var isArray = Array.isArray || function(obj) {
+  return ({}).toString.call(obj) === '[object Array]';
+};
 
-var each = function (data, callback){
+var each = function(data, callback) {
   var i, len;
 
   if (isArray(data)) {
@@ -162,7 +162,7 @@ var utils = template.utils = {
  * @param   {String} name       名称
  * @param   {Function} helper   方法
  */
-template.helper = function (name, helper){
+template.helper = function(name, helper) {
   helpers[name] = helper;
 };
 
@@ -173,7 +173,7 @@ var helpers = template.helpers = utils.$helpers;
  * @name    template.onerror
  * @event
  */
-template.onerror = function (e){
+template.onerror = function(e) {
   var message = 'Template Error\n\n';
 
   for (var name in e) {
@@ -188,10 +188,10 @@ template.onerror = function (e){
 };
 
 // 模板调试器
-var showDebugInfo = function (e){
+var showDebugInfo = function(e) {
   template.onerror(e);
 
-  return function (){
+  return function() {
     return '{Template Error}';
   };
 };
@@ -214,7 +214,7 @@ var showDebugInfo = function (e){
  *
  * @return  {Function}  渲染方法
  */
-var compile = template.compile = function (source, options){
+var compile = template.compile = function(source, options) {
   // 合并默认配置
   options = options || {};
 
@@ -240,7 +240,7 @@ var compile = template.compile = function (source, options){
    * @param   {Object} data
    * @return  {String}
    */
-  function RenderFn(data){
+  function RenderFn(data) {
     try {
       return new Render(data, filename) + '';
     } catch (e) {
@@ -255,7 +255,7 @@ var compile = template.compile = function (source, options){
   }
 
   RenderFn.prototype = Render.prototype;
-  RenderFn.toString = function (){
+  RenderFn.toString = function() {
     return Render.toString();
   };
 
@@ -272,20 +272,22 @@ var forEach = utils.$each;
 // 静态分析模板变量
 var KEYWORDS =
   // 关键字
-  'break,case,catch,continue,debugger,default,delete,do,else,false'
-  + ',finally,for,function,if,in,instanceof,new,null,return,switch,this'
-  + ',throw,true,try,typeof,var,void,while,with'
+  'break,case,catch,continue,debugger,default,delete,do,else,false' +
+  ',finally,for,function,if,in,instanceof,new,null,return,switch,this' +
+  ',throw,true,try,typeof,var,void,while,with'
 
-    // 保留字
-  + ',abstract,boolean,byte,char,class,const,double,enum,export,extends'
-  + ',final,float,goto,implements,import,int,interface,long,native'
-  + ',package,private,protected,public,short,static,super,synchronized'
-  + ',throws,transient,volatile'
+// 保留字
++',abstract,boolean,byte,char,class,const,double,enum,export,extends' +
+',final,float,goto,implements,import,int,interface,long,native' +
+',package,private,protected,public,short,static,super,synchronized' +
+',throws,transient,volatile'
 
-    // ECMA 5 - use strict
-  + ',arguments,let,yield'
+// ECMA 5 - use strict
++
+',arguments,let,yield'
 
-  + ',undefined';
++
+',undefined';
 
 var REMOVE_RE = /\/\*[\w\W]*?\*\/|\/\/[^\n]*\n|\/\/[^\n]*$|"(?:[^"\\]|\\[\w\W])*"|'(?:[^'\\]|\\[\w\W])*'|\s*\.\s*[$\w\.]+/g;
 var SPLIT_RE = /[^\w$]+/g;
@@ -295,7 +297,7 @@ var BOUNDARY_RE = /^,+|,+$/g;
 var SPLIT2_RE = /^$|,+/;
 
 // 获取变量
-function getVariable(code){
+function getVariable(code) {
   return code
     .replace(REMOVE_RE, '')
     .replace(SPLIT_RE, ',')
@@ -306,17 +308,17 @@ function getVariable(code){
 }
 
 // 字符串转义
-function stringify(code){
-  return "'"
-    + code
-      // 单引号与反斜杠转义
-      .replace(/('|\\)/g, '\\$1')
-      // 换行符转义(windows + linux)
-      .replace(/\r/g, '\\r')
-      .replace(/\n/g, '\\n') + "'";
+function stringify(code) {
+  return "'" +
+    code
+    // 单引号与反斜杠转义
+    .replace(/('|\\)/g, '\\$1')
+    // 换行符转义(windows + linux)
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n') + "'";
 }
 
-function compiler(source, options){
+function compiler(source, options) {
   var debug = options.debug;
   var openTag = options.openTag;
   var closeTag = options.closeTag;
@@ -325,30 +327,30 @@ function compiler(source, options){
   var escape = options.escape;
   var line = 1;
   var uniq = { $data: 1, $filename: 1, $utils: 1, $helpers: 1, $out: 1, $line: 1 };
-  var isNewEngine = ''.trim;// '__proto__' in {}
-  var replaces = isNewEngine
-    ? ["$out='';", "$out+=", ";", "$out"]
-    : ["$out=[];", "$out.push(", ");", "$out.join('')"];
-  var concat = isNewEngine
-    ? "$out+=text;return $out;"
-    : "$out.push(text);";
-  var print = "function(){"
-    + "var text=''.concat.apply('',arguments);"
-    + concat
-    + "}";
-  var include = "function(filename,data){"
-    + "data=data||$data;"
-    + "var text=$utils.$include(filename,data,$filename);"
-    + concat
-    + "}";
-  var headerCode = "'use strict';"
-    + "var $utils=this,$helpers=$utils.$helpers,"
-    + (debug ? "$line=0," : "");
+  var isNewEngine = ''.trim; // '__proto__' in {}
+  var replaces = isNewEngine ?
+    ["$out='';", "$out+=", ";", "$out"] :
+    ["$out=[];", "$out.push(", ");", "$out.join('')"];
+  var concat = isNewEngine ?
+    "$out+=text;return $out;" :
+    "$out.push(text);";
+  var print = "function(){" +
+    "var text=''.concat.apply('',arguments);" +
+    concat +
+    "}";
+  var include = "function(filename,data){" +
+    "data=data||$data;" +
+    "var text=$utils.$include(filename,data,$filename);" +
+    concat +
+    "}";
+  var headerCode = "'use strict';" +
+    "var $utils=this,$helpers=$utils.$helpers," +
+    (debug ? "$line=0," : "");
   var mainCode = replaces[0];
   var footerCode = "return new String(" + replaces[3] + ");";
 
   // html与逻辑语法分离
-  forEach(source.split(openTag), function (code){
+  forEach(source.split(openTag), function(code) {
     code = code.split(closeTag);
 
     var $0 = code[0];
@@ -371,16 +373,16 @@ function compiler(source, options){
 
   // 调试语句
   if (debug) {
-    code = "try{" + code + "}catch(e){"
-      + "throw {"
-      + "filename:$filename,"
-      + "name:'Render Error',"
-      + "message:e.message,"
-      + "line:$line,"
-      + "source:" + stringify(source)
-      + ".split(/\\n/)[$line-1].replace(/^\\s+/,'')"
-      + "};"
-      + "}";
+    code = "try{" + code + "}catch(e){" +
+      "throw {" +
+      "filename:$filename," +
+      "name:'Render Error'," +
+      "message:e.message," +
+      "line:$line," +
+      "source:" + stringify(source) +
+      ".split(/\\n/)[$line-1].replace(/^\\s+/,'')" +
+      "};" +
+      "}";
   }
 
   try {
@@ -395,7 +397,7 @@ function compiler(source, options){
   }
 
   // 处理 HTML 语句
-  function html(code){
+  function html(code) {
     // 记录行号
     line += code.split(/\n/).length - 1;
 
@@ -414,7 +416,7 @@ function compiler(source, options){
   }
 
   // 处理逻辑语句
-  function logic(code){
+  function logic(code) {
     var thisLine = line;
 
     if (parser) {
@@ -423,7 +425,7 @@ function compiler(source, options){
 
     } else if (debug) {
       // 记录行号
-      code = code.replace(/\n/g, function (){
+      code = code.replace(/\n/g, function() {
         line++;
 
         return "$line=" + line + ";";
@@ -458,7 +460,7 @@ function compiler(source, options){
     }
 
     // 提取模板中的变量名
-    forEach(getVariable(code), function (name){
+    forEach(getVariable(code), function(name) {
       // name 值可能为空，在安卓低版本浏览器下
       if (!name || uniq[name]) {
         return;

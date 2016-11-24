@@ -5,7 +5,7 @@
 var $ = require('jquery');
 
 // 得到某个 DOM 元素的 dataset
-exports.parseElement = function (element, raw){
+exports.parseElement = function(element, raw) {
   element = $(element)[0];
   var dataset = {};
 
@@ -13,8 +13,7 @@ exports.parseElement = function (element, raw){
   if (element.dataset) {
     // 转换成普通对象
     dataset = $.extend({}, element.dataset);
-  }
-  else {
+  } else {
     var attrs = element.attributes;
 
     for (var i = 0, len = attrs.length; i < len; i++) {
@@ -39,14 +38,14 @@ var JSON_LITERAL_PATTERN = /^\s*[\[{].*[\]}]\s*$/;
 var parseJSON = this.JSON ? JSON.parse : $.parseJSON;
 
 // 仅处理字母开头的，其他情况转换为小写："data-x-y-123-_A" --> xY-123-_a
-function camelCase(str){
-  return str.toLowerCase().replace(RE_DASH_WORD, function (all, letter){
+function camelCase(str) {
+  return str.toLowerCase().replace(RE_DASH_WORD, function(all, letter) {
     return (letter + '').toUpperCase();
   })
 }
 
 // 解析并归一化配置中的值
-function normalizeValues(data){
+function normalizeValues(data) {
   for (var key in data) {
     if (data.hasOwnProperty(key)) {
 
@@ -56,8 +55,7 @@ function normalizeValues(data){
       if (JSON_LITERAL_PATTERN.test(val)) {
         val = val.replace(/'/g, '"');
         data[key] = normalizeValues(parseJSON(val));
-      }
-      else {
+      } else {
         data[key] = normalizeValue(val);
       }
     }
@@ -69,14 +67,12 @@ function normalizeValues(data){
 // 将 'false' 转换为 false
 // 'true' 转换为 true
 // '3253.34' 转换为 3253.34
-function normalizeValue(val){
+function normalizeValue(val) {
   if (val.toLowerCase() === 'false') {
     val = false;
-  }
-  else if (val.toLowerCase() === 'true') {
+  } else if (val.toLowerCase() === 'true') {
     val = true;
-  }
-  else if (/\d/.test(val) && /[^a-z]/i.test(val)) {
+  } else if (/\d/.test(val) && /[^a-z]/i.test(val)) {
     var number = parseFloat(val);
     if (number + '' === val) {
       val = number;

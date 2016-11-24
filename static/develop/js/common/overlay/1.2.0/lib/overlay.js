@@ -1,7 +1,7 @@
-var $ = require('jquery'),
-  Position = require('position'),
-  Shim = require('iframe-shim'),
-  Widget = require('widget');
+var $ = require('jquery');
+var Position = require('position');
+var Shim = require('iframe-shim');
+var Widget = require('widget');
 
 // Overlay
 // -------
@@ -14,7 +14,6 @@ var Overlay = Widget.extend({
     height: null,
     zIndex: 99,
     visible: false,
-
     // 定位配置
     align: {
       // element 的定位点，默认为左上角
@@ -24,12 +23,10 @@ var Overlay = Widget.extend({
       // 基准定位元素的定位点，默认为左上角
       baseXY: [0, 0]
     },
-
     // 父元素
     parentNode: document.body
   },
-
-  show: function (){
+  show: function() {
     // 若从未渲染，则调用 render
     if (!this.rendered) {
       this.render();
@@ -37,20 +34,18 @@ var Overlay = Widget.extend({
     this.set('visible', true);
     return this;
   },
-
-  hide: function (){
+  hide: function() {
     this.set('visible', false);
     return this;
   },
-
-  setup: function (){
+  setup: function() {
     var that = this;
     // 加载 iframe 遮罩层并与 overlay 保持同步
     this._setupShim();
     // 窗口resize时，重新定位浮层
     this._setupResize();
 
-    this.after('render', function (){
+    this.after('render', function() {
       var _pos = this.element.css('position');
       if (_pos === 'static' || _pos === 'relative') {
         this.element.css({
@@ -61,20 +56,18 @@ var Overlay = Widget.extend({
       }
     });
     // 统一在显示之后重新设定位置
-    this.after('show', function (){
+    this.after('show', function() {
       that._setPosition();
     });
   },
-
-  destroy: function (){
+  destroy: function() {
     // 销毁两个静态数组中的实例
     erase(this, Overlay.allOverlays);
     erase(this, Overlay.blurOverlays);
     return Overlay.superclass.destroy.call(this);
   },
-
   // 进行定位
-  _setPosition: function (align){
+  _setPosition: function(align) {
     // 不在文档流中，定位无效
     if (!isInDocument(this.element[0])) return;
 
@@ -113,9 +106,8 @@ var Overlay = Widget.extend({
 
     return this;
   },
-
   // 加载 iframe 遮罩层并与 overlay 保持同步
-  _setupShim: function (){
+  _setupShim: function() {
     var shim = new Shim(this.element);
 
     // 在隐藏和设置位置后，要重新定位
@@ -133,46 +125,39 @@ var Overlay = Widget.extend({
     // 在销魂自身前要销毁 shim
     this.before('destroy', shim.destroy, shim);
   },
-
   // resize窗口时重新定位浮层，用这个方法收集所有浮层实例
-  _setupResize: function (){
+  _setupResize: function() {
     Overlay.allOverlays.push(this);
   },
-
   // 除了 element 和 relativeElements，点击 body 后都会隐藏 element
-  _blurHide: function (arr){
+  _blurHide: function(arr) {
     arr = $.makeArray(arr);
     arr.push(this.element);
     this._relativeElements = arr;
     Overlay.blurOverlays.push(this);
   },
-
   // 用于 set 属性后的界面更新
-  _onRenderWidth: function (val){
+  _onRenderWidth: function(val) {
     this.element.css('width', val);
   },
-
-  _onRenderHeight: function (val){
+  _onRenderHeight: function(val) {
     this.element.css('height', val);
   },
-
-  _onRenderZIndex: function (val){
+  _onRenderZIndex: function(val) {
     this.element.css('zIndex', val);
   },
-
-  _onRenderAlign: function (val){
+  _onRenderAlign: function(val) {
     this._setPosition(val);
   },
-
-  _onRenderVisible: function (val){
+  _onRenderVisible: function(val) {
     this.element[val ? 'show' : 'hide']();
   }
-
 });
 
 // 绑定 blur 隐藏事件
 Overlay.blurOverlays = [];
-$(document).on('click', function (e){
+
+$(document).on('click', function(e) {
   hideBlurOverlays(e);
 });
 
@@ -180,18 +165,19 @@ $(document).on('click', function (e){
 var timeout;
 var winWidth = $(window).width();
 var winHeight = $(window).height();
+
 Overlay.allOverlays = [];
 
-$(window).resize(function (){
+$(window).resize(function() {
   timeout && clearTimeout(timeout);
-  timeout = setTimeout(function (){
+  timeout = setTimeout(function() {
     var winNewWidth = $(window).width();
     var winNewHeight = $(window).height();
 
     // IE678 莫名其妙触发 resize
     // http://stackoverflow.com/questions/1852751/window-resize-event-firing-in-internet-explorer
     if (winWidth !== winNewWidth || winHeight !== winNewHeight) {
-      $(Overlay.allOverlays).each(function (i, item){
+      $(Overlay.allOverlays).each(function(i, item) {
         // 当实例为空或隐藏时，不处理
         if (!item || !item.get('visible')) {
           return;
@@ -210,12 +196,12 @@ module.exports = Overlay;
 // Helpers
 // -------
 
-function isInDocument(element){
+function isInDocument(element) {
   return $.contains(document.documentElement, element);
 }
 
-function hideBlurOverlays(e){
-  $(Overlay.blurOverlays).each(function (index, item){
+function hideBlurOverlays(e) {
+  $(Overlay.blurOverlays).each(function(index, item) {
     // 当实例为空或隐藏时，不处理
     if (!item || !item.get('visible')) {
       return;
@@ -236,7 +222,7 @@ function hideBlurOverlays(e){
 
 // 从数组中删除对应元素
 
-function erase(target, array){
+function erase(target, array) {
   for (var i = 0; i < array.length; i++) {
     if (target === array[i]) {
       array.splice(i, 1);

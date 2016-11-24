@@ -7,7 +7,7 @@
 
 // 负责 attributes 的初始化
 // attributes 是与实例相关的状态信息，可读可写，发生变化时，会自动触发相关事件
-exports.initAttrs = function (config){
+exports.initAttrs = function(config) {
   // initAttrs 是在初始化时调用的，默认情况下实例上肯定没有 attrs，不存在覆盖问题
   var attrs = this.attrs = {};
 
@@ -31,7 +31,7 @@ exports.initAttrs = function (config){
 };
 
 // Get the value of an attribute.
-exports.get = function (key){
+exports.get = function(key) {
   var attr = this.attrs[key] || {};
   var val = attr.value;
   return attr.getter ? attr.getter.call(this, val, key) : val;
@@ -39,7 +39,7 @@ exports.get = function (key){
 
 // Set a hash of model attributes on the object, firing `"change"` unless
 // you choose to silence it.
-exports.set = function (key, val, options){
+exports.set = function(key, val, options) {
   var attrs = {};
 
   // set("key", val, options)
@@ -92,8 +92,7 @@ exports.set = function (key, val, options){
     if (!this.__initializingAttrs && !isEqual(prev, val)) {
       if (silent) {
         changed[key] = [val, prev];
-      }
-      else {
+      } else {
         this.trigger('change:' + key, val, prev, key);
       }
     }
@@ -104,7 +103,7 @@ exports.set = function (key, val, options){
 
 // Call this method to manually fire a `"change"` event for triggering
 // a `"change:attribute"` event for each changed attribute.
-exports.change = function (){
+exports.change = function() {
   var changed = this.__changedAttrs;
 
   if (changed) {
@@ -137,33 +136,33 @@ var hasOwn = Object.prototype.hasOwnProperty;
  */
 /** Detect if own properties are iterated after inherited properties (IE < 9) */
 var iteratesOwnLast;
-(function (){
+(function() {
   var props = [];
 
-  function Ctor(){ this.x = 1; }
+  function Ctor() { this.x = 1; }
 
   Ctor.prototype = { 'valueOf': 1, 'y': 1 };
   for (var prop in new Ctor()) { props.push(prop); }
   iteratesOwnLast = props[0] !== 'x';
 }());
 
-var isArray = Array.isArray || function (val){
-    return toString.call(val) === '[object Array]';
-  };
+var isArray = Array.isArray || function(val) {
+  return toString.call(val) === '[object Array]';
+};
 
-function isString(val){
+function isString(val) {
   return toString.call(val) === '[object String]';
 }
 
-function isFunction(val){
+function isFunction(val) {
   return toString.call(val) === '[object Function]';
 }
 
-function isWindow(o){
+function isWindow(o) {
   return o != null && o == o.window;
 }
 
-function isPlainObject(o){
+function isPlainObject(o) {
   // Must be an Object.
   // Because of IE, we also have to check the presence of the constructor
   // property. Make sure that DOM nodes and window objects don't
@@ -201,7 +200,7 @@ function isPlainObject(o){
   return key === undefined || hasOwn.call(o, key);
 }
 
-function isEmptyObject(o){
+function isEmptyObject(o) {
   if (!o || toString.call(o) !== "[object Object]" ||
     o.nodeType || isWindow(o) || !o.hasOwnProperty) {
     return false;
@@ -213,7 +212,7 @@ function isEmptyObject(o){
   return true;
 }
 
-function merge(receiver, supplier){
+function merge(receiver, supplier) {
   var key, value;
 
   for (key in supplier) {
@@ -226,11 +225,10 @@ function merge(receiver, supplier){
 }
 
 // 只 clone 数组和 plain object，其他的保持不变
-function cloneValue(value, prev){
+function cloneValue(value, prev) {
   if (isArray(value)) {
     value = value.slice();
-  }
-  else if (isPlainObject(value)) {
+  } else if (isPlainObject(value)) {
     isPlainObject(prev) || (prev = {});
 
     value = merge(prev, value);
@@ -242,7 +240,7 @@ function cloneValue(value, prev){
 var keys = Object.keys;
 
 if (!keys) {
-  keys = function (o){
+  keys = function(o) {
     var result = [];
 
     for (var name in o) {
@@ -254,7 +252,7 @@ if (!keys) {
   };
 }
 
-function mergeInheritedAttrs(attrs, instance, specialProps){
+function mergeInheritedAttrs(attrs, instance, specialProps) {
   var inherited = [];
   var proto = instance.constructor.prototype;
 
@@ -282,11 +280,11 @@ function mergeInheritedAttrs(attrs, instance, specialProps){
   }
 }
 
-function mergeUserValue(attrs, config){
+function mergeUserValue(attrs, config) {
   mergeAttrs(attrs, normalize(config, true), true);
 }
 
-function copySpecialProps(specialProps, receiver, supplier, isAttr2Prop){
+function copySpecialProps(specialProps, receiver, supplier, isAttr2Prop) {
   for (var i = 0, len = specialProps.length; i < len; i++) {
     var key = specialProps[i];
 
@@ -299,10 +297,11 @@ function copySpecialProps(specialProps, receiver, supplier, isAttr2Prop){
 var EVENT_PATTERN = /^(on|before|after)([A-Z].*)$/;
 var EVENT_NAME_PATTERN = /^(Change)?([A-Z])(.*)/;
 
-function parseEventsFromAttrs(host, attrs){
+function parseEventsFromAttrs(host, attrs) {
   for (var key in attrs) {
     if (attrs.hasOwnProperty(key)) {
-      var value = attrs[key].value, m;
+      var value = attrs[key].value,
+        m;
 
       if (isFunction(value) && (m = key.match(EVENT_PATTERN))) {
         host[m[1]](getEventName(m[2]), value);
@@ -313,14 +312,14 @@ function parseEventsFromAttrs(host, attrs){
 }
 
 // Converts `Show` to `show` and `ChangeTitle` to `change:title`
-function getEventName(name){
+function getEventName(name) {
   var m = name.match(EVENT_NAME_PATTERN);
   var ret = m[1] ? 'change:' : '';
   ret += m[2].toLowerCase() + m[3];
   return ret;
 }
 
-function setSetterAttrs(host, attrs, config){
+function setSetterAttrs(host, attrs, config) {
   var options = { silent: true };
   host.__initializingAttrs = true;
 
@@ -346,7 +345,7 @@ var ATTR_SPECIAL_KEYS = ['value', 'getter', 'setter', 'readOnly'];
 //      readOnly: boolean
 //   }
 //
-function normalize(attrs, isUserValue){
+function normalize(attrs, isUserValue) {
   var newAttrs = {};
 
   for (var key in attrs) {
@@ -369,7 +368,7 @@ function normalize(attrs, isUserValue){
 
 var ATTR_OPTIONS = ['setter', 'getter', 'readOnly'];
 // 专用于 attrs 的 merge 方法
-function mergeAttrs(attrs, inheritedAttrs, isUserValue){
+function mergeAttrs(attrs, inheritedAttrs, isUserValue) {
   var key, value;
   var attr;
 
@@ -404,7 +403,7 @@ function mergeAttrs(attrs, inheritedAttrs, isUserValue){
   return attrs;
 }
 
-function hasOwnProperties(object, properties){
+function hasOwnProperties(object, properties) {
   for (var i = 0, len = properties.length; i < len; i++) {
     if (object.hasOwnProperty(properties[i])) {
       return true;
@@ -414,14 +413,14 @@ function hasOwnProperties(object, properties){
 }
 
 // 对于 attrs 的 value 来说，以下值都认为是空值： null, undefined, '', [], {}
-function isEmptyAttrValue(o){
+function isEmptyAttrValue(o) {
   return o == null || // null, undefined
     (isString(o) || isArray(o)) && o.length === 0 || // '', []
     isEmptyObject(o); // {}
 }
 
 // 判断属性值 a 和 b 是否相等，注意仅适用于属性值的判断，非普适的 === 或 == 判断。
-function isEqual(a, b){
+function isEqual(a, b) {
   if (a === b) return true;
 
   if (isEmptyAttrValue(a) && isEmptyAttrValue(b)) return true;
@@ -451,14 +450,14 @@ function isEqual(a, b){
       // of `NaN` are not equivalent.
       return +a == +b;
 
-    // RegExps are compared by their source patterns and flags.
+      // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
         a.ignoreCase == b.ignoreCase;
 
-    // 简单判断数组包含的 primitive 值是否相等
+      // 简单判断数组包含的 primitive 值是否相等
     case '[object Array]':
       var aString = a.toString();
       var bString = b.toString();

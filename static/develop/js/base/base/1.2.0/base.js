@@ -9,16 +9,14 @@ var Attribute = require('./attribute');
 
 module.exports = Class.create({
   Implements: [Events, Aspect, Attribute],
-
-  initialize: function (config){
+  initialize: function(config) {
     this.initAttrs(config);
 
     // Automatically register `this._onChangeAttr` method as
     // a `change:attr` event handler.
     parseEventsFromInstance(this, this.attrs);
   },
-
-  destroy: function (){
+  destroy: function() {
     this.off();
 
     for (var p in this) {
@@ -29,11 +27,11 @@ module.exports = Class.create({
 
     // Destroy should be called only once, generate a fake destroy after called
     // https://github.com/aralejs/widget/issues/50
-    this.destroy = function (){};
+    this.destroy = function() {};
   }
 });
 
-function parseEventsFromInstance(host, attrs){
+function parseEventsFromInstance(host, attrs) {
   for (var attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       var m = '_onChange' + ucfirst(attr);
@@ -44,6 +42,6 @@ function parseEventsFromInstance(host, attrs){
   }
 }
 
-function ucfirst(str){
+function ucfirst(str) {
   return str.charAt(0).toUpperCase() + str.substring(1);
 }

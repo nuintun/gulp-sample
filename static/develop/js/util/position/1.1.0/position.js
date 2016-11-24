@@ -3,17 +3,16 @@
 // 定位工具组件，将一个 DOM 节点相对对另一个 DOM 节点进行定位操作。
 // 代码易改，人生难得
 
-var Position = exports,
-  VIEWPORT = { _id: 'VIEWPORT', nodeType: 1 },
-  $ = require('jquery'),
-  isPinFixed = false,
-  ua = (window.navigator.userAgent || '').toLowerCase(),
-  isIE6 = ua.indexOf('msie 6') !== -1;
+var $ = require('jquery');
+var Position = exports;
+var VIEWPORT = { _id: 'VIEWPORT', nodeType: 1 };
+var isPinFixed = false;
+var ua = (window.navigator.userAgent || '').toLowerCase();
+var isIE6 = ua.indexOf('msie 6') !== -1;
 
 // 将目标元素相对于基准元素进行定位
 // 这是 Position 的基础方法，接收两个参数，分别描述了目标元素和基准元素的定位点
-Position.pin = function (pinObject, baseObject){
-
+Position.pin = function(pinObject, baseObject) {
   // 将两个参数转换成标准定位对象 { element: a, x: 0, y: 0 }
   pinObject = normalize(pinObject);
   baseObject = normalize(baseObject);
@@ -32,8 +31,7 @@ Position.pin = function (pinObject, baseObject){
   if (pinElement.css('position') !== 'fixed' || isIE6) {
     pinElement.css('position', 'absolute');
     isPinFixed = false;
-  }
-  else {
+  } else {
     // 定位 fixed 元素的标志位，下面有特殊处理
     isPinFixed = true;
   }
@@ -60,7 +58,7 @@ Position.pin = function (pinObject, baseObject){
 
 // 将目标元素相对于基准元素进行居中定位
 // 接受两个参数，分别为目标元素和定位的基准元素，都是 DOM 节点类型
-Position.center = function (pinElement, baseElement){
+Position.center = function(pinElement, baseElement) {
   Position.pin({
     element: pinElement,
     x: '50%',
@@ -80,7 +78,7 @@ Position.VIEWPORT = VIEWPORT;
 // -------
 
 // 将参数包装成标准的定位对象，形似 { element: a, x: 0, y: 0 }
-function normalize(posObject){
+function normalize(posObject) {
   posObject = toElement(posObject) || {};
 
   if (posObject.nodeType) {
@@ -102,27 +100,25 @@ function normalize(posObject){
   var isVIEWPORT = (element === VIEWPORT || element._id === 'VIEWPORT');
 
   // 归一化 offset
-  result.offset = function (){
+  result.offset = function() {
     // 若定位 fixed 元素，则父元素的 offset 没有意义
     if (isPinFixed) {
       return {
         left: 0,
         top: 0
       };
-    }
-    else if (isVIEWPORT) {
+    } else if (isVIEWPORT) {
       return {
         left: $(document).scrollLeft(),
         top: $(document).scrollTop()
       };
-    }
-    else {
+    } else {
       return getOffset($(element)[0]);
     }
   };
 
   // 归一化 size, 含 padding 和 border
-  result.size = function (){
+  result.size = function() {
     var el = isVIEWPORT ? $(window) : $(element);
     return {
       width: el.outerWidth(),
@@ -134,13 +130,13 @@ function normalize(posObject){
 }
 
 // 对 x, y 两个参数为 left|center|right|%|px 时的处理，全部处理为纯数字
-function posConverter(pinObject){
+function posConverter(pinObject) {
   pinObject.x = xyConverter(pinObject.x, pinObject, 'width');
   pinObject.y = xyConverter(pinObject.y, pinObject, 'height');
 }
 
 // 处理 x, y 值，都转化为数字
-function xyConverter(x, pinObject, type){
+function xyConverter(x, pinObject, type) {
   // 先转成字符串再说！好处理
   x = x + '';
 
@@ -157,7 +153,7 @@ function xyConverter(x, pinObject, type){
   // 将百分比转为像素值
   if (x.indexOf('%') !== -1) {
     //支持小数
-    x = x.replace(/(\d+(?:\.\d+)?)%/gi, function (m, d){
+    x = x.replace(/(\d+(?:\.\d+)?)%/gi, function(m, d) {
       return pinObject.size()[type] * (d / 100.0);
     });
   }
@@ -179,7 +175,7 @@ function xyConverter(x, pinObject, type){
 }
 
 // 获取 offsetParent 的位置
-function getParentOffset(element){
+function getParentOffset(element) {
   var parent = element.offsetParent();
 
   // IE7 下，body 子节点的 offsetParent 为 html 元素，其 offset 为
@@ -216,11 +212,11 @@ function getParentOffset(element){
   return offset;
 }
 
-function numberize(s){
+function numberize(s) {
   return parseFloat(s, 10) || 0;
 }
 
-function toElement(element){
+function toElement(element) {
   return $(element)[0];
 }
 
@@ -234,15 +230,15 @@ function toElement(element){
 // 参照 kissy 和 jquery 1.9.1
 //   -> https://github.com/kissyteam/kissy/blob/master/src/dom/sub-modules/base/src/base/offset.js#L366
 //   -> https://github.com/jquery/jquery/blob/1.9.1/src/offset.js#L28
-function getOffset(element){
+function getOffset(element) {
   var box = element.getBoundingClientRect(),
     docElem = document.documentElement;
 
   // < ie8 不支持 win.pageXOffset, 则使用 docElem.scrollLeft
   return {
     left: box.left + (window.pageXOffset || docElem.scrollLeft) -
-    (docElem.clientLeft || document.body.clientLeft || 0),
+      (docElem.clientLeft || document.body.clientLeft || 0),
     top: box.top + (window.pageYOffset || docElem.scrollTop) -
-    (docElem.clientTop || document.body.clientTop || 0)
+      (docElem.clientTop || document.body.clientTop || 0)
   };
 }

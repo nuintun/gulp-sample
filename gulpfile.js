@@ -50,8 +50,8 @@ var alias = {
 var bookmark = Date.now();
 
 // compress javascript file
-function compress(){
-  return switchStream(function (vinyl){
+function compress() {
+  return switchStream(function(vinyl) {
     if (extname(vinyl.path) === '.js') {
       return 'js';
     }
@@ -60,7 +60,7 @@ function compress(){
       return 'css';
     }
   }, {
-    js: switchStream.through(function (vinyl, encoding, next){
+    js: switchStream.through(function(vinyl, encoding, next) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
           fromString: true,
@@ -77,10 +77,10 @@ function compress(){
       this.push(vinyl);
       next();
     }),
-    css: switchStream.through(function (vinyl, encoding, next){
+    css: switchStream.through(function(vinyl, encoding, next) {
       var context = this;
 
-      cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
+      cssnano.process(vinyl.contents.toString(), { safe: true }).then(function(result) {
         vinyl.contents = new Buffer(result.css);
 
         context.push(vinyl);
@@ -92,13 +92,13 @@ function compress(){
 
 // rewrite cmd plugins
 var CMDPLUGINS = {
-  css: function (vinyl, options, next){
+  css: function(vinyl, options, next) {
     var context = this;
 
-    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
+    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function(result) {
       vinyl.contents = new Buffer(result.css);
 
-      cmd.defaults.plugins.css.exec(vinyl, options, function (vinyl){
+      cmd.defaults.plugins.css.exec(vinyl, options, function(vinyl) {
         try {
           var result = uglify.minify(vinyl.contents.toString(), {
             fromString: true,
@@ -119,11 +119,11 @@ var CMDPLUGINS = {
   }
 };
 
-['js', 'json', 'tpl', 'html'].forEach(function (name){
-  CMDPLUGINS[name] = function (vinyl, options, next){
+['js', 'json', 'tpl', 'html'].forEach(function(name) {
+  CMDPLUGINS[name] = function(vinyl, options, next) {
     var context = this;
     // transform
-    cmd.defaults.plugins[name].exec(vinyl, options, function (vinyl){
+    cmd.defaults.plugins[name].exec(vinyl, options, function(vinyl) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
           fromString: true,
@@ -145,13 +145,13 @@ var CMDPLUGINS = {
 
 // rewrite css plugins
 var CSSPLUGINS = {
-  css: function (vinyl, options, next){
+  css: function(vinyl, options, next) {
     var context = this;
 
-    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function (result){
+    cssnano.process(vinyl.contents.toString(), { safe: true }).then(function(result) {
       vinyl.contents = new Buffer(result.css);
 
-      css.defaults.plugins.css.exec(vinyl, options, function (vinyl){
+      css.defaults.plugins.css.exec(vinyl, options, function(vinyl) {
         context.push(vinyl);
         next();
       });
@@ -160,7 +160,7 @@ var CSSPLUGINS = {
 };
 
 // file watch
-function watch(glob, options, callabck){
+function watch(glob, options, callabck) {
   if (typeof options === 'function') {
     callabck = options;
     options = {};
@@ -184,7 +184,7 @@ function watch(glob, options, callabck){
 }
 
 // css resource path
-function onpath(path, property, file, wwwroot){
+function onpath(path, property, file, wwwroot) {
   if (/^[^./\\]/.test(path)) {
     path = './' + path;
   }
@@ -202,7 +202,7 @@ function onpath(path, property, file, wwwroot){
 }
 
 // date format
-function dateFormat(date, format){
+function dateFormat(date, format) {
   // 参数错误
   if (!date instanceof Date) {
     throw new TypeError('Param date must be a Date');
@@ -220,7 +220,7 @@ function dateFormat(date, format){
     'S': date.getMilliseconds() //毫秒
   };
 
-  format = format.replace(/([yMdhmsqS])+/g, function (all, t){
+  format = format.replace(/([yMdhmsqS])+/g, function(all, t) {
     var v = map[t];
 
     if (v !== undefined) {
@@ -241,14 +241,25 @@ function dateFormat(date, format){
 }
 
 // clean task
-gulp.task('clean', function (){
+gulp.task('clean', function() {
   bookmark = Date.now();
 
   rimraf.sync('static/product');
 });
 
 // runtime task
-gulp.task('runtime', ['clean'], function (){
+gulp.task('runtime', ['clean'], function() {
+  // loader file
+  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
+    .pipe(gulp.dest('static/product'));
+
+  // image file
+  gulp.src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
+    .pipe(gulp.dest('static/product'));
+});
+
+// runtime product task
+gulp.task('runtime-product', ['clean'], function() {
   // loader file
   gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
     .pipe(compress())
@@ -259,21 +270,10 @@ gulp.task('runtime', ['clean'], function (){
     .pipe(gulp.dest('static/product'));
 });
 
-// runtime product task
-gulp.task('runtime-product', ['clean'], function (){
-  // loader file
-  gulp.src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
-    .pipe(gulp.dest('static/product'));
-
-  // image file
-  gulp.src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
-    .pipe(gulp.dest('static/product'));
-});
-
 // product task
-gulp.task('product', ['runtime-product'], function (){
+gulp.task('product', ['runtime-product'], function() {
   // complete callback
-  var complete = pedding(2, function (){
+  var complete = pedding(2, function() {
     var now = new Date();
 
     console.log(
@@ -290,7 +290,7 @@ gulp.task('product', ['runtime-product'], function (){
       alias: alias,
       ignore: ['jquery'],
       plugins: CMDPLUGINS,
-      include: function (id){
+      include: function(id) {
         return id && id.indexOf('view') === 0 ? 'all' : 'self';
       },
       css: {
@@ -312,9 +312,9 @@ gulp.task('product', ['runtime-product'], function (){
 });
 
 // develop task
-gulp.task('default', ['runtime'], function (){
+gulp.task('default', ['runtime'], function() {
   // complete callback
-  var complete = pedding(2, function (){
+  var complete = pedding(2, function() {
     var now = new Date();
 
     console.log(
@@ -343,11 +343,11 @@ gulp.task('default', ['runtime'], function (){
 });
 
 // develop watch task
-gulp.task('watch', ['default'], function (){
+gulp.task('watch', ['default'], function() {
   var base = join(process.cwd(), 'static/develop');
 
   // debug watcher
-  function debugWatcher(event, path){
+  function debugWatcher(event, path) {
     var now = new Date();
 
     console.log(
@@ -360,7 +360,7 @@ gulp.task('watch', ['default'], function (){
   }
 
   // complete callback
-  function complete(){
+  function complete() {
     var now = new Date();
 
     console.log(
@@ -372,7 +372,7 @@ gulp.task('watch', ['default'], function (){
   }
 
   // watch js files
-  watch('static/develop/js', function (event, path){
+  watch('static/develop/js', function(event, path) {
     var rpath = relative(base, path);
 
     bookmark = Date.now();
@@ -398,7 +398,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch css files
-  watch('static/develop/css', function (event, path){
+  watch('static/develop/css', function(event, path) {
     var rpath = relative(base, path);
 
     bookmark = Date.now();
@@ -413,7 +413,7 @@ gulp.task('watch', ['default'], function (){
       gulp.src(path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(css({
-          onpath: function (path){
+          onpath: function(path) {
             return path.replace('static/develop/', 'static/product/')
           }
         }))
@@ -423,7 +423,7 @@ gulp.task('watch', ['default'], function (){
   });
 
   // watch image files
-  watch('static/develop/images', function (event, path){
+  watch('static/develop/images', function(event, path) {
     var rpath = relative(base, path);
 
     bookmark = Date.now();

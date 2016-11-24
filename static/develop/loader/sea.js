@@ -1,7 +1,7 @@
 /**
  * Sea.js @VERSION | seajs.org/LICENSE.md
  */
-(function (global, undefined){
+(function(global, undefined) {
   // Avoid conflicting when `sea.js` is loaded multiple times
   if (global.seajs) {
     return;
@@ -16,8 +16,8 @@
   /**
    * util-lang.js - The minimal language enhancement
    */
-  function isType(type){
-    return function (obj){
+  function isType(type) {
+    return function(obj) {
       return {}.toString.call(obj) == "[object " + type + "]";
     }
   }
@@ -29,7 +29,7 @@
   var isUndefined = isType("Undefined");
   var _cid = 0;
 
-  function cid(){
+  function cid() {
     return _cid++;
   }
 
@@ -39,7 +39,7 @@
   var events = data.events = {};
 
   // Bind event
-  seajs.on = function (name, callback){
+  seajs.on = function(name, callback) {
     var list = events[name] || (events[name] = []);
 
     list.push(callback);
@@ -50,7 +50,7 @@
   // Remove event. If `callback` is undefined, remove all callbacks for the
   // event. If `event` and `callback` are both undefined, remove all callbacks
   // for all events
-  seajs.off = function (name, callback){
+  seajs.off = function(name, callback) {
     // Remove *all* events
     if (!(name || callback)) {
       events = data.events = {};
@@ -77,7 +77,7 @@
 
   // Emit event, firing all bound callbacks. Callbacks receive the same
   // arguments as `emit` does, apart from the event name
-  var emit = seajs.emit = function (name, data){
+  var emit = seajs.emit = function(name, data) {
     var list = events[name];
 
     if (list) {
@@ -105,13 +105,13 @@
   // Extract the directory portion of a path
   // dirname("a/b/c.js?t=123#xx/zz") ==> "a/b/"
   // ref: http://jsperf.com/regex-vs-split/2
-  function dirname(path){
+  function dirname(path) {
     return path.match(DIRNAME_RE)[0];
   }
 
   // Canonicalize a path
   // realpath("http://test.com/a//./b/../c") ==> "http://test.com/a/c"
-  function realpath(path){
+  function realpath(path) {
     // /a/b/./c/./d ==> /a/b/c/d
     path = path.replace(DOT_RE, "/");
 
@@ -134,29 +134,29 @@
   // Normalize an id
   // normalize("path/to/a") ==> "path/to/a.js"
   // NOTICE: substring is faster than negative slice and RegExp
-  function normalize(path){
+  function normalize(path) {
     var last = path.length - 1;
     var lastC = path.charCodeAt(last);
 
     // If the uri ends with `#`, just return it without '#'
-    if (lastC === 35 /* "#" */) {
+    if (lastC === 35 /* "#" */ ) {
       return path.substring(0, last);
     }
 
     return (path.substring(last - 2) === ".js" ||
-    path.indexOf("?") > 0 ||
-    lastC === 47 /* "/" */) ? path : path + ".js";
+      path.indexOf("?") > 0 ||
+      lastC === 47 /* "/" */ ) ? path : path + ".js";
   }
 
   var PATHS_RE = /^([^/:]+)(\/.+)$/;
   var VARS_RE = /{([^{]+)}/g;
 
-  function parseAlias(id){
+  function parseAlias(id) {
     var alias = data.alias;
     return alias && isString(alias[id]) ? alias[id] : id;
   }
 
-  function parsePaths(id){
+  function parsePaths(id) {
     var paths = data.paths;
     var m;
 
@@ -167,11 +167,11 @@
     return id;
   }
 
-  function parseVars(id){
+  function parseVars(id) {
     var vars = data.vars;
 
     if (vars && id.indexOf("{") > -1) {
-      id = id.replace(VARS_RE, function (m, key){
+      id = id.replace(VARS_RE, function(m, key) {
         return isString(vars[key]) ? vars[key] : m;
       })
     }
@@ -179,7 +179,7 @@
     return id;
   }
 
-  function parseMap(uri){
+  function parseMap(uri) {
     var map = data.map;
     var ret = uri;
 
@@ -202,7 +202,7 @@
   var ABSOLUTE_RE = /^\/\/.|:\//;
   var ROOT_DIR_RE = /^.*?\/\/.*?\//;
 
-  function addBase(id, refUri){
+  function addBase(id, refUri) {
     var ret;
     var first = id.charCodeAt(0);
 
@@ -211,11 +211,11 @@
       ret = id;
     }
     // Relative
-    else if (first === 46 /* "." */) {
+    else if (first === 46 /* "." */ ) {
       ret = (refUri ? dirname(refUri) : data.cwd) + id;
     }
     // Root
-    else if (first === 47 /* "/" */) {
+    else if (first === 47 /* "/" */ ) {
       var m = data.cwd.match(ROOT_DIR_RE);
 
       ret = m ? m[0] + id.substring(1) : id;
@@ -233,7 +233,7 @@
     return realpath(ret);
   }
 
-  function id2Uri(id, refUri){
+  function id2Uri(id, refUri) {
     if (!id) return "";
 
     id = parseAlias(id);
@@ -334,7 +334,7 @@
     var loaderScript = doc.getElementById("seajsnode") ||
       scripts[scripts.length - 1];
 
-    function getScriptAbsoluteSrc(node){
+    function getScriptAbsoluteSrc(node) {
       return node.hasAttribute ? // non-IE6/7
         node.src :
         // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
@@ -351,7 +351,7 @@
    * ref: tests/research/load-js-css/test.html
    */
   if (isWebWorker) {
-    function requestFromWebWorker(url, callback, charset, crossorigin){
+    function requestFromWebWorker(url, callback, charset, crossorigin) {
       // Load with importScripts
       var error;
 
@@ -372,7 +372,7 @@
     var baseElement = head.getElementsByTagName("base")[0];
     var currentlyAddingScript;
 
-    function request(url, callback, charset, crossorigin){
+    function request(url, callback, charset, crossorigin) {
       var node = doc.createElement("script");
 
       if (charset) {
@@ -401,24 +401,24 @@
       currentlyAddingScript = null;
     }
 
-    function addOnload(node, callback, url){
+    function addOnload(node, callback, url) {
       var supportOnload = "onload" in node;
 
       if (supportOnload) {
         node.onload = onload;
-        node.onerror = function (){
+        node.onerror = function() {
           emit("error", { uri: url, node: node });
           onload(true);
         }
       } else {
-        node.onreadystatechange = function (){
+        node.onreadystatechange = function() {
           if (/loaded|complete/.test(node.readyState)) {
             onload();
           }
         }
       }
 
-      function onload(error){
+      function onload(error) {
         // Ensure only run once and handle memory leak in IE
         node.onload = node.onerror = node.onreadystatechange = null;
 
@@ -463,7 +463,7 @@
     ERROR: 7
   };
 
-  function Module(uri, deps){
+  function Module(uri, deps) {
     this.uri = uri;
     this.dependencies = deps || [];
     this.deps = {}; // Ref the dependence modules
@@ -472,7 +472,7 @@
   }
 
   // Resolve module.dependencies
-  Module.prototype.resolve = function (){
+  Module.prototype.resolve = function() {
     var mod = this;
     var ids = mod.dependencies;
     var uris = [];
@@ -484,7 +484,7 @@
     return uris;
   };
 
-  Module.prototype.pass = function (){
+  Module.prototype.pass = function() {
     var mod = this;
     var len = mod.dependencies.length;
 
@@ -518,7 +518,7 @@
   };
 
   // Load module.dependencies and fire onload when all done
-  Module.prototype.load = function (){
+  Module.prototype.load = function() {
     var mod = this;
 
     // If the module is being loaded, just wait it onload call
@@ -570,7 +570,7 @@
   };
 
   // Call this method when module is loaded
-  Module.prototype.onload = function (){
+  Module.prototype.onload = function() {
     var mod = this;
 
     mod.status = STATUS.LOADED;
@@ -588,7 +588,7 @@
   };
 
   // Call this method when module is 404
-  Module.prototype.error = function (){
+  Module.prototype.error = function() {
     var mod = this;
 
     mod.onload();
@@ -597,7 +597,7 @@
   };
 
   // Execute a module
-  Module.prototype.exec = function (){
+  Module.prototype.exec = function() {
     var mod = this;
 
     // When module is executed, DO NOT execute it again. When module
@@ -623,7 +623,7 @@
     // Create require
     var uri = mod.uri;
 
-    function require(id){
+    function require(id) {
       var m = mod.deps[id] || Module.get(require.resolve(id));
 
       if (m.status == STATUS.ERROR) {
@@ -633,11 +633,11 @@
       return m.exec();
     }
 
-    require.resolve = function (id){
+    require.resolve = function(id) {
       return Module.resolve(id, uri);
     };
 
-    require.async = function (ids, callback){
+    require.async = function(ids, callback) {
       Module.use(ids, callback, uri + "_async_" + cid());
 
       return require;
@@ -667,7 +667,7 @@
   };
 
   // Fetch a module
-  Module.prototype.fetch = function (requestCache){
+  Module.prototype.fetch = function(requestCache) {
     var mod = this;
     var uri = mod.uri;
 
@@ -711,11 +711,11 @@
         sendRequest();
     }
 
-    function sendRequest(){
+    function sendRequest() {
       seajs.request(emitData.requestUri, emitData.onRequest, emitData.charset, emitData.crossorigin);
     }
 
-    function onRequest(error){
+    function onRequest(error) {
       delete fetchingList[requestUri];
       fetchedList[requestUri] = true;
 
@@ -742,7 +742,7 @@
   };
 
   // Resolve id to uri
-  Module.resolve = function (id, refUri){
+  Module.resolve = function(id, refUri) {
     // Emit `resolve` event for plugins such as text plugin
     var emitData = { id: id, refUri: refUri };
 
@@ -752,7 +752,7 @@
   };
 
   // Define a module
-  Module.define = function (id, deps, factory){
+  Module.define = function(id, deps, factory) {
     var argsLen = arguments.length;
 
     // define(factory)
@@ -805,7 +805,7 @@
   };
 
   // Save meta data to cachedMods
-  Module.save = function (uri, meta){
+  Module.save = function(uri, meta) {
     var mod = Module.get(uri);
 
     // Do NOT override already saved modules
@@ -820,19 +820,19 @@
   };
 
   // Get an existed module or create a new one
-  Module.get = function (uri, deps){
+  Module.get = function(uri, deps) {
     return cachedMods[uri] || (cachedMods[uri] = new Module(uri, deps));
   };
 
   // Use function is equal to load a anonymous module
-  Module.use = function (ids, callback, uri){
+  Module.use = function(ids, callback, uri) {
     var mod = Module.get(uri, isArray(ids) ? ids : [ids]);
 
     mod._entry.push(mod);
     mod.history = {};
     mod.remain = 1;
 
-    mod.callback = function (){
+    mod.callback = function() {
       var exports = [];
       var uris = mod.resolve();
 
@@ -854,7 +854,7 @@
   };
 
   // Public API
-  seajs.use = function (ids, callback){
+  seajs.use = function(ids, callback) {
     Module.use(ids, callback, data.cwd + "_use_" + cid());
 
     return seajs;
@@ -868,7 +868,7 @@
   data.fetchedList = fetchedList;
   data.cid = cid;
 
-  seajs.require = function (id){
+  seajs.require = function(id) {
     var mod = Module.get(Module.resolve(id));
 
     if (mod.status < STATUS.EXECUTING) {
@@ -907,7 +907,7 @@
   // data.vars - The {xxx} variables in module id
   // data.map - An array containing rules to map module uri
   // data.debug - Debug mode. The default value is false
-  seajs.config = function (configData){
+  seajs.config = function(configData) {
     for (var key in configData) {
       var curr = configData[key];
       var prev = data[key];

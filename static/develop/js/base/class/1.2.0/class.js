@@ -9,7 +9,7 @@
 //  - https://github.com/kissyteam/kissy/blob/master/src/seed/src/kissy.js
 
 // The base Class implementation.
-function Class(o){
+function Class(o) {
   // Convert existed function to Class.
   if (!(this instanceof Class) && isFunction(o)) {
     return classify(o)
@@ -31,7 +31,7 @@ module.exports = Class;
 //    }
 // })
 //
-Class.create = function (parent, properties){
+Class.create = function(parent, properties) {
   if (!isFunction(parent)) {
     properties = parent;
     parent = null;
@@ -42,7 +42,7 @@ Class.create = function (parent, properties){
   properties.Extends = parent;
 
   // The created class constructor
-  function SubClass(){
+  function SubClass() {
     // Call the parent constructor.
     parent.apply(this, arguments);
 
@@ -64,7 +64,7 @@ Class.create = function (parent, properties){
   return classify(SubClass);
 };
 
-function implement(properties){
+function implement(properties) {
   var key, value;
 
   for (key in properties) {
@@ -79,14 +79,14 @@ function implement(properties){
 }
 
 // Create a sub Class based on `Class`.
-Class.extend = function (properties){
+Class.extend = function(properties) {
   properties || (properties = {});
   properties.Extends = this;
 
   return Class.create(properties);
 };
 
-function classify(cls){
+function classify(cls) {
   cls.extend = Class.extend;
   cls.implement = implement;
   return cls;
@@ -94,8 +94,7 @@ function classify(cls){
 
 // Mutators define special properties.
 Class.Mutators = {
-
-  'Extends': function (parent){
+  'Extends': function(parent) {
     var existed = this.prototype;
     var proto = createProto(parent.prototype);
 
@@ -112,31 +111,29 @@ Class.Mutators = {
     // needed later.
     this.superclass = parent.prototype
   },
-
-  'Implements': function (items){
+  'Implements': function(items) {
     isArray(items) || (items = [items]);
-    var proto = this.prototype, item;
+    var proto = this.prototype,
+      item;
 
     while (item = items.shift()) {
       mix(proto, item.prototype || item);
     }
   },
-
-  'Statics': function (staticProperties){
+  'Statics': function(staticProperties) {
     mix(this, staticProperties);
   }
 };
 
 // Shared empty constructor function to aid in prototype-chain creation.
-function Ctor(){
-}
+function Ctor() {}
 
 // See: http://jsperf.com/object-create-vs-new-ctor
 var createProto = Object.__proto__ ?
-  function (proto){
+  function(proto) {
     return { __proto__: proto };
   } :
-  function (proto){
+  function(proto) {
     Ctor.prototype = proto;
     return new Ctor();
   };
@@ -144,7 +141,7 @@ var createProto = Object.__proto__ ?
 // Helpers
 // ------------
 
-function mix(r, s, wl){
+function mix(r, s, wl) {
   // Copy "all" properties including inherited ones.
   for (var p in s) {
     if (s.hasOwnProperty(p)) {
@@ -160,19 +157,19 @@ function mix(r, s, wl){
 
 var toString = Object.prototype.toString;
 
-var isArray = Array.isArray || function (val){
-    return toString.call(val) === '[object Array]';
-  };
+var isArray = Array.isArray || function(val) {
+  return toString.call(val) === '[object Array]';
+};
 
-var isFunction = function (val){
+var isFunction = function(val) {
   return toString.call(val) === '[object Function]';
 };
 
 var indexOf = Array.prototype.indexOf ?
-  function (arr, item){
+  function(arr, item) {
     return arr.indexOf(item);
   } :
-  function (arr, item){
+  function(arr, item) {
     for (var i = 0, len = arr.length; i < len; i++) {
       if (arr[i] === item) {
         return i;

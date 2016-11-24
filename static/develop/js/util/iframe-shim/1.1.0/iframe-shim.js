@@ -4,13 +4,13 @@ var ua = (window.navigator.userAgent || '').toLowerCase();
 var isIE6 = ua.indexOf('msie 6') !== -1;
 
 // target 是需要添加垫片的目标元素，可以传 `DOM Element` 或 `Selector`
-function Shim(target){
+function Shim(target) {
   // 如果选择器选了多个 DOM，则只取第一个
   this.target = $(target).eq(0);
 }
 
 // 根据目标元素计算 iframe 的显隐、宽高、定位
-Shim.prototype.sync = function (){
+Shim.prototype.sync = function() {
   var target = this.target;
   var iframe = this.iframe;
 
@@ -42,7 +42,7 @@ Shim.prototype.sync = function (){
 };
 
 // 销毁 iframe 等
-Shim.prototype.destroy = function (){
+Shim.prototype.destroy = function() {
   if (this.iframe) {
     this.iframe.remove();
     delete this.iframe;
@@ -54,9 +54,9 @@ if (isIE6) {
   module.exports = Shim;
 } else {
   // 除了 IE6 都返回空函数
-  function Noop(){}
+  function Noop() {}
 
-  Noop.prototype.sync = function (){return this};
+  Noop.prototype.sync = function() { return this };
   Noop.prototype.destroy = Noop;
 
   module.exports = Noop;
@@ -66,7 +66,7 @@ if (isIE6) {
 
 // 在 target 之前创建 iframe，这样就没有 z-index 问题
 // iframe 永远在 target 下方
-function createIframe(target){
+function createIframe(target) {
   var css = {
     display: 'none',
     border: 'none',

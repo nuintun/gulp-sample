@@ -13,7 +13,7 @@ var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
  * @param value
  * @returns {boolean}
  */
-function isString(value){
+function isString(value) {
   return {}.toString.call(value) === "[object String]";
 }
 
@@ -21,7 +21,7 @@ function isString(value){
  * create a style node
  * @returns {HTMLStyleElement}
  */
-function createStyle(){
+function createStyle() {
   var node = doc.createElement('style');
 
   // set type
@@ -52,7 +52,7 @@ var linkCache = '';
  * @param node
  * @param css
  */
-function insertStyle(node, css){
+function insertStyle(node, css) {
   // ie
   if (node.styleSheet !== undefined) {
     node.styleSheet.cssText = css;
@@ -74,7 +74,7 @@ function insertStyle(node, css){
  * insert css text
  * @param css
  */
-function css(css){
+function css(css) {
   if (css && isString(css)) {
     // cache css
     cssCache += css;
@@ -93,7 +93,7 @@ function css(css){
  * insert import url
  * @param link
  */
-function link(link){
+function link(link) {
   if (link && isString(link)) {
     // cache css
     linkCache += link;

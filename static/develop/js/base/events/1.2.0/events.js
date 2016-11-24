@@ -16,12 +16,11 @@ var eventSplitter = /\s+/;
 //     object.on('expand', function(){ alert('expanded'); });
 //     object.trigger('expand');
 //
-function Events(){
-}
+function Events() {}
 
 // Bind one or more space separated events, `events`, to a `callback`
 // function. Passing `"all"` will bind the callback to all events fired.
-Events.prototype.on = function (events, callback, context){
+Events.prototype.on = function(events, callback, context) {
   var cache, event, list;
   if (!callback) return this;
 
@@ -36,9 +35,9 @@ Events.prototype.on = function (events, callback, context){
   return this;
 };
 
-Events.prototype.once = function (events, callback, context){
+Events.prototype.once = function(events, callback, context) {
   var that = this;
-  var cb = function (){
+  var cb = function() {
     that.off(events, cb);
     callback.apply(context || that, arguments);
   };
@@ -48,7 +47,7 @@ Events.prototype.once = function (events, callback, context){
 // Remove one or many callbacks. If `context` is null, removes all callbacks
 // with that function. If `callback` is null, removes all callbacks for the
 // event. If `events` is null, removes all bound callbacks for all events.
-Events.prototype.off = function (events, callback, context){
+Events.prototype.off = function(events, callback, context) {
   var cache, event, list, i;
 
   // No events, or removing *all* events.
@@ -72,7 +71,7 @@ Events.prototype.off = function (events, callback, context){
 
     for (i = list.length - 2; i >= 0; i -= 2) {
       if (!(callback && list[i] !== callback ||
-        context && list[i + 1] !== context)) {
+          context && list[i + 1] !== context)) {
         list.splice(i, 2);
       }
     }
@@ -85,8 +84,9 @@ Events.prototype.off = function (events, callback, context){
 // passed the same arguments as `trigger` is, apart from the event name
 // (unless you're listening on `"all"`, which will cause your callback to
 // receive the true name of the event as the first argument).
-Events.prototype.trigger = function (events){
-  var cache, event, all, list, i, len, rest = [], args, returned = true;
+Events.prototype.trigger = function(events) {
+  var cache, event, all, list, i, len, rest = [],
+    args, returned = true;
   if (!(cache = this.__events)) return this;
 
   events = events.split(eventSplitter);
@@ -124,7 +124,7 @@ Events.prototype.emit = Events.prototype.trigger;
 var keys = Object.keys;
 
 if (!keys) {
-  keys = function (o){
+  keys = function(o) {
     var result = [];
 
     for (var name in o) {
@@ -137,7 +137,7 @@ if (!keys) {
 }
 
 // Mix `Events` to object instance or Class function.
-Events.mixTo = function (receiver){
+Events.mixTo = function(receiver) {
   var proto = Events.prototype;
 
   if (isFunction(receiver)) {
@@ -146,8 +146,7 @@ Events.mixTo = function (receiver){
         receiver.prototype[key] = proto[key];
       }
     }
-  }
-  else {
+  } else {
     var event = new Events;
 
     for (var key in proto) {
@@ -157,8 +156,8 @@ Events.mixTo = function (receiver){
     }
   }
 
-  function copyProto(key){
-    receiver[key] = function (){
+  function copyProto(key) {
+    receiver[key] = function() {
       proto[key].apply(event, Array.prototype.slice.call(arguments));
       return this;
     }
@@ -166,28 +165,32 @@ Events.mixTo = function (receiver){
 };
 
 // Execute callbacks
-function triggerEvents(list, args, context){
+function triggerEvents(list, args, context) {
   var pass = true;
 
   if (list) {
-    var i = 0, l = list.length, a1 = args[0], a2 = args[1], a3 = args[2];
+    var i = 0,
+      l = list.length,
+      a1 = args[0],
+      a2 = args[1],
+      a3 = args[2];
     // call is faster than apply, optimize less than 3 argu
     // http://blog.csdn.net/zhengyinhui100/article/details/7837127
     switch (args.length) {
       case 0:
-        for (; i < l; i += 2) {pass = list[i].call(list[i + 1] || context) !== false && pass}
+        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context) !== false && pass }
         break;
       case 1:
-        for (; i < l; i += 2) {pass = list[i].call(list[i + 1] || context, a1) !== false && pass}
+        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1) !== false && pass }
         break;
       case 2:
-        for (; i < l; i += 2) {pass = list[i].call(list[i + 1] || context, a1, a2) !== false && pass}
+        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1, a2) !== false && pass }
         break;
       case 3:
-        for (; i < l; i += 2) {pass = list[i].call(list[i + 1] || context, a1, a2, a3) !== false && pass}
+        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1, a2, a3) !== false && pass }
         break;
       default:
-        for (; i < l; i += 2) {pass = list[i].apply(list[i + 1] || context, args) !== false && pass}
+        for (; i < l; i += 2) { pass = list[i].apply(list[i + 1] || context, args) !== false && pass }
         break;
     }
   }
@@ -195,7 +198,7 @@ function triggerEvents(list, args, context){
   return pass;
 }
 
-function isFunction(func){
+function isFunction(func) {
   return Object.prototype.toString.call(func) === '[object Function]';
 }
 
