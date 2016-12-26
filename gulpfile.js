@@ -19,15 +19,15 @@ var extname = path.extname;
 var resolve = path.resolve;
 var gulp = require('gulp');
 var rimraf = require('del');
-var css = require('gulp-css');
-var cmd = require('gulp-cmd');
+var css = require('@nuintun/gulp-css');
+var cmd = require('@nuintun/gulp-cmd');
 var colors = cmd.colors;
 var pedding = require('pedding');
 var cssnano = require('cssnano');
 var uglify = require('uglify-js');
 var chokidar = require('chokidar');
 var plumber = require('gulp-plumber');
-var switchStream = require('switch-stream');
+var switchStream = require('@nuintun/switch-stream');
 
 // alias
 var alias = {
