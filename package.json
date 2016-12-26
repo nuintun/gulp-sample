@@ -33,9 +33,9 @@
     "cssnano": "^3.8.1",
     "uglify-js": "^2.7.5",
     "gulp-plumber": "^1.1.0",
-    "gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz",
-    "gulp-css": "https://github.com/nuintun/gulp-css/archive/master.tar.gz",
-    "switch-stream": "https://github.com/nuintun/switch-stream/archive/master.tar.gz"
+    "@nuintun/gulp-cmd": "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz",
+    "@nuintun/gulp-css": "https://github.com/nuintun/gulp-css/archive/master.tar.gz",
+    "@nuintun/switch-stream": "https://github.com/nuintun/switch-stream/archive/master.tar.gz"
   },
   "readmeFilename": "README.md"
 }
