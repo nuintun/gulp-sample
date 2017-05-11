@@ -63,7 +63,6 @@ function compress() {
     js: switchStream.through(function(vinyl, encoding, next) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
-          fromString: true,
           compress: { ie8: true },
           mangle: { ie8: true, eval: true },
           output: { ie8: true }
@@ -101,7 +100,6 @@ var CMDPLUGINS = {
       cmd.defaults.plugins.css.exec(vinyl, options, function(vinyl) {
         try {
           var result = uglify.minify(vinyl.contents.toString(), {
-            fromString: true,
             compress: { ie8: true },
             mangle: { ie8: true, eval: true },
             output: { ie8: true }
@@ -126,7 +124,6 @@ var CMDPLUGINS = {
     cmd.defaults.plugins[name].exec(vinyl, options, function(vinyl) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
-          fromString: true,
           compress: { ie8: true },
           mangle: { ie8: true, eval: true },
           output: { ie8: true }
