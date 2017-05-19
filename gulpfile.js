@@ -5,9 +5,9 @@
 'use strict';
 
 // 强制打开彩色控制台
-process.env.DEBUG_COLORS = 'true';
+// process.env.DEBUG_COLORS = 'true';
 // 开启 DEBUG 开关
-process.env.DEBUG = 'gulp-css,gulp-cmd';
+// process.env.DEBUG = 'gulp-css,gulp-cmd';
 // 关闭 DEBUG 开关
 //process.env.DEBUG = 'false';
 
@@ -274,12 +274,19 @@ gulp.task('product', ['runtime-product'], function() {
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete... √ %s\x07',
-      colors.green.bold('gulp-product'),
-      dateFormat(now),
+      '%s %s build complete... √ %s\x07',
+      colors.green.bold.inverse('  √ DONE  '),
+      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   });
+
+  console.log(
+    '%s %s %s start',
+    colors.green.bold.inverse('  .BUILD  '),
+    colors.yellow.bold.inverse(' ' + dateFormat(new Date()) + ' '),
+    'product'
+  );
 
   // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -315,12 +322,19 @@ gulp.task('default', ['runtime'], function() {
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete... √ %s\x07',
-      colors.green.bold('gulp-default'),
-      dateFormat(now),
+      '%s %s build complete... %s\x07',
+      colors.green.bold.inverse('  √ DONE  '),
+      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   });
+
+  console.log(
+    '%s %s %s start',
+    colors.green.bold.inverse('  .BUILD  '),
+    colors.yellow.bold.inverse(' ' + dateFormat(new Date()) + ' '),
+    'develop'
+  );
 
   // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -345,14 +359,11 @@ gulp.task('watch', ['default'], function() {
 
   // debug watcher
   function debugWatcher(event, path) {
-    var now = new Date();
-
     console.log(
-      '  %s %s: %s %s',
-      colors.green.bold('gulp-watch'),
+      '%s %s: %s',
+      colors.green.bold.inverse('  .WATCH  '),
       event,
-      colors.magenta(join('static/develop', path).replace(/\\/g, '/')),
-      colors.green('+' + (now - bookmark) + 'ms')
+      colors.magenta(join('static/develop', path).replace(/\\/g, '/'))
     );
   }
 
@@ -361,9 +372,9 @@ gulp.task('watch', ['default'], function() {
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete... √ %s\x07',
-      colors.green.bold('gulp-watch'),
-      dateFormat(now),
+      '%s %s build complete... √ %s\x07',
+      colors.green.bold.inverse('  √ DONE  '),
+      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   }
