@@ -5,9 +5,9 @@
 'use strict';
 
 // 强制打开彩色控制台
-// process.env.DEBUG_COLORS = 'true';
+process.env.DEBUG_COLORS = 'true';
 // 开启 DEBUG 开关
-// process.env.DEBUG = 'gulp-css,gulp-cmd';
+process.env.DEBUG = 'gulp-css,gulp-cmd';
 // 关闭 DEBUG 开关
 //process.env.DEBUG = 'false';
 
