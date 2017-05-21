@@ -274,19 +274,12 @@ gulp.task('product', ['runtime-product'], function() {
     var now = new Date();
 
     console.log(
-      '%s %s build complete... √ %s\x07',
-      colors.green.bold.inverse('  √ DONE  '),
-      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
+      '  %s [%s] build complete... √ %s\x07',
+      colors.green.bold.inverse(' √ DONE '),
+      dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   });
-
-  console.log(
-    '%s %s %s start',
-    colors.green.bold.inverse('  .BUILD  '),
-    colors.yellow.bold.inverse(' ' + dateFormat(new Date()) + ' '),
-    'product'
-  );
 
   // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -322,19 +315,12 @@ gulp.task('default', ['runtime'], function() {
     var now = new Date();
 
     console.log(
-      '%s %s build complete... %s\x07',
-      colors.green.bold.inverse('  √ DONE  '),
-      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
+      '  %s [%s] build complete... %s\x07',
+      colors.green.bold.inverse(' √ DONE '),
+      dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   });
-
-  console.log(
-    '%s %s %s start',
-    colors.green.bold.inverse('  .BUILD  '),
-    colors.yellow.bold.inverse(' ' + dateFormat(new Date()) + ' '),
-    'develop'
-  );
 
   // js files
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -360,8 +346,8 @@ gulp.task('watch', ['default'], function() {
   // debug watcher
   function debugWatcher(event, path) {
     console.log(
-      '%s %s: %s',
-      colors.green.bold.inverse('  .WATCH  '),
+      '  %s %s: %s',
+      colors.green.bold.inverse(' CHANGE '),
       event,
       colors.magenta(join('static/develop', path).replace(/\\/g, '/'))
     );
@@ -372,9 +358,9 @@ gulp.task('watch', ['default'], function() {
     var now = new Date();
 
     console.log(
-      '%s %s build complete... √ %s\x07',
-      colors.green.bold.inverse('  √ DONE  '),
-      colors.yellow.bold.inverse(' ' + dateFormat(now) + ' '),
+      '  %s [%s] build complete... √ %s',
+      colors.green.bold.inverse(' √ DONE '),
+      dateFormat(now),
       colors.green('+' + (now - bookmark) + 'ms')
     );
   }
