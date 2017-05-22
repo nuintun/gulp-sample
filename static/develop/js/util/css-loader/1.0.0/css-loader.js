@@ -6,12 +6,14 @@
 
 // doc and head
 var doc = document;
+var undef = void(0);
 var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
 /**
  * is string
+ *
  * @param value
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function isString(value) {
   return {}.toString.call(value) === "[object String]";
@@ -19,6 +21,7 @@ function isString(value) {
 
 /**
  * create a style node
+ *
  * @returns {HTMLStyleElement}
  */
 function createStyle() {
@@ -28,7 +31,7 @@ function createStyle() {
   node.type = 'text/css';
 
   // ie
-  if (node.styleSheet !== undefined) {
+  if (node.styleSheet !== undef) {
     // http://support.microsoft.com/kb/262161
     if (doc.getElementsByTagName('style').length > 31) {
       throw new Error('Exceed the maximal count of style tags in IE');
@@ -49,16 +52,17 @@ var linkCache = '';
 
 /**
  * insert style
+ *
  * @param node
  * @param css
+ * @returns {void}
  */
 function insertStyle(node, css) {
   // ie
   if (node.styleSheet !== undefined) {
     node.styleSheet.cssText = css;
-  }
-  // w3c
-  else {
+  } else {
+    // w3c
     css = doc.createTextNode(css);
 
     // insert text node
@@ -72,9 +76,11 @@ function insertStyle(node, css) {
 
 /**
  * insert css text
+ *
  * @param css
+ * @returns {void}
  */
-function css(css) {
+function insert(css) {
   if (css && isString(css)) {
     // cache css
     cssCache += css;
@@ -91,7 +97,9 @@ function css(css) {
 
 /**
  * insert import url
+ *
  * @param link
+ * @returns {void}
  */
 function link(link) {
   if (link && isString(link)) {
@@ -109,5 +117,7 @@ function link(link) {
 }
 
 // exports
-module.exports.css = css;
-module.exports.link = link;
+module.exports = {
+  link: link,
+  insert: insert
+};

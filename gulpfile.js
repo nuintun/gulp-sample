@@ -31,7 +31,7 @@ var switchStream = require('@nuintun/switch-stream');
 
 // alias
 var alias = {
-  'import-style': 'util/import-style/1.0.0/import-style',
+  'css-loader': 'util/css-loader/1.0.0/css-loader',
   'jquery': 'base/jquery/1.11.3/jquery',
   'base': 'base/base/1.2.0/base',
   'class': 'base/class/1.2.0/class',
