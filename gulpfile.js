@@ -275,9 +275,9 @@ gulp.task('product', ['runtime-product'], function() {
 
     console.log(
       '  %s [%s] build complete... √ %s\x07',
-      colors.green.bold.inverse(' √ DONE '),
+      colors.reset.green.bold.inverse(' √ DONE '),
       dateFormat(now),
-      colors.green('+' + (now - bookmark) + 'ms')
+      colors.reset.green('+' + (now - bookmark) + 'ms')
     );
   });
 
@@ -316,9 +316,9 @@ gulp.task('default', ['runtime'], function() {
 
     console.log(
       '  %s [%s] build complete... %s\x07',
-      colors.green.bold.inverse(' √ DONE '),
+      colors.reset.green.bold.inverse(' √ DONE '),
       dateFormat(now),
-      colors.green('+' + (now - bookmark) + 'ms')
+      colors.reset.green('+' + (now - bookmark) + 'ms')
     );
   });
 
@@ -347,9 +347,9 @@ gulp.task('watch', ['default'], function() {
   function debugWatcher(event, path) {
     console.log(
       '  %s %s: %s',
-      colors.green.bold.inverse(' CHANGE '),
+      colors.reset.green.bold.inverse(' CHANGE '),
       event,
-      colors.magenta(join('static/develop', path).replace(/\\/g, '/'))
+      colors.reset.magenta(join('static/develop', path).replace(/\\/g, '/'))
     );
   }
 
@@ -359,9 +359,9 @@ gulp.task('watch', ['default'], function() {
 
     console.log(
       '  %s [%s] build complete... √ %s',
-      colors.green.bold.inverse(' √ DONE '),
+      colors.reset.green.bold.inverse(' √ DONE '),
       dateFormat(now),
-      colors.green('+' + (now - bookmark) + 'ms')
+      colors.reset.green('+' + (now - bookmark) + 'ms')
     );
   }
 
