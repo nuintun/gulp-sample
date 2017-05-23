@@ -180,6 +180,8 @@ function watch(glob, options, callabck) {
 
 // css resource path
 function onpath(path, property, file, wwwroot) {
+  if (property === 'import') return path;
+
   if (/^[^./\\]/.test(path)) {
     path = './' + path;
   }
