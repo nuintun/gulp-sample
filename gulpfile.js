@@ -179,21 +179,8 @@ function watch(glob, options, callabck) {
 }
 
 // css resource path
-function onpath(path, property, file, wwwroot) {
-  if (/^[^./\\]/.test(path)) {
-    path = './' + path;
-  }
-
-  if (property !== 'import' && path.indexOf('.') === 0) {
-    path = join(dirname(file), path);
-    path = relative(wwwroot, path);
-    path = '/' + path;
-    path = path.replace(/\\+/g, '/');
-  }
-
-  path = path.replace('/static/develop/', '/static/product/');
-
-  return path;
+function onpath(path) {
+  return path.replace('/static/develop/', '/static/product/');
 }
 
 // date format
@@ -283,6 +270,7 @@ gulp.task('product', ['runtime-product'], function() {
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
+      map: [onpath],
       ignore: ['jquery'],
       plugins: CMDPLUGINS,
       include: function(id) {
@@ -299,6 +287,7 @@ gulp.task('product', ['runtime-product'], function() {
   gulp.src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
     .pipe(css({
       include: true,
+      map: [onpath],
       onpath: onpath,
       plugins: CSSPLUGINS
     }))
@@ -324,6 +313,7 @@ gulp.task('default', ['runtime'], function() {
   gulp.src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(cmd({
       alias: alias,
+      map: [onpath],
       include: 'self',
       css: { onpath: onpath }
     }))
@@ -332,7 +322,10 @@ gulp.task('default', ['runtime'], function() {
 
   // css files
   gulp.src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
-    .pipe(css({ onpath: onpath }))
+    .pipe(css({
+      map: [onpath],
+      onpath: onpath
+    }))
     .pipe(gulp.dest('static/product'))
     .on('finish', complete);
 });
@@ -380,6 +373,7 @@ gulp.task('watch', ['default'], function() {
         .pipe(plumber())
         .pipe(cmd({
           alias: alias,
+          map: [onpath],
           include: 'self',
           cache: false,
           css: { onpath: onpath }
@@ -405,9 +399,8 @@ gulp.task('watch', ['default'], function() {
       gulp.src(path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(css({
-          onpath: function(path) {
-            return path.replace('static/develop/', 'static/product/')
-          }
+          map: [onpath],
+          onpath: onpath
         }))
         .pipe(gulp.dest('static/product'))
         .on('finish', complete);
