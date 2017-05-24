@@ -178,8 +178,21 @@ function watch(glob, options, callabck) {
   return watcher;
 }
 
-// css resource path
-function onpath(path) {
+// map path
+function onpath(path, property, file, wwwroot) {
+  if (property) {
+    if (/^[^./\\]/.test(path)) {
+      path = './' + path;
+    }
+
+    if (path.charAt(0) === '.') {
+      path = join(dirname(file), path);
+      path = relative(wwwroot, path);
+      path = '/' + path;
+      path = path.replace(/\\+/g, '/');
+    }
+  }
+
   return path.replace('/static/develop/', '/static/product/');
 }
 
