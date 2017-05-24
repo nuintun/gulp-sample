@@ -179,7 +179,7 @@ function watch(glob, options, callabck) {
 }
 
 // map path
-function onpath(path, property, file, wwwroot) {
+function onpath(path, file, wwwroot, property) {
   if (property) {
     if (/^[^./\\]/.test(path)) {
       path = './' + path;
