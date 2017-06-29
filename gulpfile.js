@@ -22,7 +22,7 @@ var cmd = require('@nuintun/gulp-cmd');
 var colors = cmd.colors;
 var pedding = require('pedding');
 var cssnano = require('cssnano');
-var uglify = require('uglify-js');
+var uglify = require('uglify-es');
 var chokidar = require('chokidar');
 var plumber = require('gulp-plumber');
 var switchStream = require('@nuintun/switch-stream');
@@ -61,9 +61,9 @@ function compress() {
     js: switchStream.through(function(vinyl, encoding, next) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
-          compress: { ie8: true },
-          mangle: { ie8: true, eval: true },
-          output: { ie8: true }
+          ecma: 5,
+          ie8: true,
+          mangle: { eval: true }
         });
 
         vinyl.contents = new Buffer(result.code);
@@ -98,9 +98,9 @@ var CMDPLUGINS = {
       cmd.defaults.plugins.css.exec(vinyl, options, function(vinyl) {
         try {
           var result = uglify.minify(vinyl.contents.toString(), {
-            compress: { ie8: true },
-            mangle: { ie8: true, eval: true },
-            output: { ie8: true }
+            ecma: 5,
+            ie8: true,
+            mangle: { eval: true }
           });
 
           vinyl.contents = new Buffer(result.code);
@@ -122,9 +122,9 @@ var CMDPLUGINS = {
     cmd.defaults.plugins[name].exec(vinyl, options, function(vinyl) {
       try {
         var result = uglify.minify(vinyl.contents.toString(), {
-          compress: { ie8: true },
-          mangle: { ie8: true, eval: true },
-          output: { ie8: true }
+          ecma: 5,
+          ie8: true,
+          mangle: { eval: true }
         });
 
         vinyl.contents = new Buffer(result.code);
@@ -351,7 +351,7 @@ gulp.task('watch', ['default'], function() {
   function debugWatcher(event, path) {
     console.log(
       '  %s %s: %s',
-      colors.reset.green.bold.inverse(' CHANGE '),
+      colors.reset.green.bold.inverse(' ○ WAIT '),
       event,
       colors.reset.magenta(join('static/develop', path).replace(/\\/g, '/'))
     );
