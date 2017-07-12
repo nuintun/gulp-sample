@@ -56,7 +56,12 @@ function progress(print) {
     var info = colors.reset.reset('process: ')
       + colors.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
 
-    print(info);
+    if (print) {
+      print(info);
+    } else {
+      process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + info + '\n');
+    }
+
     next(null, vinyl);
   });
 }
