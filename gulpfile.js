@@ -49,6 +49,18 @@ var alias = {
 // bookmark
 var bookmark = Date.now();
 
+// show progress logger
+function progress(print) {
+  return switchStream.through(function(vinyl, encoding, next) {
+
+    var info = colors.reset.reset('process: ')
+      + colors.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+
+    print(info);
+    next(null, vinyl);
+  });
+}
+
 // compress javascript file
 function compress() {
   return switchStream(function(vinyl) {
@@ -185,11 +197,15 @@ gulp.task('runtime', ['clean'], function() {
   // loader file
   gulp
     .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress())
     .pipe(gulp.dest('static/product'));
 
   // image file
   gulp
     .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress())
     .pipe(gulp.dest('static/product'));
 });
 
@@ -198,12 +214,16 @@ gulp.task('runtime-product', ['clean'], function() {
   // loader file
   gulp
     .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress())
     .pipe(compress())
     .pipe(gulp.dest('static/product'));
 
   // image file
   gulp
     .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress())
     .pipe(gulp.dest('static/product'));
 });
 
@@ -224,6 +244,8 @@ gulp.task('product', ['runtime-product'], function() {
   // js files
   gulp
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+    .pipe(plumber())
+    .pipe(progress(cmd.print))
     .pipe(cmd({
       alias: alias,
       map: resolveMapPath,
@@ -240,6 +262,8 @@ gulp.task('product', ['runtime-product'], function() {
   // css files
   gulp
     .src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress(css.print))
     .pipe(css({
       include: true,
       map: resolveMapPath,
@@ -267,6 +291,8 @@ gulp.task('default', ['runtime'], function() {
   // js files
   gulp
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+    .pipe(plumber())
+    .pipe(progress(cmd.print))
     .pipe(cmd({
       alias: alias,
       include: 'self',
@@ -280,6 +306,8 @@ gulp.task('default', ['runtime'], function() {
   // css files
   gulp
     .src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
+    .pipe(plumber())
+    .pipe(progress(css.print))
     .pipe(css({
       map: resolveMapPath,
       onpath: resolveCSSPath,
@@ -297,7 +325,7 @@ gulp.task('watch', ['default'], function() {
   function debugWatcher(event, path) {
     console.log(
       '  %s %s: %s',
-      colors.reset.green.bold.inverse(' ○ WAIT '),
+      colors.reset.green.bold.inverse(' • WAIT '),
       event,
       colors.reset.magenta(join('static/develop', path).replace(/\\/g, '/'))
     );
@@ -385,6 +413,7 @@ gulp.task('watch', ['default'], function() {
     } else {
       gulp
         .src(path, { base: 'static/develop' })
+        .pipe(plumber())
         .pipe(gulp.dest('static/product'))
         .on('finish', complete);
     }
