@@ -332,7 +332,7 @@ gulp.task('watch', ['default'], function() {
       '  %s %s: %s',
       colors.reset.green.bold.inverse(' • WAIT '),
       event,
-      colors.reset.magenta(join('static/develop', path).replace(/\\/g, '/'))
+      colors.reset.green(join('static/develop', path).replace(/\\/g, '/'))
     );
   }
 
