@@ -4,11 +4,7 @@
 
 'use strict';
 
-// 强制打开彩色控制台
-// process.env.DEBUG_COLORS = 'true';
-// 开启 DEBUG 开关
-// process.env.DEBUG = 'gulp-css,gulp-cmd';
-
+var util = require('util');
 var path = require('path');
 var join = path.join;
 var relative = path.relative;
@@ -66,6 +62,18 @@ function progress(print) {
   });
 }
 
+/**
+ * inspectError
+ *
+ * @param {Error} error
+ * @returns {String}
+ */
+function inspectError(error) {
+  return util
+    .inspect(error)
+    .replace(/^\{\s*|\}\s*$/g, '');
+}
+
 // compress javascript file
 function compress() {
   return switchStream(function(vinyl) {
@@ -78,16 +86,16 @@ function compress() {
     }
   }, {
     js: switchStream.through(function(vinyl, encoding, next) {
-      try {
-        var result = uglify.minify(vinyl.contents.toString(), {
-          ecma: 5,
-          ie8: true,
-          mangle: { eval: true }
-        });
+      var result = uglify.minify(vinyl.contents.toString(), {
+        ecma: 5,
+        ie8: true,
+        mangle: { eval: true }
+      });
 
+      if (result.error) {
+        process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+      } else {
         vinyl.contents = new Buffer(result.code);
-      } catch (error) {
-        // no nothing
       }
 
       this.push(vinyl);
@@ -96,12 +104,18 @@ function compress() {
     css: switchStream.through(function(vinyl, encoding, next) {
       var context = this;
 
-      cssnano.process(vinyl.contents.toString(), { safe: true }).then(function(result) {
-        vinyl.contents = new Buffer(result.css);
+      cssnano
+        .process(vinyl.contents.toString(), { safe: true })
+        .then(function(result) {
+          vinyl.contents = new Buffer(result.css);
 
-        context.push(vinyl);
-        next();
-      });
+          context.push(vinyl);
+          next();
+        })
+        .catch(function(error) {
+          process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+          next();
+        });
     })
   });
 }
