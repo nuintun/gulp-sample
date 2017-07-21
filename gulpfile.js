@@ -262,13 +262,14 @@ gulp.task('product', ['runtime-product'], function() {
 
   // js files
   gulp
-    .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+    .src('static/develop/js/**/*', { nodir: true })
     .pipe(plumber())
     .pipe(progress(cmd.print))
     .pipe(cmd({
       alias: alias,
       map: resolveMapPath,
       ignore: ['jquery'],
+      base: 'static/develop/js',
       css: { onpath: resolveCSSPath },
       plugins: cmdAddons({ minify: true }),
       include: function(id) {
@@ -280,13 +281,14 @@ gulp.task('product', ['runtime-product'], function() {
 
   // css files
   gulp
-    .src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
+    .src('static/develop/css/?(base|view)/**/*', { nodir: true })
     .pipe(plumber())
     .pipe(progress(css.print))
     .pipe(css({
       include: true,
       map: resolveMapPath,
       onpath: resolveCSSPath,
+      base: 'static/develop',
       plugins: cssAddons({ minify: true })
     }))
     .pipe(gulp.dest('static/product'))
@@ -309,7 +311,7 @@ gulp.task('default', ['runtime'], function() {
 
   // js files
   gulp
-    .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+    .src('static/develop/js/**/*', { nodir: true })
     .pipe(plumber())
     .pipe(progress(cmd.print))
     .pipe(cmd({
@@ -317,6 +319,7 @@ gulp.task('default', ['runtime'], function() {
       include: 'self',
       map: resolveMapPath,
       plugins: cmdAddons(),
+      base: 'static/develop/js',
       css: { onpath: resolveCSSPath }
     }))
     .pipe(gulp.dest('static/product/js'))
@@ -324,12 +327,13 @@ gulp.task('default', ['runtime'], function() {
 
   // css files
   gulp
-    .src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
+    .src('static/develop/css/**/*', { nodir: true })
     .pipe(plumber())
     .pipe(progress(css.print))
     .pipe(css({
       map: resolveMapPath,
       onpath: resolveCSSPath,
+      base: 'static/develop',
       plugins: cssAddons()
     }))
     .pipe(gulp.dest('static/product'))
@@ -376,7 +380,7 @@ gulp.task('watch', ['default'], function() {
       complete();
     } else {
       gulp
-        .src(path, { base: 'static/develop/js' })
+        .src(path)
         .pipe(plumber())
         .pipe(cmd({
           cache: false,
@@ -384,6 +388,7 @@ gulp.task('watch', ['default'], function() {
           include: 'self',
           map: resolveMapPath,
           plugins: cmdAddons(),
+          base: 'static/develop/js',
           css: { onpath: resolveCSSPath }
         }))
         .pipe(gulp.dest('static/product/js'))
@@ -405,11 +410,12 @@ gulp.task('watch', ['default'], function() {
       complete();
     } else {
       gulp
-        .src(path, { base: 'static/develop' })
+        .src(path)
         .pipe(plumber())
         .pipe(css({
           map: resolveMapPath,
           onpath: resolveCSSPath,
+          base: 'static/develop',
           plugins: cssAddons()
         }))
         .pipe(gulp.dest('static/product'))
