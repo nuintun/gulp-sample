@@ -92,7 +92,9 @@ function inspectError(error) {
     .replace(/^\{\s*|\}\s*$/g, '');
 }
 
-// compress javascript file
+/**
+ * compress javascript file
+ */
 function compress() {
   return switchStream(function(vinyl) {
     if (extname(vinyl.path) === '.js') {
