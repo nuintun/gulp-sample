@@ -45,7 +45,11 @@ var alias = {
 // bookmark
 var bookmark = Date.now();
 
-// show progress logger
+/**
+ * show progress logger
+ *
+ * @param {Function} print
+ */
 function progress(print) {
   return switchStream.through(function(vinyl, encoding, next) {
 
@@ -60,6 +64,20 @@ function progress(print) {
 
     next(null, vinyl);
   });
+}
+
+/**
+ * build finish function
+ */
+function finish() {
+  var now = new Date();
+
+  console.log(
+    '  %s [%s] build complete... %s\x07',
+    colors.reset.green.bold.inverse(' √ DONE '),
+    dateFormat(now),
+    colors.reset.green('+' + (now - bookmark) + 'ms')
+  );
 }
 
 /**
@@ -120,7 +138,13 @@ function compress() {
   });
 }
 
-// file watch
+/**
+ * file watch
+ *
+ * @param {String|Array<string>} glob
+ * @param {Object} options
+ * @param {Function} callabck
+ */
 function watch(glob, options, callabck) {
   if (typeof options === 'function') {
     callabck = options;
@@ -144,7 +168,13 @@ function watch(glob, options, callabck) {
   return watcher;
 }
 
-// resolve css path
+/**
+ * resolve css path
+ *
+ * @param {String} path
+ * @param {String} file
+ * @param {String} wwwroot
+ */
 function resolveCSSPath(path, file, wwwroot) {
   if (/^[^./\\]/.test(path)) {
     path = './' + path;
@@ -160,12 +190,21 @@ function resolveCSSPath(path, file, wwwroot) {
   return path.replace('/static/develop/', '/static/product/');
 }
 
-// resolve js path
+/**
+ * resolve js path
+ *
+ * @param {String} path
+ */
 function resolveMapPath(path) {
   return path.replace('/static/develop/', '/static/product/');
 }
 
-// date format
+/**
+ * date format
+ *
+ * @param {Date} date
+ * @param {String} format
+ */
 function dateFormat(date, format) {
   // 参数错误
   if (!date instanceof Date) {
@@ -249,16 +288,7 @@ gulp.task('runtime-product', ['clean'], function() {
 // product task
 gulp.task('product', ['runtime-product'], function() {
   // complete callback
-  var complete = pedding(2, function() {
-    var now = new Date();
-
-    console.log(
-      '  %s [%s] build complete... √ %s\x07',
-      colors.reset.green.bold.inverse(' √ DONE '),
-      dateFormat(now),
-      colors.reset.green('+' + (now - bookmark) + 'ms')
-    );
-  });
+  var complete = pedding(2, finish);
 
   // js files
   gulp
@@ -297,16 +327,7 @@ gulp.task('product', ['runtime-product'], function() {
 // develop task
 gulp.task('default', ['runtime'], function() {
   // complete callback
-  var complete = pedding(2, function() {
-    var now = new Date();
-
-    console.log(
-      '  %s [%s] build complete... %s\x07',
-      colors.reset.green.bold.inverse(' √ DONE '),
-      dateFormat(now),
-      colors.reset.green('+' + (now - bookmark) + 'ms')
-    );
-  });
+  var complete = pedding(2, finish);
 
   // js files
   gulp
@@ -342,7 +363,12 @@ gulp.task('default', ['runtime'], function() {
 gulp.task('watch', ['default'], function() {
   var base = join(process.cwd(), 'static/develop');
 
-  // debug watcher
+  /**
+   * debug watcher
+   *
+   * @param {String} event
+   * @param {String} path
+   */
   function debugWatcher(event, path) {
     console.log(
       '  %s %s: %s',
@@ -352,12 +378,14 @@ gulp.task('watch', ['default'], function() {
     );
   }
 
-  // complete callback
+  /**
+   * watch build complete
+   */
   function complete() {
     var now = new Date();
 
     console.log(
-      '  %s [%s] build complete... √ %s',
+      '  %s [%s] build complete... %s',
       colors.reset.green.bold.inverse(' √ DONE '),
       dateFormat(now),
       colors.reset.green('+' + (now - bookmark) + 'ms')
