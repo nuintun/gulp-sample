@@ -73,7 +73,7 @@ function finish() {
   var now = new Date();
 
   console.log(
-    '  %s [%s] build complete... %s\x07',
+    '  %s [%s] build complete... %s',
     colors.reset.green.bold.inverse(' √ DONE '),
     dateFormat(now),
     colors.reset.green('+' + (now - bookmark) + 'ms')
@@ -288,7 +288,10 @@ gulp.task('runtime-product', ['clean'], function() {
 // product task
 gulp.task('product', ['runtime-product'], function() {
   // complete callback
-  var complete = pedding(2, finish);
+  var complete = pedding(2, function() {
+    finish();
+    process.stdout.write('\x07');
+  });
 
   // js files
   gulp
@@ -327,7 +330,10 @@ gulp.task('product', ['runtime-product'], function() {
 // develop task
 gulp.task('default', ['runtime'], function() {
   // complete callback
-  var complete = pedding(2, finish);
+  var complete = pedding(2, function() {
+    finish();
+    process.stdout.write('\x07');
+  });
 
   // js files
   gulp
@@ -378,20 +384,6 @@ gulp.task('watch', ['default'], function() {
     );
   }
 
-  /**
-   * watch build complete
-   */
-  function complete() {
-    var now = new Date();
-
-    console.log(
-      '  %s [%s] build complete... %s',
-      colors.reset.green.bold.inverse(' √ DONE '),
-      dateFormat(now),
-      colors.reset.green('+' + (now - bookmark) + 'ms')
-    );
-  }
-
   // watch js files
   watch('static/develop/js', function(event, path) {
     var rpath = relative(base, path);
@@ -418,7 +410,7 @@ gulp.task('watch', ['default'], function() {
           css: { onpath: resolveCSSPath }
         }))
         .pipe(gulp.dest('static/product/js'))
-        .on('finish', complete);
+        .on('finish', finish);
     }
   });
 
@@ -444,7 +436,7 @@ gulp.task('watch', ['default'], function() {
           plugins: cssAddons()
         }))
         .pipe(gulp.dest('static/product'))
-        .on('finish', complete);
+        .on('finish', finish);
     }
   });
 
@@ -465,7 +457,7 @@ gulp.task('watch', ['default'], function() {
         .src(path, { base: 'static/develop' })
         .pipe(plumber())
         .pipe(gulp.dest('static/product'))
-        .on('finish', complete);
+        .on('finish', finish);
     }
   });
 });
