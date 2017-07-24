@@ -269,6 +269,7 @@ gulp.task('product', ['runtime-product'], function() {
       alias: alias,
       map: resolveMapPath,
       ignore: ['jquery'],
+      base: 'static/develop/js',
       css: { onpath: resolveCSSPath },
       plugins: cmdAddons({ minify: true }),
       include: function(id) {
@@ -315,6 +316,7 @@ gulp.task('default', ['runtime'], function() {
     .pipe(cmd({
       alias: alias,
       include: 'self',
+      base: 'static/develop/js',
       map: resolveMapPath,
       plugins: cmdAddons(),
       css: { onpath: resolveCSSPath }
@@ -382,6 +384,7 @@ gulp.task('watch', ['default'], function() {
           cache: false,
           alias: alias,
           include: 'self',
+          base: 'static/develop/js',
           map: resolveMapPath,
           plugins: cmdAddons(),
           css: { onpath: resolveCSSPath }
