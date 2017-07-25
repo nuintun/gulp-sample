@@ -28,7 +28,7 @@
   "dependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "holding": "^1.0.3",
+    "holding": "^1.0.4",
     "chokidar": "^1.7.0",
     "cssnano": "^3.10.0",
     "uglify-es": "^3.0.25",
