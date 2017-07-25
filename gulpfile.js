@@ -210,7 +210,7 @@ function resolveMapPath(path) {
 function dateFormat(date, format) {
   // 参数错误
   if (!date instanceof Date) {
-    throw new TypeError('Param date must be a Date');
+    throw new TypeError('Param date must be a Date.');
   }
 
   format = format || 'yyyy-MM-dd hh:mm:ss';
