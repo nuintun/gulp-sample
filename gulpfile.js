@@ -16,7 +16,7 @@ var rimraf = require('del');
 var css = require('@nuintun/gulp-css');
 var cmd = require('@nuintun/gulp-cmd');
 var colors = cmd.colors;
-var pedding = require('pedding');
+var holding = require('holding');
 var cssnano = require('cssnano');
 var uglify = require('uglify-es');
 var chokidar = require('chokidar');
@@ -290,7 +290,7 @@ gulp.task('runtime-product', ['clean'], function() {
 // product task
 gulp.task('product', ['runtime-product'], function() {
   // complete callback
-  var complete = pedding(2, function() {
+  var complete = holding(1, function() {
     finish();
     process.stdout.write('\x07');
   });
@@ -332,7 +332,7 @@ gulp.task('product', ['runtime-product'], function() {
 // develop task
 gulp.task('default', ['runtime'], function() {
   // complete callback
-  var complete = pedding(2, function() {
+  var complete = holding(1, function() {
     finish();
     process.stdout.write('\x07');
   });
