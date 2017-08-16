@@ -397,7 +397,7 @@ gulp.task('watch', ['default'], function() {
 
     if (event === 'unlink' || event === 'unlinkdir') {
       rimraf.sync(resolve('static/product', rpath));
-      complete();
+      finish();
     } else {
       gulp
         .src(path, { base: 'static/develop/js' })
@@ -427,7 +427,7 @@ gulp.task('watch', ['default'], function() {
 
     if (event === 'unlink' || event === 'unlinkdir') {
       rimraf.sync(resolve('static/product', relative(base, path)));
-      complete();
+      finish();
     } else {
       gulp
         .src(path, { base: 'static/develop' })
@@ -453,7 +453,7 @@ gulp.task('watch', ['default'], function() {
 
     if (event === 'unlink' || event === 'unlinkdir') {
       rimraf.sync(resolve('static/product', relative(base, path)));
-      complete();
+      finish();
     } else {
       gulp
         .src(path, { base: 'static/develop' })
