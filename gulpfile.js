@@ -15,7 +15,7 @@ var gulp = require('gulp');
 var rimraf = require('del');
 var css = require('@nuintun/gulp-css');
 var cmd = require('@nuintun/gulp-cmd');
-var colors = cmd.colors;
+var chalk = cmd.chalk;
 var holding = require('holding');
 var cssnano = require('cssnano');
 var uglify = require('uglify-es');
@@ -53,13 +53,13 @@ var bookmark = Date.now();
 function progress(print) {
   return switchStream.through(function(vinyl, encoding, next) {
 
-    var info = colors.reset.reset('process: ')
-      + colors.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+    var info = chalk.reset.reset('process: ')
+      + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
 
     if (print) {
       print(info);
     } else {
-      process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + info + '\n');
+      process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + info + '\n');
     }
 
     next(null, vinyl);
@@ -74,9 +74,9 @@ function finish() {
 
   console.log(
     '  %s [%s] build complete... %s',
-    colors.reset.green.bold.inverse(' √ DONE '),
+    chalk.reset.green.bold.inverse(' √ DONE '),
     dateFormat(now),
-    colors.reset.green('+' + (now - bookmark) + 'ms')
+    chalk.reset.green('+' + (now - bookmark) + 'ms')
   );
 }
 
@@ -113,7 +113,7 @@ function compress() {
       });
 
       if (result.error) {
-        process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+        process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
       } else {
         vinyl.contents = new Buffer(result.code);
       }
@@ -133,7 +133,7 @@ function compress() {
           next();
         })
         .catch(function(error) {
-          process.stdout.write(colors.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
           next();
         });
     })
@@ -380,9 +380,9 @@ gulp.task('watch', ['default'], function() {
   function debugWatcher(event, path) {
     console.log(
       '  %s %s: %s',
-      colors.reset.green.bold.inverse(' • WAIT '),
+      chalk.reset.green.bold.inverse(' • WAIT '),
       event,
-      colors.reset.green(join('static/develop', path).replace(/\\/g, '/'))
+      chalk.reset.green(join('static/develop', path).replace(/\\/g, '/'))
     );
   }
 
