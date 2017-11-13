@@ -176,6 +176,7 @@ function watch(glob, options, callabck) {
  * @param {string} path
  * @param {string} file
  * @param {string} wwwroot
+ * @returns {string}
  */
 function resolveCSSPath(path, file, wwwroot) {
   if (/^[^./\\]/.test(path)) {
@@ -196,6 +197,7 @@ function resolveCSSPath(path, file, wwwroot) {
  * @function resolveMapPath
  * @description Resolve js path
  * @param {string} path
+ * @returns {string}
  */
 function resolveMapPath(path) {
   return path.replace('/static/develop/', '/static/product/');
@@ -206,6 +208,7 @@ function resolveMapPath(path) {
  * @description Date format
  * @param {Date} date
  * @param {string} format
+ * @returns {string}
  */
 function dateFormat(date, format) {
   // 参数错误
