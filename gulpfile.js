@@ -1,32 +1,34 @@
 /**
- * Created by nuintun on 2015/5/5.
+ * @module gulpfile
+ * @license MIT
+ * @version 2017/11/13
  */
 
 'use strict';
 
-var util = require('util');
-var path = require('path');
-var join = path.join;
-var relative = path.relative;
-var dirname = path.dirname;
-var extname = path.extname;
-var resolve = path.resolve;
-var gulp = require('gulp');
-var rimraf = require('del');
-var css = require('@nuintun/gulp-css');
-var cmd = require('@nuintun/gulp-cmd');
-var chalk = cmd.chalk;
-var holding = require('holding');
-var cssnano = require('cssnano');
-var uglify = require('uglify-es');
-var chokidar = require('chokidar');
-var plumber = require('gulp-plumber');
-var cmdAddons = require('@nuintun/gulp-cmd-plugins');
-var cssAddons = require('@nuintun/gulp-css-plugins');
-var switchStream = require('@nuintun/switch-stream');
+const util = require('util');
+const path = require('path');
+const join = path.join;
+const relative = path.relative;
+const dirname = path.dirname;
+const extname = path.extname;
+const resolve = path.resolve;
+const gulp = require('gulp');
+const rimraf = require('del');
+const css = require('@nuintun/gulp-css');
+const cmd = require('@nuintun/gulp-cmd');
+const chalk = cmd.chalk;
+const holding = require('holding');
+const cssnano = require('cssnano');
+const uglify = require('uglify-es');
+const chokidar = require('chokidar');
+const plumber = require('gulp-plumber');
+const cmdAddons = require('@nuintun/gulp-cmd-plugins');
+const cssAddons = require('@nuintun/gulp-css-plugins');
+const switchStream = require('@nuintun/switch-stream');
 
 // alias
-var alias = {
+const alias = {
   'css-loader': 'util/css-loader/1.0.0/css-loader',
   'jquery': 'base/jquery/1.11.3/jquery',
   'base': 'base/base/1.2.0/base',
@@ -42,18 +44,17 @@ var alias = {
   'dialog': 'common/dialog/1.5.1/dialog',
   'confirmbox': 'common/dialog/1.5.1/confirmbox'
 };
-// bookmark
-var bookmark = Date.now();
+// Bookmark
+let bookmark = Date.now();
 
 /**
- * show progress logger
- *
+ * @function progress
+ * @description Show progress logger
  * @param {Function} print
  */
 function progress(print) {
   return switchStream.through(function(vinyl, encoding, next) {
-
-    var info = chalk.reset.reset('process: ')
+    const info = chalk.reset.reset('process: ')
       + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
 
     if (print) {
@@ -67,10 +68,11 @@ function progress(print) {
 }
 
 /**
- * build finish function
+ * @function finish
+ * @description Build finish function
  */
 function finish() {
-  var now = new Date();
+  const now = new Date();
 
   console.log(
     '  %s [%s] build complete... %s',
@@ -81,10 +83,9 @@ function finish() {
 }
 
 /**
- * inspectError
- *
+ * @function inspectError
  * @param {Error} error
- * @returns {String}
+ * @returns {string}
  */
 function inspectError(error) {
   return util
@@ -93,10 +94,11 @@ function inspectError(error) {
 }
 
 /**
- * compress javascript file
+ * @function compress
+ * @description Compress javascript file
  */
 function compress() {
-  return switchStream(function(vinyl) {
+  return switchStream((vinyl) => {
     if (extname(vinyl.path) === '.js') {
       return 'js';
     }
@@ -106,7 +108,7 @@ function compress() {
     }
   }, {
     js: switchStream.through(function(vinyl, encoding, next) {
-      var result = uglify.minify(vinyl.contents.toString(), {
+      const result = uglify.minify(vinyl.contents.toString(), {
         ecma: 5,
         ie8: true,
         mangle: { eval: true }
@@ -122,17 +124,15 @@ function compress() {
       next();
     }),
     css: switchStream.through(function(vinyl, encoding, next) {
-      var context = this;
-
       cssnano
         .process(vinyl.contents.toString(), { safe: true })
-        .then(function(result) {
+        .then((result) => {
           vinyl.contents = new Buffer(result.css);
 
           context.push(vinyl);
           next();
         })
-        .catch(function(error) {
+        .catch((error) => {
           process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
           next();
         });
@@ -141,9 +141,9 @@ function compress() {
 }
 
 /**
- * file watch
- *
- * @param {String|Array<string>} glob
+ * @function watch
+ * @description Files watch
+ * @param {string|Array<string>} glob
  * @param {Object} options
  * @param {Function} callabck
  */
@@ -153,29 +153,29 @@ function watch(glob, options, callabck) {
     options = {};
   }
 
-  // ignore initial add event
+  // Ignore initial add event
   options.ignoreInitial = true;
-  // ignore permission errors
+  // Ignore permission errors
   options.ignorePermissionErrors = true;
 
-  // get watcher
-  var watcher = chokidar.watch(glob, options);
+  // Get watcher
+  const watcher = chokidar.watch(glob, options);
 
-  // bing event
+  // Bind event
   if (callabck) {
     watcher.on('all', callabck);
   }
 
-  // return watcher
+  // Return watcher
   return watcher;
 }
 
 /**
- * resolve css path
- *
- * @param {String} path
- * @param {String} file
- * @param {String} wwwroot
+ * @function resolveCSSPath
+ * @description Resolve css path
+ * @param {string} path
+ * @param {string} file
+ * @param {string} wwwroot
  */
 function resolveCSSPath(path, file, wwwroot) {
   if (/^[^./\\]/.test(path)) {
@@ -193,19 +193,19 @@ function resolveCSSPath(path, file, wwwroot) {
 }
 
 /**
- * resolve js path
- *
- * @param {String} path
+ * @function resolveMapPath
+ * @description Resolve js path
+ * @param {string} path
  */
 function resolveMapPath(path) {
   return path.replace('/static/develop/', '/static/product/');
 }
 
 /**
- * date format
- *
+ * @function dateFormat
+ * @description Date format
  * @param {Date} date
- * @param {String} format
+ * @param {string} format
  */
 function dateFormat(date, format) {
   // 参数错误
@@ -215,7 +215,7 @@ function dateFormat(date, format) {
 
   format = format || 'yyyy-MM-dd hh:mm:ss';
 
-  var map = {
+  const map = {
     'M': date.getMonth() + 1, // 月份
     'd': date.getDate(), // 日
     'h': date.getHours(), // 小时
@@ -225,8 +225,8 @@ function dateFormat(date, format) {
     'S': date.getMilliseconds() // 毫秒
   };
 
-  format = format.replace(/([yMdhmsqS])+/g, function(all, t) {
-    var v = map[t];
+  format = format.replace(/([yMdhmsqS])+/g, (all, t) => {
+    let v = map[t];
 
     if (v !== undefined) {
       if (all.length > 1) {
@@ -245,23 +245,23 @@ function dateFormat(date, format) {
   return format;
 }
 
-// clean task
-gulp.task('clean', function() {
+// Clean task
+gulp.task('clean', () => {
   bookmark = Date.now();
 
   rimraf.sync('static/product');
 });
 
-// runtime task
-gulp.task('runtime', ['clean'], function() {
-  // loader file
+// Runtime task
+gulp.task('runtime', ['clean'], () => {
+  // Loader file
   gulp
     .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
     .pipe(plumber())
     .pipe(progress())
     .pipe(gulp.dest('static/product'));
 
-  // image file
+  // Image file
   gulp
     .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
@@ -269,9 +269,9 @@ gulp.task('runtime', ['clean'], function() {
     .pipe(gulp.dest('static/product'));
 });
 
-// runtime product task
-gulp.task('runtime-product', ['clean'], function() {
-  // loader file
+// Runtime product task
+gulp.task('runtime-product', ['clean'], () => {
+  // Loader file
   gulp
     .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
     .pipe(plumber())
@@ -279,7 +279,7 @@ gulp.task('runtime-product', ['clean'], function() {
     .pipe(compress())
     .pipe(gulp.dest('static/product'));
 
-  // image file
+  // Image file
   gulp
     .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
@@ -287,15 +287,15 @@ gulp.task('runtime-product', ['clean'], function() {
     .pipe(gulp.dest('static/product'));
 });
 
-// product task
-gulp.task('product', ['runtime-product'], function() {
-  // complete callback
-  var complete = holding(1, function() {
+// Product task
+gulp.task('product', ['runtime-product'], () => {
+  // Complete callback
+  const complete = holding(1, () => {
     finish();
     process.stdout.write('\x07');
   });
 
-  // js files
+  // JS files
   gulp
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(plumber())
@@ -307,14 +307,14 @@ gulp.task('product', ['runtime-product'], function() {
       base: 'static/develop/js',
       css: { onpath: resolveCSSPath },
       plugins: cmdAddons({ minify: true }),
-      include: function(id) {
+      include: (id) => {
         return id && id.indexOf('view') === 0 ? 'all' : 'self';
       }
     }))
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
-  // css files
+  // CSS files
   gulp
     .src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
@@ -329,15 +329,15 @@ gulp.task('product', ['runtime-product'], function() {
     .on('finish', complete);
 });
 
-// develop task
-gulp.task('default', ['runtime'], function() {
-  // complete callback
-  var complete = holding(1, function() {
+// Develop task
+gulp.task('default', ['runtime'], () => {
+  // Complete callback
+  const complete = holding(1, () => {
     finish();
     process.stdout.write('\x07');
   });
 
-  // js files
+  // JS files
   gulp
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(plumber())
@@ -353,7 +353,7 @@ gulp.task('default', ['runtime'], function() {
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
-  // css files
+  // CSS files
   gulp
     .src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
@@ -367,15 +367,14 @@ gulp.task('default', ['runtime'], function() {
     .on('finish', complete);
 });
 
-// develop watch task
-gulp.task('watch', ['default'], function() {
-  var base = join(process.cwd(), 'static/develop');
+// Develop watch task
+gulp.task('watch', ['default'], () => {
+  const base = join(process.cwd(), 'static/develop');
 
   /**
-   * debug watcher
-   *
-   * @param {String} event
-   * @param {String} path
+   * @function debugWatcher
+   * @param {string} event
+   * @param {string} path
    */
   function debugWatcher(event, path) {
     console.log(
@@ -386,9 +385,9 @@ gulp.task('watch', ['default'], function() {
     );
   }
 
-  // watch js files
-  watch('static/develop/js', function(event, path) {
-    var rpath = relative(base, path);
+  // Watch js files
+  watch('static/develop/js', (event, path) => {
+    const rpath = relative(base, path);
 
     bookmark = Date.now();
     event = event.toLowerCase();
@@ -416,8 +415,8 @@ gulp.task('watch', ['default'], function() {
     }
   });
 
-  // watch css files
-  watch('static/develop/css', function(event, path) {
+  // Watch css files
+  watch('static/develop/css', (event, path) => {
     var rpath = relative(base, path);
 
     bookmark = Date.now();
@@ -442,9 +441,9 @@ gulp.task('watch', ['default'], function() {
     }
   });
 
-  // watch image files
-  watch('static/develop/images', function(event, path) {
-    var rpath = relative(base, path);
+  // Watch image files
+  watch('static/develop/images', (event, path) => {
+    const rpath = relative(base, path);
 
     bookmark = Date.now();
     event = event.toLowerCase();
