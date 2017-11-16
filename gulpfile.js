@@ -129,11 +129,11 @@ function compress() {
         .then((result) => {
           vinyl.contents = new Buffer(result.css);
 
-          context.push(vinyl);
+          this.push(vinyl);
           next();
         })
         .catch((error) => {
-          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(error) + '\n');
           next();
         });
     })
