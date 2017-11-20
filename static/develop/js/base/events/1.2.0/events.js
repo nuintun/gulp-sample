@@ -27,7 +27,7 @@ Events.prototype.on = function(events, callback, context) {
   cache = this.__events || (this.__events = {});
   events = events.split(eventSplitter);
 
-  while (event = events.shift()) {
+  while ((event = events.shift())) {
     list = cache[event] || (cache[event] = []);
     list.push(callback, context);
   }
@@ -60,7 +60,7 @@ Events.prototype.off = function(events, callback, context) {
   events = events ? events.split(eventSplitter) : keys(cache);
 
   // Loop through the callback list, splicing where appropriate.
-  while (event = events.shift()) {
+  while ((event = events.shift())) {
     list = cache[event];
     if (!list) continue;
 
@@ -70,8 +70,7 @@ Events.prototype.off = function(events, callback, context) {
     }
 
     for (i = list.length - 2; i >= 0; i -= 2) {
-      if (!(callback && list[i] !== callback ||
-          context && list[i + 1] !== context)) {
+      if (!((callback && list[i] !== callback) || (context && list[i + 1] !== context))) {
         list.splice(i, 2);
       }
     }
@@ -85,8 +84,15 @@ Events.prototype.off = function(events, callback, context) {
 // (unless you're listening on `"all"`, which will cause your callback to
 // receive the true name of the event as the first argument).
 Events.prototype.trigger = function(events) {
-  var cache, event, all, list, i, len, rest = [],
-    args, returned = true;
+  var cache,
+    event,
+    all,
+    list,
+    i,
+    len,
+    rest = [],
+    args,
+    returned = true;
   if (!(cache = this.__events)) return this;
 
   events = events.split(eventSplitter);
@@ -99,10 +105,10 @@ Events.prototype.trigger = function(events) {
 
   // For each event, walk through the list of callbacks twice, first to
   // trigger the event, then to trigger any `"all"` callbacks.
-  while (event = events.shift()) {
+  while ((event = events.shift())) {
     // Copy callback lists to prevent modification.
-    if (all = cache.all) all = all.slice();
-    if (list = cache[event]) list = list.slice();
+    if ((all = cache.all)) all = all.slice();
+    if ((list = cache[event])) list = list.slice();
 
     // Execute event callbacks except one named "all"
     if (event !== 'all') {
@@ -147,7 +153,7 @@ Events.mixTo = function(receiver) {
       }
     }
   } else {
-    var event = new Events;
+    var event = new Events();
 
     for (var key in proto) {
       if (proto.hasOwnProperty(key)) {
@@ -160,7 +166,7 @@ Events.mixTo = function(receiver) {
     receiver[key] = function() {
       proto[key].apply(event, Array.prototype.slice.call(arguments));
       return this;
-    }
+    };
   }
 };
 
@@ -178,19 +184,29 @@ function triggerEvents(list, args, context) {
     // http://blog.csdn.net/zhengyinhui100/article/details/7837127
     switch (args.length) {
       case 0:
-        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context) !== false && pass }
+        for (; i < l; i += 2) {
+          pass = list[i].call(list[i + 1] || context) !== false && pass;
+        }
         break;
       case 1:
-        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1) !== false && pass }
+        for (; i < l; i += 2) {
+          pass = list[i].call(list[i + 1] || context, a1) !== false && pass;
+        }
         break;
       case 2:
-        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1, a2) !== false && pass }
+        for (; i < l; i += 2) {
+          pass = list[i].call(list[i + 1] || context, a1, a2) !== false && pass;
+        }
         break;
       case 3:
-        for (; i < l; i += 2) { pass = list[i].call(list[i + 1] || context, a1, a2, a3) !== false && pass }
+        for (; i < l; i += 2) {
+          pass = list[i].call(list[i + 1] || context, a1, a2, a3) !== false && pass;
+        }
         break;
       default:
-        for (; i < l; i += 2) { pass = list[i].apply(list[i + 1] || context, args) !== false && pass }
+        for (; i < l; i += 2) {
+          pass = list[i].apply(list[i + 1] || context, args) !== false && pass;
+        }
         break;
     }
   }

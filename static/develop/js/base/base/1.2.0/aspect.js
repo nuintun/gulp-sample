@@ -24,7 +24,7 @@ function weave(when, methodName, callback, context) {
   var names = methodName.split(eventSplitter);
   var name, method;
 
-  while (name = names.shift()) {
+  while ((name = names.shift())) {
     method = getMethod(this, name);
     if (!method.__isAspected) {
       wrap.call(this, name);

@@ -30,8 +30,8 @@ Shim.prototype.sync = function() {
     iframe || (iframe = this.iframe = createIframe(target));
 
     iframe.css({
-      'height': height,
-      'width': width
+      height: height,
+      width: width
     });
 
     Position.pin(iframe[0], target[0]);
@@ -56,7 +56,9 @@ if (isIE6) {
   // 除了 IE6 都返回空函数
   function Noop() {}
 
-  Noop.prototype.sync = function() { return this };
+  Noop.prototype.sync = function() {
+    return this;
+  };
   Noop.prototype.destroy = Noop;
 
   module.exports = Noop;
@@ -81,7 +83,7 @@ function createIframe(target) {
   }
 
   return $('<iframe>', {
-    src: 'javascript:\'\'', // 不加的话，https 下会弹警告
+    src: "javascript:''", // 不加的话，https 下会弹警告
     frameborder: 0,
     css: css
   }).insertBefore(target);

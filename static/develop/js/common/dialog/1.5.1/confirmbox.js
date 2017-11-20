@@ -51,7 +51,6 @@ var ConfirmBox = Dialog.extend({
   _onChangeCancelTpl: function(val) {
     this.$('[data-role=cancel]').html(val);
   }
-
 });
 
 ConfirmBox.alert = function(message, callback, options) {
@@ -105,11 +104,14 @@ ConfirmBox.show = function(message, callback, options) {
     cancelTpl: false
   };
 
-  new ConfirmBox($.extend(null, defaults, options)).show().before('hide', function() {
-    callback && callback.apply(this, arguments);
-  }).after('hide', function() {
-    this.destroy();
-  });
+  new ConfirmBox($.extend(null, defaults, options))
+    .show()
+    .before('hide', function() {
+      callback && callback.apply(this, arguments);
+    })
+    .after('hide', function() {
+      this.destroy();
+    });
 };
 
 module.exports = ConfirmBox;

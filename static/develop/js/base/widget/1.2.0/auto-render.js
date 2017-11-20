@@ -26,7 +26,6 @@ exports.autoRenderAll = function(root, callback) {
 
   if (modules.length) {
     seajs.use(modules, function() {
-
       for (var i = 0; i < arguments.length; i++) {
         var SubWidget = arguments[i];
         var element = $(elements[i]);
@@ -52,7 +51,7 @@ exports.autoRenderAll = function(root, callback) {
 
       // 在所有自动渲染完成后，执行回调
       callback && callback();
-    })
+    });
   }
 };
 
@@ -65,6 +64,5 @@ exports.isDataApiOff = function(element) {
   // data-api 默认开启，关闭只有两种方式：
   //  1. element 上有 data-api="off"，表示关闭单个
   //  2. document.body 上有 data-api="off"，表示关闭所有
-  return elementDataApi === 'off' ||
-    (elementDataApi !== 'on' && isDefaultOff);
+  return elementDataApi === 'off' || (elementDataApi !== 'on' && isDefaultOff);
 };

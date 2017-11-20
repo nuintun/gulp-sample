@@ -86,9 +86,8 @@ var Widget = Base.extend({
 
     if (element) {
       this.element = $(element);
-    }
-    // 未传入 element 时，从 template 构建
-    else if (this.get('template')) {
+    } else if (this.get('template')) {
+      // 未传入 element 时，从 template 构建
       this.parseElementFromTemplate();
     }
 
@@ -111,26 +110,20 @@ var Widget = Base.extend({
     if (argus.length === 0) {
       events = getEvents(this);
       element = this.element;
-    }
-
-    // widget.delegateEvents({
-    //   'click p': 'fn1',
-    //   'click li': 'fn2'
-    // })
-    else if (argus.length === 1) {
+    } else if (argus.length === 1) {
+      // widget.delegateEvents({
+      //   'click p': 'fn1',
+      //   'click li': 'fn2'
+      // })
       events = element;
       element = this.element;
-    }
-
-    // widget.delegateEvents('click p', function(ev) { ... })
-    else if (argus.length === 2) {
+    } else if (argus.length === 2) {
+      // widget.delegateEvents('click p', function(ev) { ... })
       handler = events;
       events = element;
       element = this.element;
-    }
-
-    // widget.delegateEvents(element, 'click p', function(ev) { ... })
-    else {
+    } else {
+      // widget.delegateEvents(element, 'click p', function(ev) { ... })
       element || (element = this.element);
       this._delegateElements || (this._delegateElements = []);
       this._delegateElements.push($(element));
@@ -152,7 +145,6 @@ var Widget = Base.extend({
       var selector = args.selector;
 
       (function(handler, widget) {
-
         var callback = function(ev) {
           if (isFunction(handler)) {
             handler.call(widget, ev);
@@ -164,13 +156,11 @@ var Widget = Base.extend({
         // delegate
         if (selector) {
           $(element).on(eventType, selector, callback);
-        }
-        // normal bind
-        // 分开写是为了兼容 zepto，zepto 的判断不如 jquery 强劲有力
-        else {
+        } else {
+          // normal bind
+          // 分开写是为了兼容 zepto，zepto 的判断不如 jquery 强劲有力
           $(element).on(eventType, callback);
         }
-
       })(events[key], this);
     }
 
@@ -199,7 +189,6 @@ var Widget = Base.extend({
           this._delegateElements[de].off(type);
         }
       }
-
     } else {
       var args = parseEventKey(eventKey, this);
 
@@ -207,11 +196,9 @@ var Widget = Base.extend({
       // .undelegateEvents(events)
       if (!element) {
         this.element && this.element.off(args.type, args.selector);
-      }
-
-      // 卸载外部 element
-      // .undelegateEvents(element, events)
-      else {
+      } else {
+        // 卸载外部 element
+        // .undelegateEvents(element, events)
         $(element).off(args.type, args.selector);
       }
     }
@@ -236,7 +223,7 @@ var Widget = Base.extend({
       // https://github.com/aliceui/aliceui.org/issues/9
       var outerBoxClass = this.constructor.outerBoxClass;
       if (outerBoxClass) {
-        var outerBox = this._outerBox = $('<div></div>').addClass(outerBoxClass);
+        var outerBox = (this._outerBox = $('<div></div>').addClass(outerBoxClass));
         outerBox.append(this.element).appendTo(parentNode);
       } else {
         this.element.appendTo(parentNode);
@@ -352,10 +339,12 @@ function isFunction(val) {
 }
 
 // Zepto 上没有 contains 方法
-var contains = $.contains || function(a, b) {
-  //noinspection JSBitwiseOperatorUsage
-  return !!(a.compareDocumentPosition(b) & 16);
-};
+var contains =
+  $.contains ||
+  function(a, b) {
+    //noinspection JSBitwiseOperatorUsage
+    return !!(a.compareDocumentPosition(b) & 16);
+  };
 
 function isInDocument(element) {
   return contains(document.documentElement, element);
@@ -390,18 +379,17 @@ function parseEventKey(eventKey, widget) {
   return {
     type: eventType,
     selector: selector
-  }
+  };
 }
 
 // 解析 eventKey 中的 {{xx}}, {{yy}}
 function parseExpressionInEventKey(selector, widget) {
-
   return selector.replace(EXPRESSION_FLAG, function(m, name) {
     var parts = name.split('.');
     var point = widget,
       part;
 
-    while (part = parts.shift()) {
+    while ((part = parts.shift())) {
       if (point === widget.attrs) {
         point = widget.get(part);
       } else {
@@ -416,7 +404,7 @@ function parseExpressionInEventKey(selector, widget) {
 
     // 不能识别的，返回无效标识
     return INVALID_SELECTOR;
-  })
+  });
 }
 
 // 对于 attrs 的 value 来说，以下值都认为是空值： null, undefined

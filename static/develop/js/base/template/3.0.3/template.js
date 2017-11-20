@@ -14,24 +14,25 @@
  * @return  {String, Function}          渲染好的HTML字符串或者渲染方法
  */
 var template = function(filename, content) {
-  return typeof content === 'string' ?
-    compile(content, {
-      filename: filename
-    }) : renderFile(filename, content);
+  return typeof content === 'string'
+    ? compile(content, {
+        filename: filename
+      })
+    : renderFile(filename, content);
 };
 
 template.version = '3.0.3';
 
-var defaults = template.defaults = {
+var defaults = (template.defaults = {
   openTag: '<?', // 逻辑语法开始标签
   closeTag: '?>', // 逻辑语法结束标签
   escape: true, // 是否编码输出变量的 HTML 字符
   cache: true, // 是否开启缓存（依赖 options 的 filename 字段）
   compress: false, // 是否压缩输出
   parser: null // 自定义语法格式器 @see: template-syntax.js
-};
+});
 
-var cacheStore = template.cache = {};
+var cacheStore = (template.cache = {});
 
 /**
  * 设置全局配置
@@ -61,15 +62,17 @@ template.render = function(source, options) {
  * @param   {Object}    数据
  * @return  {String}    渲染好的字符串
  */
-var renderFile = template.renderFile = function(filename, data) {
-  var fn = template.get(filename) || showDebugInfo({
-    filename: filename,
-    name: 'Render Error',
-    message: 'Template not found'
-  });
+var renderFile = (template.renderFile = function(filename, data) {
+  var fn =
+    template.get(filename) ||
+    showDebugInfo({
+      filename: filename,
+      name: 'Render Error',
+      message: 'Template not found'
+    });
 
   return data ? fn(data) : fn;
-};
+});
 
 /**
  * 获取编译缓存（可由外部重写此方法）
@@ -87,8 +90,7 @@ template.get = function(filename) {
     var elem = document.getElementById(filename);
 
     if (elem) {
-      var source = (elem.value || elem.innerHTML)
-        .replace(/^\s*|\s*$/g, '');
+      var source = (elem.value || elem.innerHTML).replace(/^\s*|\s*$/g, '');
       cache = compile(source, {
         filename: filename
       });
@@ -100,7 +102,6 @@ template.get = function(filename) {
 
 var toString = function(value, type) {
   if (typeof value !== 'string') {
-
     type = typeof value;
     if (type === 'number') {
       value += '';
@@ -115,11 +116,11 @@ var toString = function(value, type) {
 };
 
 var escapeMap = {
-  "<": "&#60;",
-  ">": "&#62;",
-  '"': "&#34;",
-  "'": "&#39;",
-  "&": "&#38;"
+  '<': '&#60;',
+  '>': '&#62;',
+  '"': '&#34;',
+  "'": '&#39;',
+  '&': '&#38;'
 };
 
 var escapeFn = function(s) {
@@ -127,13 +128,14 @@ var escapeFn = function(s) {
 };
 
 var escapeHTML = function(content) {
-  return toString(content)
-    .replace(/&(?![\w#]+;)|[<>"']/g, escapeFn);
+  return toString(content).replace(/&(?![\w#]+;)|[<>"']/g, escapeFn);
 };
 
-var isArray = Array.isArray || function(obj) {
-  return ({}).toString.call(obj) === '[object Array]';
-};
+var isArray =
+  Array.isArray ||
+  function(obj) {
+    return {}.toString.call(obj) === '[object Array]';
+  };
 
 var each = function(data, callback) {
   var i, len;
@@ -149,13 +151,13 @@ var each = function(data, callback) {
   }
 };
 
-var utils = template.utils = {
+var utils = (template.utils = {
   $helpers: {},
   $include: renderFile,
   $string: toString,
   $escape: escapeHTML,
   $each: each
-};
+});
 /**
  * 添加模板辅助方法
  * @name    template.helper
@@ -166,7 +168,7 @@ template.helper = function(name, helper) {
   helpers[name] = helper;
 };
 
-var helpers = template.helpers = utils.$helpers;
+var helpers = (template.helpers = utils.$helpers);
 
 /**
  * 模板错误事件（可由外部重写此方法）
@@ -214,7 +216,7 @@ var showDebugInfo = function(e) {
  *
  * @return  {Function}  渲染方法
  */
-var compile = template.compile = function(source, options) {
+var compile = (template.compile = function(source, options) {
   // 合并默认配置
   options = options || {};
 
@@ -264,7 +266,7 @@ var compile = template.compile = function(source, options) {
   }
 
   return RenderFn;
-};
+});
 
 // 数组迭代
 var forEach = utils.$each;
@@ -274,24 +276,19 @@ var KEYWORDS =
   // 关键字
   'break,case,catch,continue,debugger,default,delete,do,else,false' +
   ',finally,for,function,if,in,instanceof,new,null,return,switch,this' +
-  ',throw,true,try,typeof,var,void,while,with'
-
-// 保留字
-+',abstract,boolean,byte,char,class,const,double,enum,export,extends' +
-',final,float,goto,implements,import,int,interface,long,native' +
-',package,private,protected,public,short,static,super,synchronized' +
-',throws,transient,volatile'
-
-// ECMA 5 - use strict
-+
-',arguments,let,yield'
-
-+
-',undefined';
+  ',throw,true,try,typeof,var,void,while,with' +
+  // 保留字
+  ',abstract,boolean,byte,char,class,const,double,enum,export,extends' +
+  ',final,float,goto,implements,import,int,interface,long,native' +
+  ',package,private,protected,public,short,static,super,synchronized' +
+  ',throws,transient,volatile' +
+  // ECMA 5 - use strict
+  ',arguments,let,yield' +
+  ',undefined';
 
 var REMOVE_RE = /\/\*[\w\W]*?\*\/|\/\/[^\n]*\n|\/\/[^\n]*$|"(?:[^"\\]|\\[\w\W])*"|'(?:[^'\\]|\\[\w\W])*'|\s*\.\s*[$\w\.]+/g;
 var SPLIT_RE = /[^\w$]+/g;
-var KEYWORDS_RE = new RegExp(["\\b" + KEYWORDS.replace(/,/g, '\\b|\\b') + "\\b"].join('|'), 'g');
+var KEYWORDS_RE = new RegExp(['\\b' + KEYWORDS.replace(/,/g, '\\b|\\b') + '\\b'].join('|'), 'g');
 var NUMBER_RE = /^\d[^,]*|,\d[^,]*/g;
 var BOUNDARY_RE = /^,+|,+$/g;
 var SPLIT2_RE = /^$|,+/;
@@ -309,13 +306,16 @@ function getVariable(code) {
 
 // 字符串转义
 function stringify(code) {
-  return "'" +
+  return (
+    "'" +
     code
-    // 单引号与反斜杠转义
-    .replace(/('|\\)/g, '\\$1')
-    // 换行符转义(windows + linux)
-    .replace(/\r/g, '\\r')
-    .replace(/\n/g, '\\n') + "'";
+      // 单引号与反斜杠转义
+      .replace(/('|\\)/g, '\\$1')
+      // 换行符转义(windows + linux)
+      .replace(/\r/g, '\\r')
+      .replace(/\n/g, '\\n') +
+    "'"
+  );
 }
 
 function compiler(source, options) {
@@ -328,26 +328,18 @@ function compiler(source, options) {
   var line = 1;
   var uniq = { $data: 1, $filename: 1, $utils: 1, $helpers: 1, $out: 1, $line: 1 };
   var isNewEngine = ''.trim; // '__proto__' in {}
-  var replaces = isNewEngine ?
-    ["$out='';", "$out+=", ";", "$out"] :
-    ["$out=[];", "$out.push(", ");", "$out.join('')"];
-  var concat = isNewEngine ?
-    "$out+=text;return $out;" :
-    "$out.push(text);";
-  var print = "function(){" +
-    "var text=''.concat.apply('',arguments);" +
+  var replaces = isNewEngine ? ["$out='';", '$out+=', ';', '$out'] : ['$out=[];', '$out.push(', ');', "$out.join('')"];
+  var concat = isNewEngine ? '$out+=text;return $out;' : '$out.push(text);';
+  var print = 'function(){' + "var text=''.concat.apply('',arguments);" + concat + '}';
+  var include =
+    'function(filename,data){' +
+    'data=data||$data;' +
+    'var text=$utils.$include(filename,data,$filename);' +
     concat +
-    "}";
-  var include = "function(filename,data){" +
-    "data=data||$data;" +
-    "var text=$utils.$include(filename,data,$filename);" +
-    concat +
-    "}";
-  var headerCode = "'use strict';" +
-    "var $utils=this,$helpers=$utils.$helpers," +
-    (debug ? "$line=0," : "");
+    '}';
+  var headerCode = "'use strict';" + 'var $utils=this,$helpers=$utils.$helpers,' + (debug ? '$line=0,' : '');
   var mainCode = replaces[0];
-  var footerCode = "return new String(" + replaces[3] + ");";
+  var footerCode = 'return new String(' + replaces[3] + ');';
 
   // html与逻辑语法分离
   forEach(source.split(openTag), function(code) {
@@ -373,26 +365,30 @@ function compiler(source, options) {
 
   // 调试语句
   if (debug) {
-    code = "try{" + code + "}catch(e){" +
-      "throw {" +
-      "filename:$filename," +
+    code =
+      'try{' +
+      code +
+      '}catch(e){' +
+      'throw {' +
+      'filename:$filename,' +
       "name:'Render Error'," +
-      "message:e.message," +
-      "line:$line," +
-      "source:" + stringify(source) +
+      'message:e.message,' +
+      'line:$line,' +
+      'source:' +
+      stringify(source) +
       ".split(/\\n/)[$line-1].replace(/^\\s+/,'')" +
-      "};" +
-      "}";
+      '};' +
+      '}';
   }
 
   try {
-    var Render = new Function("$data", "$filename", code);
+    var Render = new Function('$data', '$filename', code);
 
     Render.prototype = utils;
 
     return Render;
   } catch (e) {
-    e.temp = "function anonymous($data,$filename) {" + code + "}";
+    e.temp = 'function anonymous($data,$filename) {' + code + '}';
     throw e;
   }
 
@@ -403,13 +399,11 @@ function compiler(source, options) {
 
     // 压缩多余空白与注释
     if (compress) {
-      code = code
-        .replace(/\s+/g, ' ')
-        .replace(/<!--[\w\W]*?-->/g, '');
+      code = code.replace(/\s+/g, ' ').replace(/<!--[\w\W]*?-->/g, '');
     }
 
     if (code) {
-      code = replaces[1] + stringify(code) + replaces[2] + "\n";
+      code = replaces[1] + stringify(code) + replaces[2] + '\n';
     }
 
     return code;
@@ -422,13 +416,12 @@ function compiler(source, options) {
     if (parser) {
       // 语法转换插件钩子
       code = parser(code, options);
-
     } else if (debug) {
       // 记录行号
       code = code.replace(/\n/g, function() {
         line++;
 
-        return "$line=" + line + ";";
+        return '$line=' + line + ';';
       });
     }
 
@@ -445,18 +438,18 @@ function compiler(source, options) {
 
         // 排除 utils.* | include | print
         if (!utils[name] && !/^(include|print)$/.test(name)) {
-          code = "$escape(" + code + ")";
+          code = '$escape(' + code + ')';
         }
         // 不编码
       } else {
-        code = "$string(" + code + ")";
+        code = '$string(' + code + ')';
       }
 
       code = replaces[1] + code + replaces[2];
     }
 
     if (debug) {
-      code = "$line=" + thisLine + ";" + code;
+      code = '$line=' + thisLine + ';' + code;
     }
 
     // 提取模板中的变量名
@@ -476,18 +469,18 @@ function compiler(source, options) {
       } else if (name === 'include') {
         value = include;
       } else if (utils[name]) {
-        value = "$utils." + name;
+        value = '$utils.' + name;
       } else if (helpers[name]) {
-        value = "$helpers." + name;
+        value = '$helpers.' + name;
       } else {
-        value = "$data." + name;
+        value = '$data.' + name;
       }
 
-      headerCode += name + "=" + value + ",";
+      headerCode += name + '=' + value + ',';
       uniq[name] = true;
     });
 
-    return code + "\n";
+    return code + '\n';
   }
 }
 

@@ -86,15 +86,18 @@ var Overlay = Widget.extend({
       });
     }
 
-    Position.pin({
-      element: this.element,
-      x: align.selfXY[0],
-      y: align.selfXY[1]
-    }, {
-      element: align.baseElement,
-      x: align.baseXY[0],
-      y: align.baseXY[1]
-    });
+    Position.pin(
+      {
+        element: this.element,
+        x: align.selfXY[0],
+        y: align.selfXY[1]
+      },
+      {
+        element: align.baseElement,
+        x: align.baseXY[0],
+        y: align.baseXY[1]
+      }
+    );
 
     // 定位完成后，还原
     if (isHidden) {

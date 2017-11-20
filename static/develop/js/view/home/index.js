@@ -49,16 +49,17 @@ function trim() {
   var trimRightReg = new RegExp('[' + whiteSpaces + ']+$');
 
   return function(string) {
-    return String(string).replace(trimLeftReg, '').replace(trimRightReg, '');
-  }
+    return String(string)
+      .replace(trimLeftReg, '')
+      .replace(trimRightReg, '');
+  };
 }
 
 trim = trim();
 
 $('#open-dialog').on('click', function() {
   confirmbox.confirm(content, '亲，你来了~', function() {
-    var value = this.element
-      .find('.ui-popup-remark').val();
+    var value = this.element.find('.ui-popup-remark').val();
 
     confirmbox.alert(trim(value).length ? value : '轻轻的你走了，正如你轻轻的来~');
   });

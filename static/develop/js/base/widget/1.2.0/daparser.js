@@ -41,14 +41,13 @@ var parseJSON = this.JSON ? JSON.parse : $.parseJSON;
 function camelCase(str) {
   return str.toLowerCase().replace(RE_DASH_WORD, function(all, letter) {
     return (letter + '').toUpperCase();
-  })
+  });
 }
 
 // 解析并归一化配置中的值
 function normalizeValues(data) {
   for (var key in data) {
     if (data.hasOwnProperty(key)) {
-
       var val = data[key];
       if (typeof val !== 'string') continue;
 

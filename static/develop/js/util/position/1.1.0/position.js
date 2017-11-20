@@ -19,8 +19,7 @@ Position.pin = function(pinObject, baseObject) {
 
   // if pinObject.element is not present
   // https://github.com/aralejs/position/pull/11
-  if (pinObject.element === VIEWPORT ||
-    pinObject.element._id === 'VIEWPORT') {
+  if (pinObject.element === VIEWPORT || pinObject.element._id === 'VIEWPORT') {
     return;
   }
 
@@ -46,11 +45,9 @@ Position.pin = function(pinObject, baseObject) {
   var baseOffset = baseObject.offset();
 
   // 计算目标元素的位置
-  var top = baseOffset.top + baseObject.y -
-    pinObject.y - parentOffset.top;
+  var top = baseOffset.top + baseObject.y - pinObject.y - parentOffset.top;
 
-  var left = baseOffset.left + baseObject.x -
-    pinObject.x - parentOffset.left;
+  var left = baseOffset.left + baseObject.x - pinObject.x - parentOffset.left;
 
   // 定位目标元素
   pinElement.css({ left: left, top: top });
@@ -59,15 +56,18 @@ Position.pin = function(pinObject, baseObject) {
 // 将目标元素相对于基准元素进行居中定位
 // 接受两个参数，分别为目标元素和定位的基准元素，都是 DOM 节点类型
 Position.center = function(pinElement, baseElement) {
-  Position.pin({
-    element: pinElement,
-    x: '50%',
-    y: '50%'
-  }, {
-    element: baseElement,
-    x: '50%',
-    y: '50%'
-  });
+  Position.pin(
+    {
+      element: pinElement,
+      x: '50%',
+      y: '50%'
+    },
+    {
+      element: baseElement,
+      x: '50%',
+      y: '50%'
+    }
+  );
 };
 
 // 这是当前可视区域的伪 DOM 节点
@@ -97,7 +97,7 @@ function normalize(posObject) {
   };
 
   // config 的深度克隆会替换掉 Position.VIEWPORT, 导致直接比较为 false
-  var isVIEWPORT = (element === VIEWPORT || element._id === 'VIEWPORT');
+  var isVIEWPORT = element === VIEWPORT || element._id === 'VIEWPORT';
 
   // 归一化 offset
   result.offset = function() {
@@ -145,7 +145,8 @@ function xyConverter(x, pinObject, type) {
 
   // 处理 alias
   if (/\D/.test(x)) {
-    x = x.replace(/(?:top|left)/gi, '0%')
+    x = x
+      .replace(/(?:top|left)/gi, '0%')
       .replace(/center/gi, '50%')
       .replace(/(?:bottom|right)/gi, '100%');
   }
@@ -164,7 +165,7 @@ function xyConverter(x, pinObject, type) {
       // eval 会影响压缩
       // new Function 方法效率高于 for 循环拆字符串的方法
       // 参照：http://jsperf.com/eval-newfunction-for
-      x = (new Function('return ' + x))();
+      x = new Function('return ' + x)();
     } catch (e) {
       throw new Error('Invalid position value: ' + x);
     }
@@ -198,8 +199,7 @@ function getParentOffset(element) {
   // 元素并不按照 body 来定位，而是按 document 定位
   // http://jsfiddle.net/afc163/hN9Tc/2/
   // 因此这里的偏移值直接设为 0 0
-  if (parent[0] === document.body &&
-    parent.css('position') === 'static') {
+  if (parent[0] === document.body && parent.css('position') === 'static') {
     offset = { top: 0, left: 0 };
   } else {
     offset = getOffset(parent[0]);
@@ -236,9 +236,7 @@ function getOffset(element) {
 
   // < ie8 不支持 win.pageXOffset, 则使用 docElem.scrollLeft
   return {
-    left: box.left + (window.pageXOffset || docElem.scrollLeft) -
-      (docElem.clientLeft || document.body.clientLeft || 0),
-    top: box.top + (window.pageYOffset || docElem.scrollTop) -
-      (docElem.clientTop || document.body.clientTop || 0)
+    left: box.left + (window.pageXOffset || docElem.scrollLeft) - (docElem.clientLeft || document.body.clientLeft || 0),
+    top: box.top + (window.pageYOffset || docElem.scrollTop) - (docElem.clientTop || document.body.clientTop || 0)
   };
 }

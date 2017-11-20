@@ -13,7 +13,7 @@
  */
 
 // 消息前缀, 建议使用自己的项目名, 避免多项目之间的冲突
-var prefix = "arale-messenger",
+var prefix = 'arale-messenger',
   supportPostMessage = 'postMessage' in window;
 
 // Target 类, 消息对象
@@ -46,7 +46,7 @@ if (supportPostMessage) {
     if (typeof targetFunc == 'function') {
       targetFunc(prefix + msg, window);
     } else {
-      throw new Error("target callback function is not defined");
+      throw new Error('target callback function is not defined');
     }
   };
 }

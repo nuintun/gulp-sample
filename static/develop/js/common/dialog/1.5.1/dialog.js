@@ -76,7 +76,7 @@ var Dialog = Overlay.extend({
     }
   },
   parseElement: function() {
-    this.set("model", {
+    this.set('model', {
       classPrefix: this.get('classPrefix')
     });
     Dialog.superclass.parseElement.call(this);
@@ -122,7 +122,7 @@ var Dialog = Overlay.extend({
       // 如果是跨域iframe，会抛出异常，所以需要加一层判断
       if (!this._isCrossDomainIframe) {
         this.iframe.attr({
-          src: 'javascript:\'\';'
+          src: "javascript:'';"
         });
       }
       // 原来只是将 iframe 的状态复原
@@ -177,9 +177,13 @@ var Dialog = Overlay.extend({
   },
   _onRenderCloseTpl: function(val) {
     if (val === '') {
-      this.$('>[data-role=close]').html(val).hide();
+      this.$('>[data-role=close]')
+        .html(val)
+        .hide();
     } else {
-      this.$('>[data-role=close]').html(val).show();
+      this.$('>[data-role=close]')
+        .html(val)
+        .show();
     }
   },
   // 覆盖 overlay，提供动画
@@ -257,10 +261,9 @@ var Dialog = Overlay.extend({
         // 则隐藏 mask
         if (mask._dialogs.length === 0) {
           mask.hide();
-        }
-        // 如果移除的是最后一个打开的 dialog
-        // 则相应向下移动 mask
-        else if (i === dialogLength - 1) {
+        } else if (i === dialogLength - 1) {
+          // 如果移除的是最后一个打开的 dialog
+          // 则相应向下移动 mask
           var last = mask._dialogs[mask._dialogs.length - 1];
           mask.set('zIndex', last.get('zIndex'));
           mask.element.insertBefore(last.element);
@@ -331,14 +334,14 @@ var Dialog = Overlay.extend({
   _fixUrl: function() {
     var s = this.get('content').match(/([^?#]*)(\?[^#]*)?(#.*)?/);
     s.shift();
-    s[1] = ((s[1] && s[1] !== '?') ? (s[1] + '&') : '?') + 't=' + new Date().getTime();
+    s[1] = (s[1] && s[1] !== '?' ? s[1] + '&' : '?') + 't=' + new Date().getTime();
     return s.join('');
   },
   _createIframe: function() {
     var that = this;
 
     this.iframe = $('<iframe>', {
-      src: 'javascript:\'\';',
+      src: "javascript:'';",
       scrolling: 'no',
       frameborder: 'no',
       allowTransparency: 'true',
@@ -374,7 +377,6 @@ var Dialog = Overlay.extend({
           break;
       }
     });
-
   },
   _setHeight: function(h) {
     this.contentElement.css('height', h);
@@ -401,7 +403,6 @@ var Dialog = Overlay.extend({
         }
       }
       this._setHeight(h);
-
     } else {
       clearInterval(this._interval);
       delete this._interval;

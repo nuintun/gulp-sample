@@ -12,7 +12,7 @@
 function Class(o) {
   // Convert existed function to Class.
   if (!(this instanceof Class) && isFunction(o)) {
-    return classify(o)
+    return classify(o);
   }
 }
 
@@ -94,7 +94,7 @@ function classify(cls) {
 
 // Mutators define special properties.
 Class.Mutators = {
-  'Extends': function(parent) {
+  Extends: function(parent) {
     var existed = this.prototype;
     var proto = createProto(parent.prototype);
 
@@ -109,18 +109,18 @@ Class.Mutators = {
 
     // Set a convenience property in case the parent's prototype is
     // needed later.
-    this.superclass = parent.prototype
+    this.superclass = parent.prototype;
   },
-  'Implements': function(items) {
+  Implements: function(items) {
     isArray(items) || (items = [items]);
     var proto = this.prototype,
       item;
 
-    while (item = items.shift()) {
+    while ((item = items.shift())) {
       mix(proto, item.prototype || item);
     }
   },
-  'Statics': function(staticProperties) {
+  Statics: function(staticProperties) {
     mix(this, staticProperties);
   }
 };
@@ -129,14 +129,14 @@ Class.Mutators = {
 function Ctor() {}
 
 // See: http://jsperf.com/object-create-vs-new-ctor
-var createProto = Object.__proto__ ?
-  function(proto) {
-    return { __proto__: proto };
-  } :
-  function(proto) {
-    Ctor.prototype = proto;
-    return new Ctor();
-  };
+var createProto = Object.__proto__
+  ? function(proto) {
+      return { __proto__: proto };
+    }
+  : function(proto) {
+      Ctor.prototype = proto;
+      return new Ctor();
+    };
 
 // Helpers
 // ------------
@@ -157,23 +157,25 @@ function mix(r, s, wl) {
 
 var toString = Object.prototype.toString;
 
-var isArray = Array.isArray || function(val) {
-  return toString.call(val) === '[object Array]';
-};
+var isArray =
+  Array.isArray ||
+  function(val) {
+    return toString.call(val) === '[object Array]';
+  };
 
 var isFunction = function(val) {
   return toString.call(val) === '[object Function]';
 };
 
-var indexOf = Array.prototype.indexOf ?
-  function(arr, item) {
-    return arr.indexOf(item);
-  } :
-  function(arr, item) {
-    for (var i = 0, len = arr.length; i < len; i++) {
-      if (arr[i] === item) {
-        return i;
-      }
+var indexOf = Array.prototype.indexOf
+  ? function(arr, item) {
+      return arr.indexOf(item);
     }
-    return -1;
-  };
+  : function(arr, item) {
+      for (var i = 0, len = arr.length; i < len; i++) {
+        if (arr[i] === item) {
+          return i;
+        }
+      }
+      return -1;
+    };

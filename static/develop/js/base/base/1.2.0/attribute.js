@@ -9,7 +9,7 @@
 // attributes 是与实例相关的状态信息，可读可写，发生变化时，会自动触发相关事件
 exports.initAttrs = function(config) {
   // initAttrs 是在初始化时调用的，默认情况下实例上肯定没有 attrs，不存在覆盖问题
-  var attrs = this.attrs = {};
+  var attrs = (this.attrs = {});
 
   // Get all inherited attributes.
   var specialProps = this.propsInAttrs || [];
@@ -45,9 +45,8 @@ exports.set = function(key, val, options) {
   // set("key", val, options)
   if (isString(key)) {
     attrs[key] = val;
-  }
-  // set({ "key": val, "key2": val2 }, options)
-  else {
+  } else {
+    // set({ "key": val, "key2": val2 }, options)
     attrs = key;
     options = val;
   }
@@ -139,16 +138,22 @@ var iteratesOwnLast;
 (function() {
   var props = [];
 
-  function Ctor() { this.x = 1; }
+  function Ctor() {
+    this.x = 1;
+  }
 
-  Ctor.prototype = { 'valueOf': 1, 'y': 1 };
-  for (var prop in new Ctor()) { props.push(prop); }
+  Ctor.prototype = { valueOf: 1, y: 1 };
+  for (var prop in new Ctor()) {
+    props.push(prop);
+  }
   iteratesOwnLast = props[0] !== 'x';
-}());
+})();
 
-var isArray = Array.isArray || function(val) {
-  return toString.call(val) === '[object Array]';
-};
+var isArray =
+  Array.isArray ||
+  function(val) {
+    return toString.call(val) === '[object Array]';
+  };
 
 function isString(val) {
   return toString.call(val) === '[object String]';
@@ -167,14 +172,13 @@ function isPlainObject(o) {
   // Because of IE, we also have to check the presence of the constructor
   // property. Make sure that DOM nodes and window objects don't
   // pass through, as well
-  if (!o || toString.call(o) !== "[object Object]" ||
-    o.nodeType || isWindow(o)) {
+  if (!o || toString.call(o) !== '[object Object]' || o.nodeType || isWindow(o)) {
     return false;
   }
 
   try {
     // Not own constructor property must be Object
-    if (o.constructor && !hasOwn.call(o, "constructor") && !hasOwn.call(o.constructor.prototype, "isPrototypeOf")) {
+    if (o.constructor && !hasOwn.call(o, 'constructor') && !hasOwn.call(o.constructor.prototype, 'isPrototypeOf')) {
       return false;
     }
   } catch (e) {
@@ -195,14 +199,14 @@ function isPlainObject(o) {
 
   // Own properties are enumerated firstly, so to speed up,
   // if last one is own, then all properties are own.
-  for (key in o) {}
+  for (key in o) {
+  }
 
   return key === undefined || hasOwn.call(o, key);
 }
 
 function isEmptyObject(o) {
-  if (!o || toString.call(o) !== "[object Object]" ||
-    o.nodeType || isWindow(o) || !o.hasOwnProperty) {
+  if (!o || toString.call(o) !== '[object Object]' || o.nodeType || isWindow(o) || !o.hasOwnProperty) {
     return false;
   }
 
@@ -351,9 +355,7 @@ function normalize(attrs, isUserValue) {
   for (var key in attrs) {
     var attr = attrs[key];
 
-    if (!isUserValue &&
-      isPlainObject(attr) &&
-      hasOwnProperties(attr, ATTR_SPECIAL_KEYS)) {
+    if (!isUserValue && isPlainObject(attr) && hasOwnProperties(attr, ATTR_SPECIAL_KEYS)) {
       newAttrs[key] = attr;
       continue;
     }
@@ -386,7 +388,7 @@ function mergeAttrs(attrs, inheritedAttrs, isUserValue) {
       // 这里还是选择 性能优先
 
       // 只有 value 要复制原值，其他的直接覆盖即可
-      (value['value'] !== undefined) && (attr['value'] = cloneValue(value['value'], attr['value']));
+      value['value'] !== undefined && (attr['value'] = cloneValue(value['value'], attr['value']));
 
       // 如果是用户赋值，只要考虑value
       if (isUserValue) continue;
@@ -414,9 +416,11 @@ function hasOwnProperties(object, properties) {
 
 // 对于 attrs 的 value 来说，以下值都认为是空值： null, undefined, '', [], {}
 function isEmptyAttrValue(o) {
-  return o == null || // null, undefined
-    (isString(o) || isArray(o)) && o.length === 0 || // '', []
-    isEmptyObject(o); // {}
+  return (
+    o == null || // null, undefined
+    ((isString(o) || isArray(o)) && o.length === 0) || // '', []
+    isEmptyObject(o)
+  ); // {}
 }
 
 // 判断属性值 a 和 b 是否相等，注意仅适用于属性值的判断，非普适的 === 或 == 判断。
@@ -430,7 +434,6 @@ function isEqual(a, b) {
   if (className != toString.call(b)) return false;
 
   switch (className) {
-
     // Strings, numbers, dates, and booleans are compared by value.
     case '[object String]':
       // Primitives and their corresponding object wrappers are
@@ -440,7 +443,7 @@ function isEqual(a, b) {
     case '[object Number]':
       // `NaN`s are equivalent, but non-reflexive. An `equal`
       // comparison is performed for other numeric values.
-      return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
+      return a != +a ? b != +b : a == 0 ? 1 / a == 1 / b : a == +b;
 
     case '[object Date]':
     case '[object Boolean]':
@@ -450,29 +453,23 @@ function isEqual(a, b) {
       // of `NaN` are not equivalent.
       return +a == +b;
 
-      // RegExps are compared by their source patterns and flags.
+    // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
-      return a.source == b.source &&
-        a.global == b.global &&
-        a.multiline == b.multiline &&
-        a.ignoreCase == b.ignoreCase;
+      return a.source == b.source && a.global == b.global && a.multiline == b.multiline && a.ignoreCase == b.ignoreCase;
 
-      // 简单判断数组包含的 primitive 值是否相等
+    // 简单判断数组包含的 primitive 值是否相等
     case '[object Array]':
       var aString = a.toString();
       var bString = b.toString();
 
       // 只要包含非 primitive 值，为了稳妥起见，都返回 false
-      return aString.indexOf('[object') === -1 &&
-        bString.indexOf('[object') === -1 &&
-        aString === bString;
+      return aString.indexOf('[object') === -1 && bString.indexOf('[object') === -1 && aString === bString;
   }
 
   if (typeof a != 'object' || typeof b != 'object') return false;
 
   // 简单判断两个对象是否相等，只判断第一层
   if (isPlainObject(a) && isPlainObject(b)) {
-
     // 键值不相等，立刻返回 false
     if (!isEqual(keys(a), keys(b))) {
       return false;

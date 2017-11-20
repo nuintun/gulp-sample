@@ -1,5 +1,6 @@
 @import "/static/develop/css/widget/button.css";
-body, div {
+body,
+div {
   font-size: 13px;
   font-family: Microsoft Yahei, SimHei, tahoma, arial, Hiragino Sans GB, SimSun, sans-serif;
   font-weight: 400;
@@ -7,18 +8,18 @@ body, div {
 }
 /* css3 sugar */
 textarea,
-input[type=text],
-input[type=password] {
-  -o-transition: border .25s ease-in-out, box-shadow .25s ease-in-out;
-  -moz-transition: border .25s ease-in-out, box-shadow .25s ease-in-out;
-  -webkit-transition: border .25s ease-in-out, box-shadow .25s ease-in-out;
-  transition: border .25s ease-in-out, box-shadow .25s ease-in-out;
+input[type="text"],
+input[type="password"] {
+  -o-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  -moz-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  -webkit-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 }
 textarea:focus,
-input[type=text]:focus,
-input[type=password]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   outline: none;
-  border: 1px solid rgba(82, 162, 235, .8);
+  border: 1px solid rgba(82, 162, 235, 0.8);
   box-shadow: 0 0 rgba(34, 25, 25, 0.15) inset, 0 0 rgba(255, 255, 255, 0.8), 0 0 6px rgba(82, 162, 235, 1);
 }
 /* /css3 sugar */
@@ -33,7 +34,10 @@ input[type=password]:focus {
 }
 textarea {
   vertical-align: text-top;
-  resize: none; padding: 3px; overflow: auto;
-  background: #ffffcd; border: 1px solid #ccc;
+  resize: none;
+  padding: 3px;
+  overflow: auto;
+  background: #ffffcd;
+  border: 1px solid #ccc;
   box-shadow: 2px 2px 3px #ededed inset;
 }

@@ -13,7 +13,8 @@ module.exports = {
   // 根据配置的模板和传入的数据，构建 this.element 和 templateElement
   parseElementFromTemplate: function() {
     // template 支持 id 选择器
-    var t, template = this.get('template');
+    var t,
+      template = this.get('template');
 
     if (/^#/.test(template) && (t = document.getElementById(template.substring(1)))) {
       template = t.innerHTML;
@@ -94,9 +95,8 @@ module.exports = {
       } else {
         this.element.html(this.compile());
       }
-    }
-    // 如果 template 已经编译过了，templateObject 不存在
-    else {
+    } else {
+      // 如果 template 已经编译过了，templateObject 不存在
       var all = $(this.compile());
       var selected = all.find(selector);
 
@@ -149,11 +149,13 @@ function convertObjectToTemplate(templateObject, selector) {
  * @returns {String}
  */
 function encode(template) {
-  return template
-    // 替换 <?= xxx ?> 为 <!--<?= xxx ?>-->
-    .replace(/(<\?.+?\?>)/g, '<!--$1-->')
-    // 替换 src="<?= xxx ?>" 为 data-templatable-src="<?= xxx ?>"
-    .replace(/\s(src|href)\s*=\s*(['"])(.*?\<.+?)\2/g, ' data-templatable-$1=$2$3$2');
+  return (
+    template
+      // 替换 <?= xxx ?> 为 <!--<?= xxx ?>-->
+      .replace(/(<\?.+?\?>)/g, '<!--$1-->')
+      // 替换 src="<?= xxx ?>" 为 data-templatable-src="<?= xxx ?>"
+      .replace(/\s(src|href)\s*=\s*(['"])(.*?\<.+?)\2/g, ' data-templatable-$1=$2$3$2')
+  );
 }
 
 /**
@@ -166,11 +168,11 @@ function decode(template) {
     .replace(/&lt;\?/g, '<?')
     .replace(/\?&gt;/g, '?>')
     .replace(/(?:<|&lt;)!--(<\?.+?\?>)--(?:>|&gt;)/g, '$1')
-    .replace(/data-templatable-/ig, '')
+    .replace(/data-templatable-/gi, '');
 }
 
 function isFunction(obj) {
-  return typeof obj === "function";
+  return typeof obj === 'function';
 }
 
 // 调用 renderPartial 时，Templatable 对模板有一个约束：

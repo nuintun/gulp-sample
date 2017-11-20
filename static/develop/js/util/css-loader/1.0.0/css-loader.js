@@ -6,7 +6,7 @@
 
 // doc and head
 var doc = document;
-var undef = void(0);
+var undef = void 0;
 var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
 
 /**
@@ -16,7 +16,7 @@ var head = doc.getElementsByTagName('head')[0] || doc.documentElement;
  * @returns {Boolean}
  */
 function isString(value) {
-  return {}.toString.call(value) === "[object String]";
+  return {}.toString.call(value) === '[object String]';
 }
 
 /**

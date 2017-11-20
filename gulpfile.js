@@ -30,19 +30,19 @@ const switchStream = require('@nuintun/switch-stream');
 // alias
 const alias = {
   'css-loader': 'util/css-loader/1.0.0/css-loader',
-  'jquery': 'base/jquery/1.11.3/jquery',
-  'base': 'base/base/1.2.0/base',
-  'class': 'base/class/1.2.0/class',
-  'events': 'base/events/1.2.0/events',
-  'widget': 'base/widget/1.2.0/widget',
-  'template': 'base/template/3.0.3/template',
-  'templatable': 'base/templatable/0.10.0/templatable',
+  jquery: 'base/jquery/1.11.3/jquery',
+  base: 'base/base/1.2.0/base',
+  class: 'base/class/1.2.0/class',
+  events: 'base/events/1.2.0/events',
+  widget: 'base/widget/1.2.0/widget',
+  template: 'base/template/3.0.3/template',
+  templatable: 'base/templatable/0.10.0/templatable',
   'iframe-shim': 'util/iframe-shim/1.1.0/iframe-shim',
-  'position': 'util/position/1.1.0/position',
-  'messenger': 'util/messenger/2.1.0/messenger',
-  'overlay': 'common/overlay/1.2.0/',
-  'dialog': 'common/dialog/1.5.1/dialog',
-  'confirmbox': 'common/dialog/1.5.1/confirmbox'
+  position: 'util/position/1.1.0/position',
+  messenger: 'util/messenger/2.1.0/messenger',
+  overlay: 'common/overlay/1.2.0/',
+  dialog: 'common/dialog/1.5.1/dialog',
+  confirmbox: 'common/dialog/1.5.1/confirmbox'
 };
 // Bookmark
 let bookmark = Date.now();
@@ -54,8 +54,8 @@ let bookmark = Date.now();
  */
 function progress(print) {
   return switchStream.through(function(vinyl, encoding, next) {
-    const info = chalk.reset.reset('process: ')
-      + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+    const info =
+      chalk.reset.reset('process: ') + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
 
     if (print) {
       print(info);
@@ -88,9 +88,7 @@ function finish() {
  * @returns {string}
  */
 function inspectError(error) {
-  return util
-    .inspect(error)
-    .replace(/^\{\s*|\}\s*$/g, '');
+  return util.inspect(error).replace(/^\{\s*|\}\s*$/g, '');
 }
 
 /**
@@ -98,46 +96,49 @@ function inspectError(error) {
  * @description Compress javascript file
  */
 function compress() {
-  return switchStream((vinyl) => {
-    if (extname(vinyl.path) === '.js') {
-      return 'js';
-    }
-
-    if (extname(vinyl.path) === '.css') {
-      return 'css';
-    }
-  }, {
-    js: switchStream.through(function(vinyl, encoding, next) {
-      const result = uglify.minify(vinyl.contents.toString(), {
-        ecma: 5,
-        ie8: true,
-        mangle: { eval: true }
-      });
-
-      if (result.error) {
-        process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
-      } else {
-        vinyl.contents = new Buffer(result.code);
+  return switchStream(
+    vinyl => {
+      if (extname(vinyl.path) === '.js') {
+        return 'js';
       }
 
-      this.push(vinyl);
-      next();
-    }),
-    css: switchStream.through(function(vinyl, encoding, next) {
-      cssnano
-        .process(vinyl.contents.toString(), { safe: true })
-        .then((result) => {
-          vinyl.contents = new Buffer(result.css);
-
-          this.push(vinyl);
-          next();
-        })
-        .catch((error) => {
-          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(error) + '\n');
-          next();
+      if (extname(vinyl.path) === '.css') {
+        return 'css';
+      }
+    },
+    {
+      js: switchStream.through(function(vinyl, encoding, next) {
+        const result = uglify.minify(vinyl.contents.toString(), {
+          ecma: 5,
+          ie8: true,
+          mangle: { eval: true }
         });
-    })
-  });
+
+        if (result.error) {
+          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+        } else {
+          vinyl.contents = new Buffer(result.code);
+        }
+
+        this.push(vinyl);
+        next();
+      }),
+      css: switchStream.through(function(vinyl, encoding, next) {
+        cssnano
+          .process(vinyl.contents.toString(), { safe: true })
+          .then(result => {
+            vinyl.contents = new Buffer(result.css);
+
+            this.push(vinyl);
+            next();
+          })
+          .catch(error => {
+            process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(error) + '\n');
+            next();
+          });
+      })
+    }
+  );
 }
 
 /**
@@ -219,13 +220,13 @@ function dateFormat(date, format) {
   format = format || 'yyyy-MM-dd hh:mm:ss';
 
   const map = {
-    'M': date.getMonth() + 1, // 月份
-    'd': date.getDate(), // 日
-    'h': date.getHours(), // 小时
-    'm': date.getMinutes(), // 分
-    's': date.getSeconds(), // 秒
-    'q': Math.floor((date.getMonth() + 3) / 3), // 季度
-    'S': date.getMilliseconds() // 毫秒
+    M: date.getMonth() + 1, // 月份
+    d: date.getDate(), // 日
+    h: date.getHours(), // 小时
+    m: date.getMinutes(), // 分
+    s: date.getSeconds(), // 秒
+    q: Math.floor((date.getMonth() + 3) / 3), // 季度
+    S: date.getMilliseconds() // 毫秒
   };
 
   format = format.replace(/([yMdhmsqS])+/g, (all, t) => {
@@ -303,17 +304,19 @@ gulp.task('product', ['runtime-product'], () => {
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(plumber())
     .pipe(progress(cmd.print))
-    .pipe(cmd({
-      alias: alias,
-      map: resolveMapPath,
-      ignore: ['jquery'],
-      base: 'static/develop/js',
-      css: { onpath: resolveCSSPath },
-      plugins: cmdAddons({ minify: true }),
-      include: (id) => {
-        return id && id.indexOf('view') === 0 ? 'all' : 'self';
-      }
-    }))
+    .pipe(
+      cmd({
+        alias: alias,
+        map: resolveMapPath,
+        ignore: ['jquery'],
+        base: 'static/develop/js',
+        css: { onpath: resolveCSSPath },
+        plugins: cmdAddons({ minify: true }),
+        include: id => {
+          return id && id.indexOf('view') === 0 ? 'all' : 'self';
+        }
+      })
+    )
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
@@ -322,12 +325,14 @@ gulp.task('product', ['runtime-product'], () => {
     .src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
     .pipe(progress(css.print))
-    .pipe(css({
-      include: true,
-      map: resolveMapPath,
-      onpath: resolveCSSPath,
-      plugins: cssAddons({ minify: true })
-    }))
+    .pipe(
+      css({
+        include: true,
+        map: resolveMapPath,
+        onpath: resolveCSSPath,
+        plugins: cssAddons({ minify: true })
+      })
+    )
     .pipe(gulp.dest('static/product'))
     .on('finish', complete);
 });
@@ -345,14 +350,16 @@ gulp.task('default', ['runtime'], () => {
     .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
     .pipe(plumber())
     .pipe(progress(cmd.print))
-    .pipe(cmd({
-      alias: alias,
-      include: 'self',
-      base: 'static/develop/js',
-      map: resolveMapPath,
-      plugins: cmdAddons(),
-      css: { onpath: resolveCSSPath }
-    }))
+    .pipe(
+      cmd({
+        alias: alias,
+        include: 'self',
+        base: 'static/develop/js',
+        map: resolveMapPath,
+        plugins: cmdAddons(),
+        css: { onpath: resolveCSSPath }
+      })
+    )
     .pipe(gulp.dest('static/product/js'))
     .on('finish', complete);
 
@@ -361,11 +368,13 @@ gulp.task('default', ['runtime'], () => {
     .src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
     .pipe(plumber())
     .pipe(progress(css.print))
-    .pipe(css({
-      map: resolveMapPath,
-      onpath: resolveCSSPath,
-      plugins: cssAddons()
-    }))
+    .pipe(
+      css({
+        map: resolveMapPath,
+        onpath: resolveCSSPath,
+        plugins: cssAddons()
+      })
+    )
     .pipe(gulp.dest('static/product'))
     .on('finish', complete);
 });
@@ -404,15 +413,17 @@ gulp.task('watch', ['default'], () => {
       gulp
         .src(path, { base: 'static/develop/js' })
         .pipe(plumber())
-        .pipe(cmd({
-          cache: false,
-          alias: alias,
-          include: 'self',
-          base: 'static/develop/js',
-          map: resolveMapPath,
-          plugins: cmdAddons(),
-          css: { onpath: resolveCSSPath }
-        }))
+        .pipe(
+          cmd({
+            cache: false,
+            alias: alias,
+            include: 'self',
+            base: 'static/develop/js',
+            map: resolveMapPath,
+            plugins: cmdAddons(),
+            css: { onpath: resolveCSSPath }
+          })
+        )
         .pipe(gulp.dest('static/product/js'))
         .on('finish', finish);
     }
@@ -434,11 +445,13 @@ gulp.task('watch', ['default'], () => {
       gulp
         .src(path, { base: 'static/develop' })
         .pipe(plumber())
-        .pipe(css({
-          map: resolveMapPath,
-          onpath: resolveCSSPath,
-          plugins: cssAddons()
-        }))
+        .pipe(
+          css({
+            map: resolveMapPath,
+            onpath: resolveCSSPath,
+            plugins: cssAddons()
+          })
+        )
         .pipe(gulp.dest('static/product'))
         .on('finish', finish);
     }

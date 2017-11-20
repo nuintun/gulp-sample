@@ -7,26 +7,26 @@
     return;
   }
 
-  var seajs = global.seajs = {
+  var seajs = (global.seajs = {
     // The current version of Sea.js being used
-    version: "3.0.1"
-  };
-  var data = seajs.data = {};
+    version: '3.0.1'
+  });
+  var data = (seajs.data = {});
 
   /**
    * util-lang.js - The minimal language enhancement
    */
   function isType(type) {
     return function(obj) {
-      return {}.toString.call(obj) == "[object " + type + "]";
-    }
+      return {}.toString.call(obj) == '[object ' + type + ']';
+    };
   }
 
-  var isObject = isType("Object");
-  var isString = isType("String");
-  var isArray = Array.isArray || isType("Array");
-  var isFunction = isType("Function");
-  var isUndefined = isType("Undefined");
+  var isObject = isType('Object');
+  var isString = isType('String');
+  var isArray = Array.isArray || isType('Array');
+  var isFunction = isType('Function');
+  var isUndefined = isType('Undefined');
   var _cid = 0;
 
   function cid() {
@@ -36,7 +36,7 @@
   /**
    * util-events.js - The minimal events support
    */
-  var events = data.events = {};
+  var events = (data.events = {});
 
   // Bind event
   seajs.on = function(name, callback) {
@@ -77,7 +77,7 @@
 
   // Emit event, firing all bound callbacks. Callbacks receive the same
   // arguments as `emit` does, apart from the event name
-  var emit = seajs.emit = function(name, data) {
+  var emit = (seajs.emit = function(name, data) {
     var list = events[name];
 
     if (list) {
@@ -91,7 +91,7 @@
     }
 
     return seajs;
-  };
+  });
 
   /**
    * util-path.js - The utilities for operating path such as id, uri
@@ -113,7 +113,7 @@
   // realpath("http://test.com/a//./b/../c") ==> "http://test.com/a/c"
   function realpath(path) {
     // /a/b/./c/./d ==> /a/b/c/d
-    path = path.replace(DOT_RE, "/");
+    path = path.replace(DOT_RE, '/');
 
     /*
      @author wh1100717
@@ -121,11 +121,11 @@
      a///b/////c ==> a/b/c
      DOUBLE_DOT_RE matches a/b/c//../d path correctly only if replace // with / first
      */
-    path = path.replace(MULTI_SLASH_RE, "$1/");
+    path = path.replace(MULTI_SLASH_RE, '$1/');
 
     // a/b/c/../../d  ==>  a/b/../d  ==>  a/d
     while (path.match(DOUBLE_DOT_RE)) {
-      path = path.replace(DOUBLE_DOT_RE, "/");
+      path = path.replace(DOUBLE_DOT_RE, '/');
     }
 
     return path;
@@ -139,13 +139,11 @@
     var lastC = path.charCodeAt(last);
 
     // If the uri ends with `#`, just return it without '#'
-    if (lastC === 35 /* "#" */ ) {
+    if (lastC === 35 /* "#" */) {
       return path.substring(0, last);
     }
 
-    return (path.substring(last - 2) === ".js" ||
-      path.indexOf("?") > 0 ||
-      lastC === 47 /* "/" */ ) ? path : path + ".js";
+    return path.substring(last - 2) === '.js' || path.indexOf('?') > 0 || lastC === 47 /* "/" */ ? path : path + '.js';
   }
 
   var PATHS_RE = /^([^/:]+)(\/.+)$/;
@@ -170,10 +168,10 @@
   function parseVars(id) {
     var vars = data.vars;
 
-    if (vars && id.indexOf("{") > -1) {
+    if (vars && id.indexOf('{') > -1) {
       id = id.replace(VARS_RE, function(m, key) {
         return isString(vars[key]) ? vars[key] : m;
-      })
+      });
     }
 
     return id;
@@ -187,9 +185,7 @@
       for (var i = 0, len = map.length; i < len; i++) {
         var rule = map[i];
 
-        ret = isFunction(rule) ?
-          (rule(uri) || uri) :
-          uri.replace(rule[0], rule[1]);
+        ret = isFunction(rule) ? rule(uri) || uri : uri.replace(rule[0], rule[1]);
 
         // Only apply the first matched rule
         if (ret !== uri) break;
@@ -209,24 +205,21 @@
     // Absolute
     if (ABSOLUTE_RE.test(id)) {
       ret = id;
-    }
-    // Relative
-    else if (first === 46 /* "." */ ) {
+    } else if (first === 46 /* "." */) {
+      // Relative
       ret = (refUri ? dirname(refUri) : data.cwd) + id;
-    }
-    // Root
-    else if (first === 47 /* "/" */ ) {
+    } else if (first === 47 /* "/" */) {
+      // Root
       var m = data.cwd.match(ROOT_DIR_RE);
 
       ret = m ? m[0] + id.substring(1) : id;
-    }
-    // Top-level
-    else {
+    } else {
+      // Top-level
       ret = data.base + id;
     }
 
     // Add default protocol when uri begins with "//"
-    if (ret.indexOf("//") === 0) {
+    if (ret.indexOf('//') === 0) {
       ret = location.protocol + ret;
     }
 
@@ -234,7 +227,7 @@
   }
 
   function id2Uri(id, refUri) {
-    if (!id) return "";
+    if (!id) return '';
 
     id = parseAlias(id);
     id = parsePaths(id);
@@ -262,7 +255,7 @@
   // Sea.js's full path
   var loaderPath;
   // Location is read-only from web worker, should be ok though
-  var cwd = (!location.href || IGNORE_LOCATION_RE.test(location.href)) ? '' : dirname(location.href);
+  var cwd = !location.href || IGNORE_LOCATION_RE.test(location.href) ? '' : dirname(location.href);
 
   if (isWebWorker) {
     // Web worker doesn't create DOM object when loading scripts
@@ -331,14 +324,13 @@
     var doc = document;
     var scripts = doc.scripts;
     // Recommend to add `seajsnode` id for the `sea.js` script element
-    var loaderScript = doc.getElementById("seajsnode") ||
-      scripts[scripts.length - 1];
+    var loaderScript = doc.getElementById('seajsnode') || scripts[scripts.length - 1];
 
     function getScriptAbsoluteSrc(node) {
-      return node.hasAttribute ? // non-IE6/7
-        node.src :
-        // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
-        node.getAttribute("src", 4);
+      return node.hasAttribute // non-IE6/7
+        ? node.src
+        : // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
+          node.getAttribute('src', 4);
     }
 
     loaderPath = getScriptAbsoluteSrc(loaderScript);
@@ -368,19 +360,19 @@
     seajs.request = requestFromWebWorker;
   } else {
     var doc = document;
-    var head = doc.head || doc.getElementsByTagName("head")[0] || doc.documentElement;
-    var baseElement = head.getElementsByTagName("base")[0];
+    var head = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
+    var baseElement = head.getElementsByTagName('base')[0];
     var currentlyAddingScript;
 
     function request(url, callback, charset, crossorigin) {
-      var node = doc.createElement("script");
+      var node = doc.createElement('script');
 
       if (charset) {
         node.charset = charset;
       }
 
       if (!isUndefined(crossorigin)) {
-        node.setAttribute("crossorigin", crossorigin);
+        node.setAttribute('crossorigin', crossorigin);
       }
 
       addOnload(node, callback, url);
@@ -394,28 +386,26 @@
       currentlyAddingScript = node;
 
       // ref: #185 & http://dev.jquery.com/ticket/2709
-      baseElement ?
-        head.insertBefore(node, baseElement) :
-        head.appendChild(node);
+      baseElement ? head.insertBefore(node, baseElement) : head.appendChild(node);
 
       currentlyAddingScript = null;
     }
 
     function addOnload(node, callback, url) {
-      var supportOnload = "onload" in node;
+      var supportOnload = 'onload' in node;
 
       if (supportOnload) {
         node.onload = onload;
         node.onerror = function() {
-          emit("error", { uri: url, node: node });
+          emit('error', { uri: url, node: node });
           onload(true);
-        }
+        };
       } else {
         node.onreadystatechange = function() {
           if (/loaded|complete/.test(node.readyState)) {
             onload();
           }
-        }
+        };
       }
 
       function onload(error) {
@@ -441,12 +431,12 @@
   /**
    * module.js - The core of module loader
    */
-  var cachedMods = seajs.cache = {};
+  var cachedMods = (seajs.cache = {});
   var anonymousMeta;
   var fetchingList = {};
   var fetchedList = {};
   var callbackList = {};
-  var STATUS = Module.STATUS = {
+  var STATUS = (Module.STATUS = {
     // 1 - The `module.uri` is being fetched
     FETCHING: 1,
     // 2 - The meta data has been saved to cachedMods
@@ -461,7 +451,7 @@
     EXECUTED: 6,
     // 7 - 404
     ERROR: 7
-  };
+  });
 
   function Module(uri, deps) {
     this.uri = uri;
@@ -531,7 +521,7 @@
     // Emit `load` event for plugins such as combo plugin
     var uris = mod.resolve();
 
-    emit("load", uris);
+    emit('load', uris);
 
     for (var i = 0, len = uris.length; i < len; i++) {
       mod.deps[mod.dependencies[i]] = Module.get(uris[i]);
@@ -638,7 +628,7 @@
     };
 
     require.async = function(ids, callback) {
-      Module.use(ids, callback, uri + "_async_" + cid());
+      Module.use(ids, callback, uri + '_async_' + cid());
 
       return require;
     };
@@ -646,9 +636,7 @@
     // Exec factory
     var factory = mod.factory;
 
-    var exports = isFunction(factory) ?
-      factory.call(mod.exports = {}, require, mod.exports, mod) :
-      factory;
+    var exports = isFunction(factory) ? factory.call((mod.exports = {}), require, mod.exports, mod) : factory;
 
     if (exports === undefined) {
       exports = mod.exports;
@@ -661,7 +649,7 @@
     mod.status = STATUS.EXECUTED;
 
     // Emit `exec` event
-    emit("exec", mod);
+    emit('exec', mod);
 
     return mod.exports;
   };
@@ -676,7 +664,7 @@
     // Emit `fetch` event for plugins such as combo plugin
     var emitData = { uri: uri };
 
-    emit("fetch", emitData);
+    emit('fetch', emitData);
 
     var requestUri = emitData.requestUri || uri;
 
@@ -697,18 +685,19 @@
     callbackList[requestUri] = [mod];
 
     // Emit `request` event for plugins such as text plugin
-    emit("request", emitData = {
-      uri: uri,
-      requestUri: requestUri,
-      onRequest: onRequest,
-      charset: isFunction(data.charset) ? data.charset(requestUri) : data.charset,
-      crossorigin: isFunction(data.crossorigin) ? data.crossorigin(requestUri) : data.crossorigin
-    });
+    emit(
+      'request',
+      (emitData = {
+        uri: uri,
+        requestUri: requestUri,
+        onRequest: onRequest,
+        charset: isFunction(data.charset) ? data.charset(requestUri) : data.charset,
+        crossorigin: isFunction(data.crossorigin) ? data.crossorigin(requestUri) : data.crossorigin
+      })
+    );
 
     if (!emitData.requested) {
-      requestCache ?
-        requestCache[emitData.requestUri] = sendRequest :
-        sendRequest();
+      requestCache ? (requestCache[emitData.requestUri] = sendRequest) : sendRequest();
     }
 
     function sendRequest() {
@@ -726,7 +715,8 @@
       }
 
       // Call callbacks
-      var m, mods = callbackList[requestUri];
+      var m,
+        mods = callbackList[requestUri];
 
       delete callbackList[requestUri];
 
@@ -746,7 +736,7 @@
     // Emit `resolve` event for plugins such as text plugin
     var emitData = { id: id, refUri: refUri };
 
-    emit("resolve", emitData);
+    emit('resolve', emitData);
 
     return emitData.uri || seajs.resolve(emitData.id, refUri);
   };
@@ -766,16 +756,15 @@
       if (isArray(id)) {
         deps = id;
         id = undefined;
-      }
-      // define(id, factory)
-      else {
+      } else {
+        // define(id, factory)
         deps = undefined;
       }
     }
 
     // Parse dependencies according to the module factory code
     if (!isArray(deps) && isFunction(factory)) {
-      deps = typeof parseDependencies === "undefined" ? [] : parseDependencies(factory.toString());
+      deps = typeof parseDependencies === 'undefined' ? [] : parseDependencies(factory.toString());
     }
 
     var meta = {
@@ -786,7 +775,7 @@
     };
 
     // Try to derive uri in IE6-9 for anonymous modules
-    if (!isWebWorker && !meta.uri && doc.attachEvent && typeof getCurrentScript !== "undefined") {
+    if (!isWebWorker && !meta.uri && doc.attachEvent && typeof getCurrentScript !== 'undefined') {
       var script = getCurrentScript();
 
       if (script) {
@@ -797,11 +786,12 @@
     }
 
     // Emit `define` event, used in nocache plugin, seajs node version etc
-    emit("define", meta);
+    emit('define', meta);
 
-    meta.uri ? Module.save(meta.uri, meta) :
-      // Save information for "saving" work in the script onload event
-      anonymousMeta = meta;
+    meta.uri
+      ? Module.save(meta.uri, meta)
+      : // Save information for "saving" work in the script onload event
+        (anonymousMeta = meta);
   };
 
   // Save meta data to cachedMods
@@ -815,7 +805,7 @@
       mod.factory = meta.factory;
       mod.status = STATUS.SAVED;
 
-      emit("save", mod);
+      emit('save', mod);
     }
   };
 
@@ -855,7 +845,7 @@
 
   // Public API
   seajs.use = function(ids, callback) {
-    Module.use(ids, callback, data.cwd + "_use_" + cid());
+    Module.use(ids, callback, data.cwd + '_use_' + cid());
 
     return seajs;
   };
@@ -896,7 +886,7 @@
   data.cwd = cwd;
 
   // The charset for requesting files
-  data.charset = "utf-8";
+  data.charset = 'utf-8';
 
   // @Retention(RetentionPolicy.SOURCE)
   // The CORS options, Don't set CORS on default.
@@ -921,12 +911,11 @@
         // Concat array config such as map
         if (isArray(prev)) {
           curr = prev.concat(curr);
-        }
-        // Make sure that `data.base` is an absolute path
-        else if (key === "base") {
+        } else if (key === 'base') {
+          // Make sure that `data.base` is an absolute path
           // Make sure end with "/"
-          if (curr.slice(-1) !== "/") {
-            curr += "/";
+          if (curr.slice(-1) !== '/') {
+            curr += '/';
           }
 
           curr = addBase(curr);
@@ -937,7 +926,7 @@
       }
     }
 
-    emit("config", configData);
+    emit('config', configData);
 
     return seajs;
   };
