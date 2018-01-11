@@ -1,1 +1,0 @@
-define("common/dialog/1.5.1/dialog.tpl",[],function(s,a,e){"use strict";e.exports='<div class="<?= classPrefix ?>">\n  <a class="<?= classPrefix ?>-close" title="Close" href="javascript:;" data-role="close"></a>\n  <div class="<?= classPrefix ?>-content" data-role="content"></div>\n</div>\n\n'});

@@ -1,1 +1,0 @@
-define("common/overlay/1.2.0/index",["./lib/overlay","./lib/mask"],function(e,i,o){"use strict";o.exports=e("./lib/overlay"),o.exports.Mask=e("./lib/mask")});

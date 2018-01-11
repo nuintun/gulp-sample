@@ -1,1 +1,0 @@
-define("view/home/dialog.tpl",[],function(e,a,t){"use strict";t.exports='<span>既然来了，就留下点什么呗~</span>\n<textarea class="ui-popup-remark" placeholder="说点啥呗~"></textarea>'});

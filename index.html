@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>gulp-sample</title>
-    <link href="static/product/css/base/base.css" rel="stylesheet" type="text/css"/>
-    <link href="static/product/css/view/home/index.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="static/product/loader/sea.js"></script>
-    <script type="text/javascript">
-      // 路径建议使用绝对路径，这里因为放在 GitHub 展示，存在虚拟子目录，所以用了相对路径。
-      seajs.config({ base: './static/product/js' });
+    <link href="/static/product/css/base/base.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/product/css/view/home/index.css" rel="stylesheet" type="text/css"/>
+    <script src="/static/product/loader/sea.js"></script>
+    <script>
+      seajs.config({ base: '/static/product/js' });
       seajs.use('view/home/index');
     </script>
   </head>
