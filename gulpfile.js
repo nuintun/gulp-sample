@@ -27,7 +27,7 @@ const cmdAddons = require('@nuintun/gulp-cmd-plugins');
 const cssAddons = require('@nuintun/gulp-css-plugins');
 const switchStream = require('@nuintun/switch-stream');
 
-// alias
+// Alias
 const alias = {
   'css-loader': 'util/css-loader/1.0.0/css-loader',
   jquery: 'base/jquery/1.11.3/jquery',
