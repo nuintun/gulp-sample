@@ -180,6 +180,10 @@ function watch(glob, options, callabck) {
  * @returns {string}
  */
 function resolveCSSPath(path, file, wwwroot) {
+  if (/^data:/.test(path)) {
+    return path;
+  }
+
   if (/^[^./\\]/.test(path)) {
     path = './' + path;
   }
