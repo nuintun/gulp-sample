@@ -54,7 +54,7 @@ if (isIE6) {
   module.exports = Shim;
 } else {
   // 除了 IE6 都返回空函数
-  function Noop() {}
+  var Noop = function() {};
 
   Noop.prototype.sync = function() {
     return this;

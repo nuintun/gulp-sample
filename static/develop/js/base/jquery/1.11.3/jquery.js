@@ -8221,8 +8221,8 @@ function jQuery(window, noGlobal) {
 
   jQuery.extend({
     propFix: {
-      for: 'htmlFor',
-      class: 'className'
+      'for': 'htmlFor',
+      'class': 'className'
     },
 
     prop: function(elem, name, value) {
