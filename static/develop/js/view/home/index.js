@@ -1,8 +1,8 @@
 /**
- * Created by Newton on 2015/5/10.
+ * @module index
+ * @license MIT
+ * @version 2018/01/11
  */
-
-'use strict';
 
 var $ = require('jquery');
 var confirmbox = require('confirmbox');

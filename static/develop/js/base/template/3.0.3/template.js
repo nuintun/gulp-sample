@@ -4,8 +4,6 @@
  * Released under the MIT, BSD, and GPL Licenses
  */
 
-'use strict';
-
 /**
  * 模板引擎
  * @name    template

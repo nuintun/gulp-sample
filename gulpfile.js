@@ -310,6 +310,7 @@ gulp.task('product', ['runtime-product'], () => {
     .pipe(progress(cmd.print))
     .pipe(
       cmd({
+        indent: 0,
         alias: alias,
         map: resolveMapPath,
         ignore: ['jquery'],
