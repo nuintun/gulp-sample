@@ -9,11 +9,11 @@
   "homepage": "https://nuintun.github.io/gulp-sample",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nuintun/gulp-sample.git"
+    "url": "git+https://github.com/nuintun/gulp-sample.git"
   },
   "bugs": {
-    "url": "https://github.com/nuintun/gulp-sample/issues",
-    "email": "nuintun@qq.com"
+    "email": "nuintun@qq.com",
+    "url": "https://github.com/nuintun/gulp-sample/issues"
   },
   "engines": {
     "node": ">=4.0.0"
