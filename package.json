@@ -34,5 +34,9 @@
     "@nuintun/gulp-cmd-plugins": "https://github.com/nuintun/gulp-cmd-plugins/archive/master.tar.gz",
     "@nuintun/gulp-css-plugins": "https://github.com/nuintun/gulp-css-plugins/archive/master.tar.gz"
   },
+  "scripts": {
+    "start": "node node_modules/gulp/bin/gulp.js watch",
+    "build": "node node_modules/gulp/bin/gulp.js product"
+  },
   "readmeFilename": "README.md"
 }
