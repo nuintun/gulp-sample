@@ -46,6 +46,7 @@ const alias = {
 };
 // Bookmark
 let bookmark = Date.now();
+const cssLoader = 'util/css-loader/1.0.0/css-loader';
 
 /**
  * @function progress
@@ -315,7 +316,7 @@ gulp.task('product', ['runtime-product'], () => {
         map: resolveMapPath,
         ignore: ['jquery'],
         base: 'static/develop/js',
-        css: { onpath: resolveCSSPath },
+        css: { onpath: resolveCSSPath, loader: cssLoader },
         plugins: cmdAddons({ minify: true }),
         include: id => {
           return id && id.indexOf('view') === 0 ? 'all' : 'self';
@@ -362,7 +363,7 @@ gulp.task('default', ['runtime'], () => {
         base: 'static/develop/js',
         map: resolveMapPath,
         plugins: cmdAddons(),
-        css: { onpath: resolveCSSPath }
+        css: { onpath: resolveCSSPath, loader: cssLoader }
       })
     )
     .pipe(gulp.dest('static/product/js'))
@@ -426,7 +427,7 @@ gulp.task('watch', ['default'], () => {
             base: 'static/develop/js',
             map: resolveMapPath,
             plugins: cmdAddons(),
-            css: { onpath: resolveCSSPath }
+            css: { onpath: resolveCSSPath, loader: cssLoader }
           })
         )
         .pipe(gulp.dest('static/product/js'))
