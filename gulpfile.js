@@ -29,7 +29,6 @@ const switchStream = require('@nuintun/switch-stream');
 
 // Alias
 const alias = {
-  'css-loader': 'util/css-loader/1.0.0/css-loader',
   jquery: 'base/jquery/1.11.3/jquery',
   base: 'base/base/1.2.0/base',
   class: 'base/class/1.2.0/class',
