@@ -395,7 +395,7 @@ gulp.task('watch', ['default'], () => {
    */
   function debugWatcher(event, path) {
     console.log(
-      '  %s %s: %s',
+      '  %s %s %s',
       chalk.reset.green.bold.inverse(' • READ '),
       event,
       chalk.reset.green(join('static/develop', path).replace(/\\/g, '/'))
