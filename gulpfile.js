@@ -55,7 +55,7 @@ const cssLoader = 'util/css-loader/1.0.0/css-loader';
 function progress(print) {
   return switchStream.through(function(vinyl, encoding, next) {
     const info =
-      chalk.reset.reset('process: ') + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+      chalk.reset.reset('process ') + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
 
     if (print) {
       print(info);
