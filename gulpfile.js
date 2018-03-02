@@ -1,85 +1,53 @@
 /**
  * @module gulpfile
  * @license MIT
- * @version 2017/11/13
+ * @version 2017/11/16
  */
 
 'use strict';
 
 const util = require('util');
 const path = require('path');
-const join = path.join;
-const relative = path.relative;
-const dirname = path.dirname;
-const extname = path.extname;
-const resolve = path.resolve;
 const gulp = require('gulp');
 const rimraf = require('del');
 const css = require('@nuintun/gulp-css');
 const cmd = require('@nuintun/gulp-cmd');
-const chalk = cmd.chalk;
+const cdeps = require('cmd-deps');
 const holding = require('holding');
 const cssnano = require('cssnano');
 const uglify = require('uglify-es');
 const chokidar = require('chokidar');
+const concat = require('gulp-concat');
 const plumber = require('gulp-plumber');
 const cmdAddons = require('@nuintun/gulp-cmd-plugins');
 const cssAddons = require('@nuintun/gulp-css-plugins');
 const switchStream = require('@nuintun/switch-stream');
 
-// Alias
-const alias = {
-  jquery: 'base/jquery/1.11.3/jquery',
-  base: 'base/base/1.2.0/base',
-  class: 'base/class/1.2.0/class',
-  events: 'base/events/1.2.0/events',
-  widget: 'base/widget/1.2.0/widget',
-  template: 'base/template/3.0.3/template',
-  templatable: 'base/templatable/0.10.0/templatable',
-  'iframe-shim': 'util/iframe-shim/1.1.0/iframe-shim',
-  position: 'util/position/1.1.0/position',
-  messenger: 'util/messenger/2.1.0/messenger',
-  overlay: 'common/overlay/1.2.0/',
-  dialog: 'common/dialog/1.5.1/dialog',
-  confirmbox: 'common/dialog/1.5.1/confirmbox'
-};
-// Bookmark
-let bookmark = Date.now();
-const cssLoader = 'util/css-loader/1.0.0/css-loader';
+const join = path.join;
+const relative = path.relative;
+const dirname = path.dirname;
+const extname = path.extname;
+const resolve = path.resolve;
+const chalk = cmd.chalk;
+const logger = cmd.logger;
+
+const IGNORE = ['jquery'];
+const RUNTIME = ['static/develop/loader/sea.js'];
+const CSS_LOADER = 'util/css-loader/1.0.0/css-loader';
 
 /**
  * @function progress
  * @description Show progress logger
- * @param {Function} print
  */
-function progress(print) {
+function progress() {
   return switchStream.through(function(vinyl, encoding, next) {
-    const info =
-      chalk.reset.reset('process ') + chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+    const file = chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+    const info = chalk.reset.reset('Building ') + file;
 
-    if (print) {
-      print(info);
-    } else {
-      process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + info + '\n');
-    }
+    logger.info(info);
 
     next(null, vinyl);
   });
-}
-
-/**
- * @function finish
- * @description Build finish function
- */
-function finish() {
-  const now = new Date();
-
-  console.log(
-    '  %s [%s] build complete... %s',
-    chalk.reset.green.bold.inverse(' √ DONE '),
-    dateFormat(now),
-    chalk.reset.green('+' + (now - bookmark) + 'ms')
-  );
 }
 
 /**
@@ -115,7 +83,7 @@ function compress() {
         });
 
         if (result.error) {
-          process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(result.error) + '\n');
+          logger.error(gutil.chalk.reset.red.bold(inspectError(result.error)) + '\x07');
         } else {
           vinyl.contents = new Buffer(result.code);
         }
@@ -133,7 +101,7 @@ function compress() {
             next();
           })
           .catch(error => {
-            process.stdout.write(chalk.reset.bold.cyan('  gulp-odd ') + inspectError(error) + '\n');
+            logger.error(gutil.chalk.reset.red.bold(inspectError(result.error)) + '\x07');
             next();
           });
       })
@@ -169,6 +137,15 @@ function watch(glob, options, callabck) {
 
   // Return watcher
   return watcher;
+}
+
+/**
+ * @function getAlias
+ */
+function getAlias() {
+  delete require.cache[require.resolve('./alias.json')];
+
+  return require('./alias.json');
 }
 
 /**
@@ -209,184 +186,174 @@ function resolveMapPath(path) {
 }
 
 /**
- * @function dateFormat
- * @description Date format
- * @param {Date} date
- * @param {string} format
- * @returns {string}
+ * @function clean
  */
-function dateFormat(date, format) {
-  // 参数错误
-  if (!date instanceof Date) {
-    throw new TypeError('Param date must be a Date.');
-  }
-
-  format = format || 'yyyy-MM-dd hh:mm:ss';
-
-  const map = {
-    M: date.getMonth() + 1, // 月份
-    d: date.getDate(), // 日
-    h: date.getHours(), // 小时
-    m: date.getMinutes(), // 分
-    s: date.getSeconds(), // 秒
-    q: Math.floor((date.getMonth() + 3) / 3), // 季度
-    S: date.getMilliseconds() // 毫秒
-  };
-
-  format = format.replace(/([yMdhmsqS])+/g, (all, t) => {
-    let v = map[t];
-
-    if (v !== undefined) {
-      if (all.length > 1) {
-        v = '0' + v;
-        v = v.substr(v.length - 2);
-      }
-
-      return v;
-    } else if (t === 'y') {
-      return (date.getFullYear() + '').substr(4 - all.length);
-    }
-
-    return all;
-  });
-
-  return format;
+function clean() {
+  return rimraf('static/product');
 }
 
-// Clean task
-gulp.task('clean', () => {
-  bookmark = Date.now();
+/**
+ * @function runtime
+ * @param {boolean} product
+ */
+function runtime(product) {
+  return function runtime() {
+    // Loader file
+    return gulp
+      .src(RUNTIME, { base: 'static/develop/loader', nodir: true })
+      .pipe(plumber())
+      .pipe(progress())
+      .pipe(concat('sea.js'))
+      .pipe(product ? compress() : switchStream.through())
+      .pipe(gulp.dest('static/product/loader'));
+  };
+}
 
-  rimraf.sync('static/product');
-});
+/**
+ * @function images
+ * @param {boolean} product
+ */
+function images(product) {
+  return function images() {
+    return gulp
+      .src('static/develop/images/**/*', { base: 'static/develop/images', nodir: true })
+      .pipe(plumber())
+      .pipe(progress())
+      .pipe(gulp.dest('static/product/images'));
+  };
+}
 
-// Runtime task
-gulp.task('runtime', ['clean'], () => {
-  // Loader file
-  gulp
-    .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
+/**
+ * @function common
+ * @param {boolean} product
+ */
+function common(product) {
+  return function common() {
+    return gulp
+      .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
+      .pipe(plumber())
+      .pipe(progress())
+      .pipe(
+        cmd({
+          ignore: IGNORE,
+          alias: getAlias(),
+          map: resolveMapPath,
+          indent: product ? 0 : 2,
+          base: 'static/develop/js',
+          include: product ? 'all' : 'self',
+          plugins: cmdAddons({ minify: product }),
+          css: { onpath: resolveCSSPath, loader: CSS_LOADER }
+        })
+      )
+      .pipe(gulp.dest('static/product/js'));
+  };
+}
+
+/**
+ * @function getIgnore
+ */
+function getIgnore() {
+  return gulp
+    .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
     .pipe(plumber())
-    .pipe(progress())
-    .pipe(gulp.dest('static/product'));
-
-  // Image file
-  gulp
-    .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
-    .pipe(plumber())
-    .pipe(progress())
-    .pipe(gulp.dest('static/product'));
-});
-
-// Runtime product task
-gulp.task('runtime-product', ['clean'], () => {
-  // Loader file
-  gulp
-    .src('static/develop/loader/**/*.js', { base: 'static/develop', nodir: true })
-    .pipe(plumber())
-    .pipe(progress())
-    .pipe(compress())
-    .pipe(gulp.dest('static/product'));
-
-  // Image file
-  gulp
-    .src('static/develop/images/**/*', { base: 'static/develop', nodir: true })
-    .pipe(plumber())
-    .pipe(progress())
-    .pipe(gulp.dest('static/product'));
-});
-
-// Product task
-gulp.task('product', ['runtime-product'], () => {
-  // Complete callback
-  const complete = holding(1, () => {
-    finish();
-    process.stdout.write('\x07');
-  });
-
-  // JS files
-  gulp
-    .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
-    .pipe(plumber())
-    .pipe(progress(cmd.print))
     .pipe(
       cmd({
-        indent: 0,
-        alias: alias,
+        cache: false,
+        include: 'all',
+        ignore: IGNORE,
+        alias: getAlias(),
         map: resolveMapPath,
-        ignore: ['jquery'],
         base: 'static/develop/js',
-        css: { onpath: resolveCSSPath, loader: cssLoader },
-        plugins: cmdAddons({ minify: true }),
-        include: id => {
-          return id && id.indexOf('view') === 0 ? 'all' : 'self';
-        }
+        css: { onpath: resolveCSSPath, loader: CSS_LOADER }
       })
     )
-    .pipe(gulp.dest('static/product/js'))
-    .on('finish', complete);
-
-  // CSS files
-  gulp
-    .src('static/develop/css/?(base|view)/**/*', { base: 'static/develop', nodir: true })
-    .pipe(plumber())
-    .pipe(progress(css.print))
     .pipe(
-      css({
-        include: true,
-        map: resolveMapPath,
-        onpath: resolveCSSPath,
-        plugins: cssAddons({ minify: true })
+      switchStream.through(function(vinyl, encoding, next) {
+        cdeps(vinyl.contents).forEach(item => {
+          IGNORE.push(item.path);
+        });
+
+        this.push(vinyl);
+        next();
       })
-    )
-    .pipe(gulp.dest('static/product'))
-    .on('finish', complete);
-});
+    );
+}
 
-// Develop task
-gulp.task('default', ['runtime'], () => {
-  // Complete callback
-  const complete = holding(1, () => {
-    finish();
-    process.stdout.write('\x07');
-  });
+/**
+ * @function script
+ * @param {boolean} product
+ */
+function script(product) {
+  function script() {
+    return gulp
+      .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+      .pipe(plumber())
+      .pipe(progress())
+      .pipe(
+        cmd({
+          alias: getAlias(),
+          map: resolveMapPath,
+          indent: product ? 0 : 2,
+          base: 'static/develop/js',
+          ignore: product ? IGNORE : [],
+          plugins: cmdAddons({ minify: product }),
+          css: { onpath: resolveCSSPath, loader: CSS_LOADER },
+          include: id => {
+            return product && id && id.indexOf('view') === 0 ? 'all' : 'self';
+          }
+        })
+      )
+      .pipe(gulp.dest('static/product/js'));
+  }
 
-  // JS files
-  gulp
-    .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
-    .pipe(plumber())
-    .pipe(progress(cmd.print))
-    .pipe(
-      cmd({
-        alias: alias,
-        include: 'self',
-        base: 'static/develop/js',
-        map: resolveMapPath,
-        plugins: cmdAddons(),
-        css: { onpath: resolveCSSPath, loader: cssLoader }
+  return product ? gulp.series(getIgnore, script) : script;
+}
+
+/**
+ * @function style
+ * @param {boolean} product
+ */
+function style(product) {
+  return function style() {
+    return gulp
+      .src(product ? 'static/develop/css/?(base|view)/**/*' : 'static/develop/css/**/*', {
+        base: 'static/develop/css',
+        nodir: true
       })
-    )
-    .pipe(gulp.dest('static/product/js'))
-    .on('finish', complete);
+      .pipe(plumber())
+      .pipe(progress())
+      .pipe(
+        css({
+          include: product,
+          map: resolveMapPath,
+          onpath: resolveCSSPath,
+          plugins: cssAddons({ minify: product })
+        })
+      )
+      .pipe(gulp.dest('static/product/css'));
+  };
+}
 
-  // CSS files
-  gulp
-    .src('static/develop/css/**/*', { base: 'static/develop', nodir: true })
-    .pipe(plumber())
-    .pipe(progress(css.print))
-    .pipe(
-      css({
-        map: resolveMapPath,
-        onpath: resolveCSSPath,
-        plugins: cssAddons()
-      })
-    )
-    .pipe(gulp.dest('static/product'))
-    .on('finish', complete);
-});
-
-// Develop watch task
-gulp.task('watch', ['default'], () => {
+/**
+ * @function watching
+ */
+function watching() {
+  let bookmark = new Date();
   const base = join(process.cwd(), 'static/develop');
+
+  /**
+   * @function finish
+   * @description Build finish function
+   */
+  function finish() {
+    const now = new Date();
+
+    logger.info(
+      '%s build complete... %s',
+      chalk.reset.green.bold.inverse(' √ DONE '),
+      chalk.reset.green('+' + (now - bookmark) + 'ms')
+    );
+  }
 
   /**
    * @function debugWatcher
@@ -394,26 +361,27 @@ gulp.task('watch', ['default'], () => {
    * @param {string} path
    */
   function debugWatcher(event, path) {
-    console.log(
-      '  %s %s %s',
+    const now = new Date();
+
+    logger.info(
+      '%s %s: %s',
       chalk.reset.green.bold.inverse(' • READ '),
       event,
       chalk.reset.green(join('static/develop', path).replace(/\\/g, '/'))
     );
   }
 
-  // Watch js files
+  // Watch js file
   watch('static/develop/js', (event, path) => {
     const rpath = relative(base, path);
 
-    bookmark = Date.now();
+    bookmark = new Date();
     event = event.toLowerCase();
 
     debugWatcher(event, rpath);
 
     if (event === 'unlink' || event === 'unlinkdir') {
-      rimraf.sync(resolve('static/product', rpath));
-      finish();
+      rimraf(resolve('static/product', rpath)).then(finish);
     } else {
       gulp
         .src(path, { base: 'static/develop/js' })
@@ -421,12 +389,12 @@ gulp.task('watch', ['default'], () => {
         .pipe(
           cmd({
             cache: false,
-            alias: alias,
             include: 'self',
-            base: 'static/develop/js',
+            alias: getAlias(),
             map: resolveMapPath,
             plugins: cmdAddons(),
-            css: { onpath: resolveCSSPath, loader: cssLoader }
+            base: 'static/develop/js',
+            css: { onpath: resolveCSSPath, loader: CSS_LOADER }
           })
         )
         .pipe(gulp.dest('static/product/js'))
@@ -434,30 +402,29 @@ gulp.task('watch', ['default'], () => {
     }
   });
 
-  // Watch css files
-  watch('static/develop/css', (event, path) => {
-    var rpath = relative(base, path);
+  // Watch css file
+  watch('Assets/css', (event, path) => {
+    const rpath = relative(base, path);
 
-    bookmark = Date.now();
+    bookmark = new Date();
     event = event.toLowerCase();
 
     debugWatcher(event, rpath);
 
     if (event === 'unlink' || event === 'unlinkdir') {
-      rimraf.sync(resolve('static/product', relative(base, path)));
-      finish();
+      rimraf(resolve('static/product', rpath)).then(finish);
     } else {
       gulp
-        .src(path, { base: 'static/develop' })
+        .src(path, { base: 'static/develop/css' })
         .pipe(plumber())
         .pipe(
           css({
             map: resolveMapPath,
-            onpath: resolveCSSPath,
-            plugins: cssAddons()
+            plugins: cssAddons(),
+            onpath: resolveCSSPath
           })
         )
-        .pipe(gulp.dest('static/product'))
+        .pipe(gulp.dest('static/product/css'))
         .on('finish', finish);
     }
   });
@@ -472,14 +439,25 @@ gulp.task('watch', ['default'], () => {
     debugWatcher(event, rpath);
 
     if (event === 'unlink' || event === 'unlinkdir') {
-      rimraf.sync(resolve('static/product', relative(base, path)));
-      finish();
+      rimraf(resolve('static/product', relative(base, path))).then(finish);
     } else {
       gulp
-        .src(path, { base: 'static/develop' })
+        .src(path, { base: 'static/develop/images' })
         .pipe(plumber())
-        .pipe(gulp.dest('static/product'))
+        .pipe(gulp.dest('static/product/images'))
         .on('finish', finish);
     }
   });
-});
+}
+
+// Task default
+gulp.task('default', gulp.series(clean, gulp.parallel(runtime(), images(), common(), script(), style())));
+
+// Task product
+gulp.task(
+  'product',
+  gulp.series(clean, gulp.parallel(runtime(true), images(true), common(true), script(true), style(true)))
+);
+
+// Task watch
+gulp.task('watch', gulp.series('default', watching));

@@ -282,6 +282,8 @@ var Widget = Base.extend({
     this.undelegateEvents();
     delete cachedInstances[this.cid];
 
+    (this.initElement || this.element).removeAttr(DATA_WIDGET_CID, cid);
+
     // For memory leak
     if (this.element && this._isTemplate) {
       this.element.off();
@@ -292,6 +294,7 @@ var Widget = Base.extend({
         this.element.remove();
       }
     }
+
     this.element = null;
 
     Widget.superclass.destroy.call(this);
