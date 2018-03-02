@@ -403,7 +403,7 @@ function watching() {
   });
 
   // Watch css file
-  watch('Assets/css', (event, path) => {
+  watch('static/develop/css', (event, path) => {
     const rpath = relative(base, path);
 
     bookmark = new Date();
