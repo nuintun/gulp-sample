@@ -23,18 +23,18 @@
   "dependencies": {
     "del": "^3.0.0",
     "gulp": "next",
-    "holding": "^2.0.1",
-    "chokidar": "^2.0.2",
+    "holding": "^3.0.2",
+    "chokidar": "^2.0.3",
     "cssnano": "^3.10.0",
-    "cmd-deps": "^2.2.7",
+    "cmd-deps": "^2.3.2",
     "uglify-es": "^3.3.9",
     "gulp-plumber": "^1.2.0",
     "gulp-concat": "^2.6.1",
-    "@nuintun/gulp-cmd": "^0.0.4",
-    "@nuintun/gulp-css": "^0.0.4",
-    "@nuintun/switch-stream": "^0.0.1",
-    "@nuintun/gulp-cmd-plugins": "^0.0.3",
-    "@nuintun/gulp-css-plugins": "^0.0.3"
+    "@nuintun/gulp-cmd": "^0.1.6",
+    "@nuintun/gulp-css": "^0.1.6",
+    "@nuintun/switch-stream": "^1.0.3",
+    "@nuintun/gulp-cmd-plugins": "^0.1.6",
+    "@nuintun/gulp-css-plugins": "^0.1.6"
   },
   "scripts": {
     "start": "node_modules/.bin/gulp.cmd watch",
