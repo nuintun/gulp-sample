@@ -1,0 +1,18 @@
+{
+  "only": [
+    "static/develop/js/view/**/*.js",
+    "static/develop/js/**/*.css.js",
+    "static/develop/js/util/css-loader/1.0.0/css-loader.js"
+  ],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["> 0.5% in CN", "> 1%", "ie > 8"]
+        },
+        "modules": false
+      }
+    ]
+  ]
+}

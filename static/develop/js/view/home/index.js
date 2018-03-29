@@ -4,13 +4,13 @@
  * @version 2018/01/11
  */
 
-var $ = require('jquery');
-var confirmbox = require('confirmbox');
-var content = require('./dialog.tpl');
+const $ = require('jquery');
+const confirmbox = require('confirmbox');
+const content = require('./dialog.tpl');
 
 function trim() {
   // http://perfectionkills.com/whitespace-deviations/
-  var whiteSpaces = [
+  const whiteSpaces = [
     '\\s',
 
     //'0009', // 'HORIZONTAL TAB'
@@ -45,8 +45,8 @@ function trim() {
     '3000' // 'IDEOGRAPHIC SPACE'
   ].join('\\u');
 
-  var trimLeftReg = new RegExp('^[' + whiteSpaces + ']+');
-  var trimRightReg = new RegExp('[' + whiteSpaces + ']+$');
+  const trimLeftReg = new RegExp('^[' + whiteSpaces + ']+');
+  const trimRightReg = new RegExp('[' + whiteSpaces + ']+$');
 
   return function(string) {
     return String(string)
@@ -59,7 +59,7 @@ trim = trim();
 
 $('#open-dialog').on('click', function() {
   confirmbox.confirm(content, '亲，你来了~', function() {
-    var value = this.element.find('.ui-popup-remark').val();
+    const value = this.element.find('.ui-popup-remark').val();
 
     confirmbox.alert(trim(value).length ? value : '轻轻的你走了，正如你轻轻的来~');
   });

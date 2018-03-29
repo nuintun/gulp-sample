@@ -1,17 +1,14 @@
 /**
  * @module gulpfile
  * @license MIT
- * @version 2017/11/16
+ * @version 2018/03/26
  */
 
 'use strict';
 
 const util = require('util');
-const path = require('path');
 const gulp = require('gulp');
 const rimraf = require('del');
-const css = require('@nuintun/gulp-css');
-const cmd = require('@nuintun/gulp-cmd');
 const cdeps = require('cmd-deps');
 const holding = require('holding');
 const cssnano = require('cssnano');
@@ -19,19 +16,18 @@ const uglify = require('uglify-es');
 const chokidar = require('chokidar');
 const concat = require('gulp-concat');
 const plumber = require('gulp-plumber');
+const css = require('@nuintun/gulp-css');
+const cmd = require('@nuintun/gulp-cmd');
 const cmdAddons = require('@nuintun/gulp-cmd-plugins');
 const cssAddons = require('@nuintun/gulp-css-plugins');
 const switchStream = require('@nuintun/switch-stream');
+const { join, relative, dirname, extname, resolve } = require('path');
 
-const join = path.join;
-const relative = path.relative;
-const dirname = path.dirname;
-const extname = path.extname;
-const resolve = path.resolve;
-const chalk = cmd.chalk;
-const logger = cmd.logger;
+const { chalk, logger } = cmd;
+const { through } = switchStream;
 
 const IGNORE = ['jquery'];
+const ROOT = process.cwd();
 const RUNTIME = ['static/develop/loader/sea.js'];
 const CSS_LOADER = 'util/css-loader/1.0.0/css-loader';
 
@@ -40,7 +36,7 @@ const CSS_LOADER = 'util/css-loader/1.0.0/css-loader';
  * @description Show progress logger
  */
 function progress() {
-  return switchStream.through(function(vinyl, encoding, next) {
+  return through(function(vinyl, encoding, next) {
     const file = chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
     const info = chalk.reset.reset('Building ') + file;
 
@@ -56,8 +52,17 @@ function progress() {
  * @returns {string}
  */
 function inspectError(error) {
-  return util.inspect(error).replace(/^\{\s*|\}\s*$/g, '');
+  error = util.inspect(error).replace(/^\{\s*|\}\s*$/g, '');
+
+  return gutil.chalk.reset.red(error, '\x07');
 }
+
+/**
+ * @function toBuffer
+ * @param {string} string
+ * @returns {Buffer}
+ */
+const toBuffer = Buffer.from ? Buffer.from : string => new Buffer(string);
 
 /**
  * @function compress
@@ -66,44 +71,35 @@ function inspectError(error) {
 function compress() {
   return switchStream(
     vinyl => {
-      if (extname(vinyl.path) === '.js') {
-        return 'js';
-      }
-
-      if (extname(vinyl.path) === '.css') {
-        return 'css';
-      }
+      return extname(vinyl.path)
+        .slice(1)
+        .toLowerCase();
     },
     {
-      js: switchStream.through(function(vinyl, encoding, next) {
-        const result = uglify.minify(vinyl.contents.toString(), {
-          ecma: 5,
-          ie8: true,
-          mangle: { eval: true }
-        });
+      js: through(function(vinyl, encoding, next) {
+        const path = vinyl.path;
+        const contents = vinyl.contents.toString();
+        const options = { ecma: 5, ie8: true, mangle: { eval: true } };
+        const result = uglify.minify({ [path]: contents }, options);
 
         if (result.error) {
-          logger.error(gutil.chalk.reset.red.bold(inspectError(result.error)) + '\x07');
+          logger.error(inspectError(result.error));
         } else {
-          vinyl.contents = new Buffer(result.code);
+          vinyl.contents = toBuffer(result.code);
         }
 
-        this.push(vinyl);
-        next();
+        next(null, vinyl);
       }),
-      css: switchStream.through(function(vinyl, encoding, next) {
-        cssnano
-          .process(vinyl.contents.toString(), { safe: true })
-          .then(result => {
-            vinyl.contents = new Buffer(result.css);
+      css: through(function(vinyl, encoding, next) {
+        try {
+          const result = cssnano.process(vinyl.contents.toString(), { safe: true });
 
-            this.push(vinyl);
-            next();
-          })
-          .catch(error => {
-            logger.error(gutil.chalk.reset.red.bold(inspectError(result.error)) + '\x07');
-            next();
-          });
+          vinyl.contents = toBuffer(result.css);
+        } catch (error) {
+          logger.error(inspectError(result.error));
+        }
+
+        next(null, vinyl);
       })
     }
   );
@@ -149,15 +145,23 @@ function getAlias() {
 }
 
 /**
- * @function resolveCSSPath
- * @description Resolve css path
+ * @function unixify
  * @param {string} path
- * @param {string} file
- * @param {string} wwwroot
+ */
+function unixify(path) {
+  return path.replace(/\\/g, '/');
+}
+
+/**
+ * @function onpath
+ * @description Resolve css path
+ * @param {string} prop
+ * @param {string} path
+ * @param {string} referer
  * @returns {string}
  */
-function resolveCSSPath(path, file, wwwroot) {
-  if (/^data:/.test(path)) {
+function onpath(prop, path, referer) {
+  if (/^(?:[a-z0-9.+-]+:)?\/\/|^data:\w+?\/\w+?[,;]/i.test(path)) {
     return path;
   }
 
@@ -165,23 +169,21 @@ function resolveCSSPath(path, file, wwwroot) {
     path = './' + path;
   }
 
-  if (path.charAt(0) === '.') {
-    path = join(dirname(file), path);
-    path = relative(wwwroot, path);
-    path = '/' + path;
-    path = path.replace(/\\+/g, '/');
+  if (!path.startsWith('/')) {
+    path = join(dirname(referer), path);
+    path = '/' + unixify(relative(ROOT, path));
   }
 
   return path.replace('/static/develop/', '/static/product/');
 }
 
 /**
- * @function resolveMapPath
+ * @function resolveMap
  * @description Resolve js path
  * @param {string} path
  * @returns {string}
  */
-function resolveMapPath(path) {
+function resolveMap(path) {
   return path.replace('/static/develop/', '/static/product/');
 }
 
@@ -197,6 +199,8 @@ function clean() {
  * @param {boolean} product
  */
 function runtime(product) {
+  product = Boolean(product);
+
   return function runtime() {
     // Loader file
     return gulp
@@ -204,7 +208,7 @@ function runtime(product) {
       .pipe(plumber())
       .pipe(progress())
       .pipe(concat('sea.js'))
-      .pipe(product ? compress() : switchStream.through())
+      .pipe(product ? compress() : through())
       .pipe(gulp.dest('static/product/loader'));
   };
 }
@@ -214,6 +218,8 @@ function runtime(product) {
  * @param {boolean} product
  */
 function images(product) {
+  product = Boolean(product);
+
   return function images() {
     return gulp
       .src('static/develop/images/**/*', { base: 'static/develop/images', nodir: true })
@@ -228,6 +234,8 @@ function images(product) {
  * @param {boolean} product
  */
 function common(product) {
+  product = Boolean(product);
+
   return function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
@@ -236,13 +244,13 @@ function common(product) {
       .pipe(
         cmd({
           ignore: IGNORE,
+          map: resolveMap,
+          combine: product,
           alias: getAlias(),
-          map: resolveMapPath,
           indent: product ? 0 : 2,
           base: 'static/develop/js',
-          include: product ? 'all' : 'self',
-          plugins: cmdAddons({ minify: product }),
-          css: { onpath: resolveCSSPath, loader: CSS_LOADER }
+          css: { onpath, loader: CSS_LOADER },
+          plugins: [cmdAddons({ minify: product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -258,23 +266,21 @@ function getIgnore() {
     .pipe(plumber())
     .pipe(
       cmd({
-        cache: false,
-        include: 'all',
+        combine: true,
         ignore: IGNORE,
+        map: resolveMap,
         alias: getAlias(),
-        map: resolveMapPath,
         base: 'static/develop/js',
-        css: { onpath: resolveCSSPath, loader: CSS_LOADER }
+        css: { onpath, loader: CSS_LOADER }
       })
     )
     .pipe(
-      switchStream.through(function(vinyl, encoding, next) {
-        cdeps(vinyl.contents).forEach(item => {
+      through(function(vinyl, encoding, next) {
+        cdeps(vinyl.contents).dependencies.forEach(item => {
           IGNORE.push(item.path);
         });
 
-        this.push(vinyl);
-        next();
+        next(null, vinyl);
       })
     );
 }
@@ -284,6 +290,8 @@ function getIgnore() {
  * @param {boolean} product
  */
 function script(product) {
+  product = Boolean(product);
+
   function script() {
     return gulp
       .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -291,16 +299,14 @@ function script(product) {
       .pipe(progress())
       .pipe(
         cmd({
+          map: resolveMap,
+          combine: product,
           alias: getAlias(),
-          map: resolveMapPath,
           indent: product ? 0 : 2,
           base: 'static/develop/js',
           ignore: product ? IGNORE : [],
-          plugins: cmdAddons({ minify: product }),
-          css: { onpath: resolveCSSPath, loader: CSS_LOADER },
-          include: id => {
-            return product && id && id.indexOf('view') === 0 ? 'all' : 'self';
-          }
+          css: { onpath, loader: CSS_LOADER },
+          plugins: [cmdAddons({ minify: product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -314,6 +320,8 @@ function script(product) {
  * @param {boolean} product
  */
 function style(product) {
+  product = Boolean(product);
+
   return function style() {
     return gulp
       .src(product ? 'static/develop/css/?(base|view)/**/*' : 'static/develop/css/**/*', {
@@ -324,10 +332,10 @@ function style(product) {
       .pipe(progress())
       .pipe(
         css({
-          include: product,
-          map: resolveMapPath,
-          onpath: resolveCSSPath,
-          plugins: cssAddons({ minify: product })
+          onpath,
+          map: resolveMap,
+          combine: product,
+          plugins: [cssAddons({ minify: product })]
         })
       )
       .pipe(gulp.dest('static/product/css'));
@@ -388,13 +396,11 @@ function watching() {
         .pipe(plumber())
         .pipe(
           cmd({
-            cache: false,
-            include: 'self',
+            map: resolveMap,
             alias: getAlias(),
-            map: resolveMapPath,
-            plugins: cmdAddons(),
+            plugins: [cmdAddons()],
             base: 'static/develop/js',
-            css: { onpath: resolveCSSPath, loader: CSS_LOADER }
+            css: { onpath, loader: CSS_LOADER }
           })
         )
         .pipe(gulp.dest('static/product/js'))
@@ -419,9 +425,9 @@ function watching() {
         .pipe(plumber())
         .pipe(
           css({
-            map: resolveMapPath,
-            plugins: cssAddons(),
-            onpath: resolveCSSPath
+            onpath,
+            map: resolveMap,
+            plugins: [cssAddons()]
           })
         )
         .pipe(gulp.dest('static/product/css'))
