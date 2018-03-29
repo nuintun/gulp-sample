@@ -13,6 +13,7 @@ exports.initAttrs = function(config) {
 
   // Get all inherited attributes.
   var specialProps = this.propsInAttrs || [];
+
   mergeInheritedAttrs(attrs, this, specialProps);
 
   // Merge user-specific attributes from config.
@@ -34,6 +35,7 @@ exports.initAttrs = function(config) {
 exports.get = function(key) {
   var attr = this.attrs[key] || {};
   var val = attr.value;
+
   return attr.getter ? attr.getter.call(this, val, key) : val;
 };
 
@@ -52,6 +54,7 @@ exports.set = function(key, val, options) {
   }
 
   options || (options = {});
+
   var silent = options.silent;
   var override = options.override;
 
@@ -62,6 +65,7 @@ exports.set = function(key, val, options) {
     if (!attrs.hasOwnProperty(key)) continue;
 
     var attr = now[key] || (now[key] = {});
+
     val = attrs[key];
 
     if (attr.readOnly) {
@@ -135,6 +139,7 @@ var hasOwn = Object.prototype.hasOwnProperty;
  */
 /** Detect if own properties are iterated after inherited properties (IE < 9) */
 var iteratesOwnLast;
+
 (function() {
   var props = [];
 
@@ -143,9 +148,11 @@ var iteratesOwnLast;
   }
 
   Ctor.prototype = { valueOf: 1, y: 1 };
+
   for (var prop in new Ctor()) {
     props.push(prop);
   }
+
   iteratesOwnLast = props[0] !== 'x';
 })();
 
@@ -200,6 +207,7 @@ function isPlainObject(o) {
   // Own properties are enumerated firstly, so to speed up,
   // if last one is own, then all properties are own.
   for (key in o) {
+    // Empty loop
   }
 
   return key === undefined || hasOwn.call(o, key);
@@ -213,6 +221,7 @@ function isEmptyObject(o) {
   for (var p in o) {
     if (o.hasOwnProperty(p)) return false;
   }
+
   return true;
 }
 
@@ -252,6 +261,7 @@ if (!keys) {
         result.push(name);
       }
     }
+
     return result;
   };
 }
@@ -319,12 +329,15 @@ function parseEventsFromAttrs(host, attrs) {
 function getEventName(name) {
   var m = name.match(EVENT_NAME_PATTERN);
   var ret = m[1] ? 'change:' : '';
+
   ret += m[2].toLowerCase() + m[3];
+
   return ret;
 }
 
 function setSetterAttrs(host, attrs, config) {
   var options = { silent: true };
+
   host.__initializingAttrs = true;
 
   for (var key in config) {
@@ -369,6 +382,7 @@ function normalize(attrs, isUserValue) {
 }
 
 var ATTR_OPTIONS = ['setter', 'getter', 'readOnly'];
+
 // 专用于 attrs 的 merge 方法
 function mergeAttrs(attrs, inheritedAttrs, isUserValue) {
   var key, value;
@@ -395,6 +409,7 @@ function mergeAttrs(attrs, inheritedAttrs, isUserValue) {
 
       for (var i in ATTR_OPTIONS) {
         var option = ATTR_OPTIONS[i];
+
         if (value[option] !== undefined) {
           attr[option] = value[option];
         }
@@ -411,6 +426,7 @@ function hasOwnProperties(object, properties) {
       return true;
     }
   }
+
   return false;
 }
 
@@ -431,6 +447,7 @@ function isEqual(a, b) {
 
   // Compare `[[Class]]` names.
   var className = toString.call(a);
+
   if (className != toString.call(b)) return false;
 
   switch (className) {
@@ -439,12 +456,10 @@ function isEqual(a, b) {
       // Primitives and their corresponding object wrappers are
       // equivalent; thus, `"5"` is equivalent to `new String("5")`.
       return a == String(b);
-
     case '[object Number]':
       // `NaN`s are equivalent, but non-reflexive. An `equal`
       // comparison is performed for other numeric values.
       return a != +a ? b != +b : a == 0 ? 1 / a == 1 / b : a == +b;
-
     case '[object Date]':
     case '[object Boolean]':
       // Coerce dates and booleans to numeric primitive values.
@@ -452,11 +467,9 @@ function isEqual(a, b) {
       // Note that invalid dates with millisecond representations
       // of `NaN` are not equivalent.
       return +a == +b;
-
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source == b.source && a.global == b.global && a.multiline == b.multiline && a.ignoreCase == b.ignoreCase;
-
     // 简单判断数组包含的 primitive 值是否相等
     case '[object Array]':
       var aString = a.toString();

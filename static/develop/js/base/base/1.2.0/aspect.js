@@ -26,9 +26,11 @@ function weave(when, methodName, callback, context) {
 
   while ((name = names.shift())) {
     method = getMethod(this, name);
+
     if (!method.__isAspected) {
       wrap.call(this, name);
     }
+
     this.on(when + ':' + name, callback, context);
   }
 
@@ -37,9 +39,11 @@ function weave(when, methodName, callback, context) {
 
 function getMethod(host, methodName) {
   var method = host[methodName];
+
   if (!method) {
     throw new Error('Invalid method name: ' + methodName);
   }
+
   return method;
 }
 
@@ -55,6 +59,7 @@ function wrap(methodName) {
 
     var ret = old.apply(this, arguments);
     var afterArgs = ['after:' + methodName, ret].concat(args);
+
     this.trigger.apply(this, afterArgs);
 
     return ret;

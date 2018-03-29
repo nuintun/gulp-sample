@@ -28,7 +28,7 @@ const { through } = switchStream;
 
 const ROOT = process.cwd();
 const RUNTIME = ['static/develop/loader/sea.js'];
-const CSS_LOADER = 'base/css-loader/1.0.0/css-loader';
+const CSS_LOADER = '/static/develop/loader/css-loader';
 const IGNORE = ['jquery', CSS_LOADER];
 
 // Plumber configure
@@ -207,8 +207,6 @@ function clean() {
  * @param {boolean} product
  */
 function runtime(product) {
-  product = Boolean(product);
-
   return function runtime() {
     // Loader file
     return gulp
@@ -226,8 +224,6 @@ function runtime(product) {
  * @param {boolean} product
  */
 function images(product) {
-  product = Boolean(product);
-
   return function images() {
     return gulp
       .src('static/develop/images/**/*', { base: 'static/develop/images', nodir: true })
@@ -242,8 +238,6 @@ function images(product) {
  * @param {boolean} product
  */
 function common(product) {
-  product = Boolean(product);
-
   return function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
@@ -258,7 +252,7 @@ function common(product) {
           indent: product ? 0 : 2,
           base: 'static/develop/js',
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product })]
+          plugins: [cmdAddons({ minify: product, babel: { sourceMap: product === true ? false : 'inline' } })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -298,8 +292,6 @@ function getIgnore() {
  * @param {boolean} product
  */
 function script(product) {
-  product = Boolean(product);
-
   function script() {
     return gulp
       .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
@@ -314,7 +306,7 @@ function script(product) {
           base: 'static/develop/js',
           ignore: product ? IGNORE : [],
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product })]
+          plugins: [cmdAddons({ minify: product, babel: { sourceMap: product === true ? false : 'inline' } })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -328,8 +320,6 @@ function script(product) {
  * @param {boolean} product
  */
 function style(product) {
-  product = Boolean(product);
-
   return function style() {
     return gulp
       .src(product ? 'static/develop/css/?(base|view)/**/*' : 'static/develop/css/**/*', {

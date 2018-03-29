@@ -7,6 +7,7 @@ var $ = require('jquery');
 // 得到某个 DOM 元素的 dataset
 exports.parseElement = function(element, raw) {
   element = $(element)[0];
+
   var dataset = {};
 
   // ref: https://developer.mozilla.org/en/DOM/element.dataset
@@ -49,6 +50,7 @@ function normalizeValues(data) {
   for (var key in data) {
     if (data.hasOwnProperty(key)) {
       var val = data[key];
+
       if (typeof val !== 'string') continue;
 
       if (JSON_LITERAL_PATTERN.test(val)) {
@@ -73,6 +75,7 @@ function normalizeValue(val) {
     val = true;
   } else if (/\d/.test(val) && /[^a-z]/i.test(val)) {
     var number = parseFloat(val);
+
     if (number + '' === val) {
       val = number;
     }

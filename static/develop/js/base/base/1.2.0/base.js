@@ -35,6 +35,7 @@ function parseEventsFromInstance(host, attrs) {
   for (var attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       var m = '_onChange' + ucfirst(attr);
+
       if (host[m]) {
         host.on('change:' + attr, host[m]);
       }

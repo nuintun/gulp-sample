@@ -14,6 +14,7 @@ exports.autoRenderAll = function(root, callback) {
   }
 
   root = $(root || document.body);
+
   var modules = [];
   var elements = [];
 
@@ -40,6 +41,7 @@ exports.autoRenderAll = function(root, callback) {
 
         // data-widget-role 是指将当前的 DOM 作为 role 的属性去实例化，默认的 role 为 element
         var role = element.attr('data-widget-role');
+
         config[role ? role : 'element'] = element;
 
         // 调用自动渲染接口

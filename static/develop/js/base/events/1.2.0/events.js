@@ -22,6 +22,7 @@ function Events() {}
 // function. Passing `"all"` will bind the callback to all events fired.
 Events.prototype.on = function(events, callback, context) {
   var cache, event, list;
+
   if (!callback) return this;
 
   cache = this.__events || (this.__events = {});
@@ -41,6 +42,7 @@ Events.prototype.once = function(events, callback, context) {
     that.off(events, cb);
     callback.apply(context || that, arguments);
   };
+
   return this.on(events, cb, context);
 };
 
@@ -54,6 +56,7 @@ Events.prototype.off = function(events, callback, context) {
   if (!(cache = this.__events)) return this;
   if (!(events || callback || context)) {
     delete this.__events;
+
     return this;
   }
 
@@ -62,6 +65,7 @@ Events.prototype.off = function(events, callback, context) {
   // Loop through the callback list, splicing where appropriate.
   while ((event = events.shift())) {
     list = cache[event];
+
     if (!list) continue;
 
     if (!(callback || context)) {
@@ -93,6 +97,7 @@ Events.prototype.trigger = function(events) {
     rest = [],
     args,
     returned = true;
+
   if (!(cache = this.__events)) return this;
 
   events = events.split(eventSplitter);
@@ -126,7 +131,6 @@ Events.prototype.emit = Events.prototype.trigger;
 
 // Helpers
 // -------
-
 var keys = Object.keys;
 
 if (!keys) {
@@ -165,6 +169,7 @@ Events.mixTo = function(receiver) {
   function copyProto(key) {
     receiver[key] = function() {
       proto[key].apply(event, Array.prototype.slice.call(arguments));
+
       return this;
     };
   }

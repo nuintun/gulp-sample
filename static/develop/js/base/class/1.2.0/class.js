@@ -89,6 +89,7 @@ Class.extend = function(properties) {
 function classify(cls) {
   cls.extend = Class.extend;
   cls.implement = implement;
+
   return cls;
 }
 
@@ -113,6 +114,7 @@ Class.Mutators = {
   },
   Implements: function(items) {
     isArray(items) || (items = [items]);
+
     var proto = this.prototype,
       item;
 
@@ -177,5 +179,6 @@ var indexOf = Array.prototype.indexOf
           return i;
         }
       }
+
       return -1;
     };

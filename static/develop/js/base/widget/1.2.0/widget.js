@@ -48,6 +48,7 @@ var Widget = Base.extend({
 
     // 初始化 attrs
     var dataAttrsConfig = this._parseDataAttrsConfig(config);
+
     Widget.superclass.initialize.call(this, config ? $.extend(dataAttrsConfig, config) : dataAttrsConfig);
 
     // 初始化 props
@@ -69,6 +70,7 @@ var Widget = Base.extend({
   // 解析通过 data-attr 设置的 api
   _parseDataAttrsConfig: function(config) {
     var element, dataAttrsConfig;
+
     if (config) {
       element = config.initElement ? $(config.initElement) : $(config.element);
     }
@@ -132,6 +134,7 @@ var Widget = Base.extend({
     // 'click p' => {'click p': handler}
     if (isString(events) && isFunction(handler)) {
       var o = {};
+
       o[events] = handler;
       events = o;
     }
@@ -202,6 +205,7 @@ var Widget = Base.extend({
         $(element).off(args.type, args.selector);
       }
     }
+
     return this;
   },
   // 提供给子类覆盖的初始化方法
@@ -218,6 +222,7 @@ var Widget = Base.extend({
 
     // 插入到文档流中
     var parentNode = this.get('parentNode');
+
     if (parentNode && !isInDocument(this.element[0])) {
       // 隔离样式，添加统一的命名空间
       // https://github.com/aliceui/aliceui.org/issues/9
@@ -239,6 +244,7 @@ var Widget = Base.extend({
 
     for (var attr in attrs) {
       if (!attrs.hasOwnProperty(attr)) continue;
+
       var m = ON_RENDER + ucfirst(attr);
 
       if (this[m]) {
@@ -314,6 +320,7 @@ Widget.query = function(selector) {
   var cid;
 
   element && (cid = element.attr(DATA_WIDGET_CID));
+
   return cachedInstances[cid];
 };
 
@@ -365,6 +372,7 @@ function getEvents(widget) {
   if (isFunction(widget.events)) {
     widget.events = widget.events();
   }
+
   return widget.events;
 }
 
