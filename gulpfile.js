@@ -52,9 +52,10 @@ function progress() {
  * @returns {string}
  */
 function inspectError(error) {
-  error = util.inspect(error).replace(/^\{\s*|\}\s*$/g, '');
+  error = util.inspect(error);
+  error = error.replace(/^\{\s*|\}\s*$/g, '');
 
-  return gutil.chalk.reset.red(error, '\x07');
+  return `${error}\x07`;
 }
 
 /**
@@ -205,7 +206,13 @@ function runtime(product) {
     // Loader file
     return gulp
       .src(RUNTIME, { base: 'static/develop/loader', nodir: true })
-      .pipe(plumber())
+      .pipe(
+        plumber({
+          errorHandler(error) {
+            logger.error(inspectError(error));
+          }
+        })
+      )
       .pipe(progress())
       .pipe(concat('sea.js'))
       .pipe(product ? compress() : through())
@@ -223,7 +230,13 @@ function images(product) {
   return function images() {
     return gulp
       .src('static/develop/images/**/*', { base: 'static/develop/images', nodir: true })
-      .pipe(plumber())
+      .pipe(
+        plumber({
+          errorHandler(error) {
+            logger.error(inspectError(error));
+          }
+        })
+      )
       .pipe(progress())
       .pipe(gulp.dest('static/product/images'));
   };
@@ -239,7 +252,13 @@ function common(product) {
   return function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
-      .pipe(plumber())
+      .pipe(
+        plumber({
+          errorHandler(error) {
+            logger.error(inspectError(error));
+          }
+        })
+      )
       .pipe(progress())
       .pipe(
         cmd({
@@ -263,7 +282,13 @@ function common(product) {
 function getIgnore() {
   return gulp
     .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
-    .pipe(plumber())
+    .pipe(
+      plumber({
+        errorHandler(error) {
+          logger.error(inspectError(error));
+        }
+      })
+    )
     .pipe(
       cmd({
         combine: true,
@@ -295,7 +320,13 @@ function script(product) {
   function script() {
     return gulp
       .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
-      .pipe(plumber())
+      .pipe(
+        plumber({
+          errorHandler(error) {
+            logger.error(inspectError(error));
+          }
+        })
+      )
       .pipe(progress())
       .pipe(
         cmd({
@@ -328,7 +359,13 @@ function style(product) {
         base: 'static/develop/css',
         nodir: true
       })
-      .pipe(plumber())
+      .pipe(
+        plumber({
+          errorHandler(error) {
+            logger.error(inspectError(error));
+          }
+        })
+      )
       .pipe(progress())
       .pipe(
         css({
@@ -393,9 +430,16 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/js' })
-        .pipe(plumber())
+        .pipe(
+          plumber({
+            errorHandler(error) {
+              logger.error(inspectError(error));
+            }
+          })
+        )
         .pipe(
           cmd({
+            combine: false,
             map: resolveMap,
             alias: getAlias(),
             plugins: [cmdAddons()],
@@ -422,10 +466,17 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/css' })
-        .pipe(plumber())
+        .pipe(
+          plumber({
+            errorHandler(error) {
+              logger.error(inspectError(error));
+            }
+          })
+        )
         .pipe(
           css({
             onpath,
+            combine: false,
             map: resolveMap,
             plugins: [cssAddons()]
           })
@@ -449,7 +500,13 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/images' })
-        .pipe(plumber())
+        .pipe(
+          plumber({
+            errorHandler(error) {
+              logger.error(inspectError(error));
+            }
+          })
+        )
         .pipe(gulp.dest('static/product/images'))
         .on('finish', finish);
     }
