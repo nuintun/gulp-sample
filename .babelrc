@@ -2,7 +2,7 @@
   "only": [
     "static/develop/js/view/**/*.js",
     "static/develop/js/**/*.css.js",
-    "static/develop/js/util/css-loader/1.0.0/css-loader.js"
+    "static/develop/js/base/css-loader/1.0.0/css-loader.js"
   ],
   "presets": [
     [

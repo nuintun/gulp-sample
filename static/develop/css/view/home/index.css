@@ -10,9 +10,6 @@ div {
 textarea,
 input[type="text"],
 input[type="password"] {
-  -o-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
-  -moz-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
-  -webkit-transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
   transition: border 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 }
 textarea:focus,

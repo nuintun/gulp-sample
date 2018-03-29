@@ -26,10 +26,10 @@ const { join, relative, dirname, extname, resolve } = require('path');
 const { chalk, logger } = cmd;
 const { through } = switchStream;
 
-const IGNORE = ['jquery'];
 const ROOT = process.cwd();
 const RUNTIME = ['static/develop/loader/sea.js'];
-const CSS_LOADER = 'util/css-loader/1.0.0/css-loader';
+const CSS_LOADER = 'base/css-loader/1.0.0/css-loader';
+const IGNORE = ['jquery', CSS_LOADER];
 
 /**
  * @function progress
