@@ -5,8 +5,8 @@
  */
 
 const $ = require('jquery');
-const confirmbox = require('confirmbox');
 const content = require('./dialog.tpl');
+const confirmbox = require('confirmbox');
 
 function trim() {
   // http://perfectionkills.com/whitespace-deviations/

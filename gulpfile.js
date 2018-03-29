@@ -59,7 +59,7 @@ function progress() {
  * @returns {string}
  */
 function inspectError(error) {
-  error = util.inspect(error);
+  error = util.inspect(error, { colors: true });
   error = error.replace(/^\{\s*|\}\s*$/g, '');
 
   return `${error}\x07`;
