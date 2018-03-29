@@ -31,6 +31,13 @@ const RUNTIME = ['static/develop/loader/sea.js'];
 const CSS_LOADER = 'base/css-loader/1.0.0/css-loader';
 const IGNORE = ['jquery', CSS_LOADER];
 
+// Plumber configure
+const plumberOpts = {
+  errorHandler(error) {
+    return logger.error(inspectError(error));
+  }
+};
+
 /**
  * @function progress
  * @description Show progress logger
@@ -206,13 +213,7 @@ function runtime(product) {
     // Loader file
     return gulp
       .src(RUNTIME, { base: 'static/develop/loader', nodir: true })
-      .pipe(
-        plumber({
-          errorHandler(error) {
-            logger.error(inspectError(error));
-          }
-        })
-      )
+      .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(concat('sea.js'))
       .pipe(product ? compress() : through())
@@ -230,13 +231,7 @@ function images(product) {
   return function images() {
     return gulp
       .src('static/develop/images/**/*', { base: 'static/develop/images', nodir: true })
-      .pipe(
-        plumber({
-          errorHandler(error) {
-            logger.error(inspectError(error));
-          }
-        })
-      )
+      .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(gulp.dest('static/product/images'));
   };
@@ -252,13 +247,7 @@ function common(product) {
   return function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
-      .pipe(
-        plumber({
-          errorHandler(error) {
-            logger.error(inspectError(error));
-          }
-        })
-      )
+      .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(
         cmd({
@@ -282,13 +271,7 @@ function common(product) {
 function getIgnore() {
   return gulp
     .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
-    .pipe(
-      plumber({
-        errorHandler(error) {
-          logger.error(inspectError(error));
-        }
-      })
-    )
+    .pipe(plumber(plumberOpts))
     .pipe(
       cmd({
         combine: true,
@@ -320,13 +303,7 @@ function script(product) {
   function script() {
     return gulp
       .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
-      .pipe(
-        plumber({
-          errorHandler(error) {
-            logger.error(inspectError(error));
-          }
-        })
-      )
+      .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(
         cmd({
@@ -359,13 +336,7 @@ function style(product) {
         base: 'static/develop/css',
         nodir: true
       })
-      .pipe(
-        plumber({
-          errorHandler(error) {
-            logger.error(inspectError(error));
-          }
-        })
-      )
+      .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(
         css({
@@ -430,13 +401,7 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/js' })
-        .pipe(
-          plumber({
-            errorHandler(error) {
-              logger.error(inspectError(error));
-            }
-          })
-        )
+        .pipe(plumber(plumberOpts))
         .pipe(
           cmd({
             combine: false,
@@ -466,13 +431,7 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/css' })
-        .pipe(
-          plumber({
-            errorHandler(error) {
-              logger.error(inspectError(error));
-            }
-          })
-        )
+        .pipe(plumber(plumberOpts))
         .pipe(
           css({
             onpath,
@@ -500,13 +459,7 @@ function watching() {
     } else {
       gulp
         .src(path, { base: 'static/develop/images' })
-        .pipe(
-          plumber({
-            errorHandler(error) {
-              logger.error(inspectError(error));
-            }
-          })
-        )
+        .pipe(plumber(plumberOpts))
         .pipe(gulp.dest('static/product/images'))
         .on('finish', finish);
     }
