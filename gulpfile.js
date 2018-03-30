@@ -39,12 +39,20 @@ const plumberOpts = {
 };
 
 /**
+ * @function unixify
+ * @param {string} path
+ */
+function unixify(path) {
+  return path.replace(/\\/g, '/');
+}
+
+/**
  * @function progress
  * @description Show progress logger
  */
 function progress() {
   return through(function(vinyl, encoding, next) {
-    const file = chalk.reset.green(join(vinyl.base, vinyl.relative).replace(/\\/g, '/'));
+    const file = chalk.reset.green(unixify(join(vinyl.base, vinyl.relative)));
     const info = chalk.reset.reset('Building ') + file;
 
     logger.info(info);
@@ -98,13 +106,13 @@ function compress() {
 
         next(null, vinyl);
       }),
-      css: through(function(vinyl, encoding, next) {
+      css: through(async function(vinyl, encoding, next) {
         try {
-          const result = cssnano.process(vinyl.contents.toString(), { safe: true });
+          const result = await cssnano.process(vinyl.contents.toString(), { safe: true });
 
           vinyl.contents = toBuffer(result.css);
         } catch (error) {
-          logger.error(inspectError(result.error));
+          logger.error(inspectError(error));
         }
 
         next(null, vinyl);
@@ -153,14 +161,6 @@ function getAlias() {
 }
 
 /**
- * @function unixify
- * @param {string} path
- */
-function unixify(path) {
-  return path.replace(/\\/g, '/');
-}
-
-/**
  * @function onpath
  * @description Resolve css path
  * @param {string} prop
@@ -183,7 +183,7 @@ function onpath(prop, path, referer) {
 
 /**
  * @function resolveMap
- * @description Resolve js path
+ * @description Resolve map path
  * @param {string} path
  * @returns {string}
  */
@@ -248,7 +248,7 @@ function common(product) {
           indent: product ? 0 : 2,
           base: 'static/develop/js',
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, babel: { sourceMap: product === true ? false : 'inline' } })]
+          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -390,7 +390,6 @@ function watching() {
         .pipe(plumber(plumberOpts))
         .pipe(
           cmd({
-            combine: false,
             map: resolveMap,
             alias: getAlias(),
             plugins: [cmdAddons()],
@@ -421,7 +420,6 @@ function watching() {
         .pipe(
           css({
             onpath,
-            combine: false,
             map: resolveMap,
             plugins: [cssAddons()]
           })
