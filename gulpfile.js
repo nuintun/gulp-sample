@@ -173,10 +173,6 @@ function onpath(prop, path, referer) {
     return path;
   }
 
-  if (/^[^./\\]/.test(path)) {
-    path = './' + path;
-  }
-
   if (!path.startsWith('/')) {
     path = join(dirname(referer), path);
     path = '/' + unixify(relative(ROOT, path));
@@ -306,7 +302,7 @@ function script(product) {
           base: 'static/develop/js',
           ignore: product ? IGNORE : [],
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, babel: { sourceMap: product === true ? false : 'inline' } })]
+          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
