@@ -27,9 +27,10 @@ const { chalk, logger } = cmd;
 const { through } = switchStream;
 
 const ROOT = process.cwd();
+const COMMON_DEPS = new Set();
 const RUNTIME = ['static/develop/loader/sea.js'];
 const CSS_LOADER = '/static/develop/loader/css-loader';
-const IGNORE = ['jquery', CSS_LOADER];
+const IGNORE = new Set(['jquery', CSS_LOADER]);
 
 // Plumber configure
 const plumberOpts = {
@@ -230,67 +231,51 @@ function images(product) {
 }
 
 /**
- * @function common
+ * @function script
  * @param {boolean} product
  */
-function common(product) {
-  return function common() {
+function script(product) {
+  function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
       .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(
         cmd({
-          ignore: IGNORE,
-          map: resolveMap,
+          map: (path, resolved) => {
+            if (product) {
+              COMMON_DEPS.add(`/${unixify(relative(ROOT, resolved))}`);
+            }
+
+            return resolveMap(path);
+          },
           combine: product,
           alias: getAlias(),
           indent: product ? 0 : 2,
           base: 'static/develop/js',
+          ignore: product ? [...IGNORE] : [],
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
+          plugins: [cmdAddons({ minify: false, sourceMaps: !product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
-  };
-}
+  }
 
-/**
- * @function getIgnore
- */
-function getIgnore() {
-  return gulp
-    .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
-    .pipe(plumber(plumberOpts))
-    .pipe(
-      cmd({
-        combine: true,
-        ignore: IGNORE,
-        map: resolveMap,
-        alias: getAlias(),
-        base: 'static/develop/js',
-        css: { onpath, loader: CSS_LOADER }
-      })
-    )
-    .pipe(
-      through(function(vinyl, encoding, next) {
-        cdeps(vinyl.contents).dependencies.forEach(item => {
-          IGNORE.push(item.path);
-        });
-
-        next(null, vinyl);
-      })
-    );
-}
-
-/**
- * @function script
- * @param {boolean} product
- */
-function script(product) {
   function script() {
+    console.log([...IGNORE, ...COMMON_DEPS]);
+
     return gulp
-      .src('static/develop/js/**/*', { base: 'static/develop/js', nodir: true })
+      .src(
+        [
+          product ? 'static/develop/js/view/**/*' : 'static/develop/js/**/*',
+          product ? 'static/develop/js/base/jquery/**/jquery.js' : '',
+          '!static/develop/js/view/common.js'
+        ],
+        {
+          base: 'static/develop/js',
+          nodir: true
+        }
+      )
       .pipe(plumber(plumberOpts))
       .pipe(progress())
       .pipe(
@@ -300,15 +285,15 @@ function script(product) {
           alias: getAlias(),
           indent: product ? 0 : 2,
           base: 'static/develop/js',
-          ignore: product ? IGNORE : [],
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
+          ignore: product ? [...IGNORE, ...COMMON_DEPS] : [],
+          plugins: [cmdAddons({ minify: false, sourceMaps: !product })]
         })
       )
       .pipe(gulp.dest('static/product/js'));
   }
 
-  return product ? gulp.series(getIgnore, script) : script;
+  return gulp.series(common, script);
 }
 
 /**
@@ -451,13 +436,10 @@ function watching() {
 }
 
 // Task default
-gulp.task('default', gulp.series(clean, gulp.parallel(runtime(), images(), common(), script(), style())));
+gulp.task('default', gulp.series(clean, gulp.parallel(runtime(), images(), script(), style())));
 
 // Task product
-gulp.task(
-  'product',
-  gulp.series(clean, gulp.parallel(runtime(true), images(true), common(true), script(true), style(true)))
-);
+gulp.task('product', gulp.series(clean, gulp.parallel(runtime(true), images(true), script(true), style(true))));
 
 // Task watch
 gulp.task('watch', gulp.series('default', watching));

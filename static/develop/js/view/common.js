@@ -1,0 +1,1 @@
+const Dialog = require('dialog');
