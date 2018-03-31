@@ -266,11 +266,13 @@ function script(product) {
 
     return gulp
       .src(
-        [
-          product ? 'static/develop/js/view/**/*' : 'static/develop/js/**/*',
-          product ? 'static/develop/js/base/jquery/**/jquery.js' : '',
-          '!static/develop/js/view/common.js'
-        ],
+        product
+          ? [
+              'static/develop/js/view/**/*',
+              '!static/develop/js/view/common.js',
+              'static/develop/js/base/jquery/**/jquery.js'
+            ]
+          : ['static/develop/js/**/*', '!static/develop/js/view/common.js'],
         {
           base: 'static/develop/js',
           nodir: true
