@@ -259,31 +259,9 @@ function script(product) {
       .pipe(gulp.dest('static/product/js'));
   }
 
-  function libs() {
+  function script() {
     return gulp
-      .src(['static/develop/js/**/*', '!static/develop/js/view/**/*'], {
-        base: 'static/develop/js',
-        nodir: true,
-        allowEmpty: true
-      })
-      .pipe(plumber(plumberOpts))
-      .pipe(progress())
-      .pipe(
-        cmd({
-          map: resolveMap,
-          alias: getAlias(),
-          indent: product ? 0 : 2,
-          base: 'static/develop/js',
-          css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
-        })
-      )
-      .pipe(gulp.dest('static/product/js'));
-  }
-
-  function view() {
-    return gulp
-      .src(['static/develop/js/view/**/*', '!static/develop/js/view/common.js'], {
+      .src(['static/develop/js/**/*', '!static/develop/js/view/common.js'], {
         base: 'static/develop/js',
         nodir: true
       })
@@ -292,19 +270,19 @@ function script(product) {
       .pipe(
         cmd({
           map: resolveMap,
-          combine: product,
           alias: getAlias(),
           indent: product ? 0 : 2,
           base: 'static/develop/js',
           ignore: product ? [...IGNORE] : [],
           css: { onpath, loader: CSS_LOADER },
-          plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
+          plugins: [cmdAddons({ minify: product, sourceMaps: !product })],
+          combine: module => product && unixify(module).includes('/js/view/')
         })
       )
       .pipe(gulp.dest('static/product/js'));
   }
 
-  return gulp.series(common, libs, view);
+  return gulp.series(common, script);
 }
 
 /**
