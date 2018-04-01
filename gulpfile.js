@@ -242,7 +242,7 @@ function script(product) {
         cmd({
           map: (path, resolved, options) => {
             if (product) {
-              IGNORE.add(unixify(relative(ROOT, resolved)));
+              IGNORE.add(resolved);
             }
 
             return resolveMap(path);
