@@ -6,14 +6,13 @@
     <link href="/static/product/css/base/base.css" rel="stylesheet" type="text/css"/>
     <link href="/static/product/css/view/home/index.css" rel="stylesheet" type="text/css"/>
     <script src="/static/product/loader/sea.js"></script>
-    <script>
-      seajs.config({ base: '/static/product/js' });
-      seajs.use(['view/common', 'view/home/index']);
-    </script>
+    <script>seajs.config({ base: '/static/product/js' });</script>
   </head>
   <body>
     <div class="ui-content">
       <input id="open-dialog" class="ui-button ui-button-text ui-button-lorange" type="button" value="打开弹窗"/>
     </div>
+    <script src="/static/product/js/view/common.js"></script>
+    <script src="/static/product/js/view/home/index.js"></script>
   </body>
 </html>
