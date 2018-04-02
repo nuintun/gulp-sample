@@ -320,7 +320,6 @@ function script(product) {
       )
       .pipe(
         through((vinyl, encoding, next) => {
-          let id;
           const path = vinyl.path;
 
           if (extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path)) {
@@ -430,7 +429,6 @@ function watching() {
         )
         .pipe(
           through((vinyl, encoding, next) => {
-            let id;
             const path = vinyl.path;
 
             if (extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path)) {
