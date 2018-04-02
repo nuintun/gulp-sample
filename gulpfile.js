@@ -86,13 +86,6 @@ function inspectError(error) {
 }
 
 /**
- * @function toBuffer
- * @param {string} string
- * @returns {Buffer}
- */
-const toBuffer = Buffer.from ? Buffer.from : string => new Buffer(string);
-
-/**
  * @function compress
  * @description Compress javascript file
  */
@@ -113,7 +106,7 @@ function compress() {
         if (result.error) {
           logger.error(inspectError(result.error));
         } else {
-          vinyl.contents = toBuffer(result.code);
+          vinyl.contents = Buffer.from(result.code);
         }
 
         next(null, vinyl);
@@ -122,7 +115,7 @@ function compress() {
         try {
           const result = await cssnano.process(vinyl.contents.toString(), { safe: true });
 
-          vinyl.contents = toBuffer(result.css);
+          vinyl.contents = Buffer.from(result.css);
         } catch (error) {
           logger.error(inspectError(error));
         }
