@@ -1,5 +1,10 @@
 {
-  "only": ["static/develop/js/view/**/*.js", "static/develop/js/**/*.css.js", "static/develop/loader/css-loader.js"],
+  "only": [
+    "static/develop/js/**/*.js",
+    "static/develop/js/view/**/*.js",
+    "static/develop/js/**/*.css.js",
+    "static/develop/loader/css-loader.js"
+  ],
   "presets": [
     [
       "env",
