@@ -9,7 +9,6 @@
 const util = require('util');
 const gulp = require('gulp');
 const rimraf = require('del');
-const holding = require('holding');
 const cssnano = require('cssnano');
 const uglify = require('uglify-es');
 const chokidar = require('chokidar');
@@ -240,7 +239,7 @@ function script(product) {
       .pipe(progress())
       .pipe(
         cmd({
-          map: (path, resolved, options) => {
+          map: (path, resolved) => {
             if (product) {
               IGNORE.add(resolved);
             }
