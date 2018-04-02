@@ -428,6 +428,21 @@ function watching() {
             css: { onpath, loader: CSS_LOADER }
           })
         )
+        .pipe(
+          through((vinyl, encoding, next) => {
+            let id;
+            const path = vinyl.path;
+
+            if (extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path)) {
+              const id = ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
+              const entry = Buffer.from(`\n\nseajs.use(${JSON.stringify(id)});`);
+
+              vinyl.contents = Buffer.concat([vinyl.contents, entry]);
+            }
+
+            return next(null, vinyl);
+          })
+        )
         .pipe(gulp.dest('static/product/js'))
         .on('finish', finish);
     }
