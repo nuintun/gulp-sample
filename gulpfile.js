@@ -31,6 +31,10 @@ const IGNORE = new Set(['static/develop/js/base/jquery/**/*', CSS_LOADER.slice(1
 
 // Plumber configure
 const plumberOpts = {
+  /**
+   * @method errorHandler
+   * @param {Error} error
+   */
   errorHandler(error) {
     return logger.error(inspectError(error));
   }
@@ -39,9 +43,19 @@ const plumberOpts = {
 /**
  * @function unixify
  * @param {string} path
+ * @returns {string}
  */
 function unixify(path) {
   return path.replace(/\\/g, '/');
+}
+
+/**
+ * @function isViewScript
+ * @param {string} path
+ * @returns {boolean}
+ */
+function isViewScript(path) {
+  return extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path);
 }
 
 /**
@@ -322,7 +336,7 @@ function script(product) {
         through((vinyl, encoding, next) => {
           const path = vinyl.path;
 
-          if (extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path)) {
+          if (isViewScript(path)) {
             const id = manifest.has(path)
               ? manifest.get(path)
               : ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
@@ -431,7 +445,7 @@ function watching() {
           through((vinyl, encoding, next) => {
             const path = vinyl.path;
 
-            if (extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path)) {
+            if (isViewScript(path)) {
               const id = ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
               const entry = Buffer.from(`\n\nseajs.use(${JSON.stringify(id)});`);
 
