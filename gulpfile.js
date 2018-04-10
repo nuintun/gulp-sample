@@ -50,15 +50,6 @@ function unixify(path) {
 }
 
 /**
- * @function isViewScript
- * @param {string} path
- * @returns {boolean}
- */
-function isViewScript(path) {
-  return extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path);
-}
-
-/**
  * @function progress
  * @description Show progress logger
  */
@@ -243,6 +234,11 @@ function script(product) {
   const manifest = new Map();
   const skipCache = new Map();
 
+  /**
+   * @function skipMinifyId
+   * @param {string} path
+   * @returns {boolean}
+   */
   function skipMinifyId(path) {
     if (skipCache.has(path)) return skipCache.get(path);
 
@@ -254,6 +250,12 @@ function script(product) {
     return skipped;
   }
 
+  /**
+   * @function map
+   * @param {string} path
+   * @param {string} resolved
+   * @returns {string}
+   */
   function map(path, resolved) {
     if (product && !skipMinifyId(resolved)) {
       if (manifest.has(resolved)) return manifest.get(resolved);
@@ -266,6 +268,14 @@ function script(product) {
     }
 
     return resolveMap(path);
+  }
+  /**
+   * @function isBootstrapScript
+   * @param {string} path
+   * @returns {boolean}
+   */
+  function isBootstrapScript(path) {
+    return extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path);
   }
 
   function common() {
@@ -329,7 +339,7 @@ function script(product) {
         through((vinyl, encoding, next) => {
           const path = vinyl.path;
 
-          if (isViewScript(path)) {
+          if (isBootstrapScript(path)) {
             const id = manifest.has(path)
               ? manifest.get(path)
               : ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
@@ -432,20 +442,6 @@ function watching() {
             plugins: [cmdAddons()],
             base: 'static/develop/js',
             css: { onpath, loader: CSS_LOADER }
-          })
-        )
-        .pipe(
-          through((vinyl, encoding, next) => {
-            const path = vinyl.path;
-
-            if (isViewScript(path)) {
-              const id = ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
-              const entry = Buffer.from(`\n\nseajs.use(${JSON.stringify(id)});`);
-
-              vinyl.contents = Buffer.concat([vinyl.contents, entry]);
-            }
-
-            return next(null, vinyl);
           })
         )
         .pipe(gulp.dest('static/product/js'))
