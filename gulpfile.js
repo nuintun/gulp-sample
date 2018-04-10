@@ -303,6 +303,8 @@ function script(product) {
       )
       .pipe(
         through((vinyl, encoding, next) => {
+          if (!product) return next(null, vinyl);
+
           const path = vinyl.path;
           const id = manifest.has(path) ? manifest.get(path) : '/static/product/js/view/common.js';
           const entry = Buffer.from(`${product ? '' : '\n\n'}seajs.use(${JSON.stringify(id)});`);
@@ -337,6 +339,8 @@ function script(product) {
       )
       .pipe(
         through((vinyl, encoding, next) => {
+          if (!product) return next(null, vinyl);
+
           const path = vinyl.path;
 
           if (isBootstrapScript(path)) {
