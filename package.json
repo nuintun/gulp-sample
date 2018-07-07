@@ -17,12 +17,19 @@
     "node": ">=7.6.0"
   },
   "license": "MIT",
-  "keywords": ["gulp", "cmd", "css", "concat", "commonjs", "transport"],
+  "keywords": [
+    "gulp",
+    "cmd",
+    "css",
+    "concat",
+    "commonjs",
+    "transport"
+  ],
   "dependencies": {
     "gulp": "next",
     "del": "^3.0.0",
-    "chokidar": "^2.0.3",
-    "cssnano": "^3.10.0",
+    "chokidar": "^2.0.4",
+    "cssnano": "^4.0.0",
     "uglify-es": "^3.3.9",
     "gulp-concat": "^2.6.1",
     "gulp-plumber": "^1.2.0",
