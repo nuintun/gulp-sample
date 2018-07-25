@@ -104,7 +104,7 @@ function compress() {
       }),
       css: through(async function(vinyl, encoding, next) {
         try {
-          const result = await cssnano.process(vinyl.contents.toString(), { safe: true });
+          const result = await cssnano.process(vinyl.contents.toString());
 
           vinyl.contents = Buffer.from(result.css);
         } catch (error) {
