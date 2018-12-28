@@ -28,8 +28,8 @@
   "dependencies": {
     "del": "^3.0.0",
     "gulp": "^4.0.0",
-    "chokidar": "^2.0.4",
     "cssnano": "^4.1.8",
+    "chokidar": "^2.0.4",
     "uglify-es": "^3.3.9",
     "gulp-concat": "^2.6.1",
     "gulp-plumber": "^1.2.1",
