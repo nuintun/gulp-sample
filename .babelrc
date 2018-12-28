@@ -1,20 +1,18 @@
 {
-  "only": [
-    "static/develop/js/**/*.js",
-    "static/develop/js/view/**/*.js",
-    "static/develop/js/**/*.css.js",
-    "static/develop/loader/css-loader.js"
-  ],
+  "only": ["static/develop/**/*.js"],
   "presets": [
     [
       "@babel/preset-env",
       {
         "loose": true,
-        "targets": {
-          "browsers": ["> 0.5% in CN", "> 1%", "ie > 8"]
-        },
-        "modules": false
+        "modules": false,
+        "targets": { "browsers": ["> 0.5% in CN", "> 1%", "ie > 8"] }
       }
     ]
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    ["@babel/plugin-proposal-object-rest-spread", { "useBuiltIns": true }]
   ]
 }
