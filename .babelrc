@@ -1,5 +1,6 @@
 {
   "only": ["static/develop/**/*.js"],
+  "ignore": ["static/develop/**/jquery.js"],
   "presets": [
     [
       "@babel/preset-env",
