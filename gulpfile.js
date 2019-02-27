@@ -9,8 +9,8 @@
 const util = require('util');
 const gulp = require('gulp');
 const rimraf = require('del');
+const terser = require('terser');
 const cssnano = require('cssnano');
-const uglify = require('uglify-es');
 const chokidar = require('chokidar');
 const concat = require('gulp-concat');
 const plumber = require('gulp-plumber');
@@ -92,7 +92,7 @@ function compress() {
         const path = vinyl.path;
         const contents = vinyl.contents.toString();
         const options = { ecma: 5, ie8: true, mangle: { eval: true } };
-        const result = uglify.minify({ [path]: contents }, options);
+        const result = terser.minify({ [path]: contents }, options);
 
         if (result.error) {
           logger.error(inspectError(result.error));
