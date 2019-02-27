@@ -269,6 +269,7 @@ function script(product) {
 
     return resolveMap(path);
   }
+
   /**
    * @function isBootstrapScript
    * @param {string} path
