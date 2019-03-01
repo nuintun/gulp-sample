@@ -628,14 +628,15 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@nuintun/bundler@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@nuintun/bundler/-/bundler-1.0.0.tgz#63571af7d63770a590e12f0d3ad444766a46a0a5"
-  integrity sha512-nvywMIyU0xN93xi9q7yFxDgQ1zGLF2jQvlQhPqmswUsuWVKnz1jG5qdFcscanDqX6jrdN5sEHil/VRvITrOcjg==
+"@nuintun/bundler@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@nuintun/bundler/-/bundler-1.0.1.tgz#c0bbbe7ffe28fcb25fbeb335f0d4c7d0787c5a04"
+  integrity sha512-Hq10a0g28TSNANbhzhLFFiAlY3qyXZkUbwo11lDEMF9PVYMmTTete2c1olKvZAv6TZW0O6TEmTIgzG8pOyc9tw==
 
-"@nuintun/css-deps@https://github.com/nuintun/css-deps/archive/master.tar.gz":
+"@nuintun/css-deps@^2.0.0":
   version "2.0.0"
-  resolved "https://github.com/nuintun/css-deps/archive/master.tar.gz#f2ee7542075e69a54a342c31bbb54b701aeda7be"
+  resolved "https://registry.yarnpkg.com/@nuintun/css-deps/-/css-deps-2.0.0.tgz#5ae69d4b551bf59439d5ed0b96af7a1686204b7b"
+  integrity sha512-RL0QItb1Sjf4jJ9mYLluknaxZERFTngH2LzXdgvAymNcvbGHTDj1EhuE67OEU2GEc6IkPnt7LPukZayfR4gMQg==
   dependencies:
     postcss "^7.0.14"
     postcss-values-parser "^2.0.1"
@@ -645,37 +646,42 @@
   resolved "https://registry.yarnpkg.com/@nuintun/duplexer/-/duplexer-1.1.1.tgz#ed2d41c8c1c377af42ff08d6e918370ef11c6bc3"
   integrity sha512-t5np3jc/U7IB6b8R9iD6f9aczgcZnnxhFvqE5fqazlaub0r7yvk6WGA7LiJNyFY35P3sw8B5DJSpYMVVyt13fg==
 
-"@nuintun/gulp-cmd-plugins@https://github.com/nuintun/gulp-cmd-plugins/archive/master.tar.gz":
-  version "0.2.0"
-  resolved "https://github.com/nuintun/gulp-cmd-plugins/archive/master.tar.gz#f87cc94a30a0546fc7e7bd088a29d95d6873ac00"
+"@nuintun/gulp-cmd-plugins@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nuintun/gulp-cmd-plugins/-/gulp-cmd-plugins-1.0.0.tgz#031824900a392dae8d3565a4b01033227e7bf40e"
+  integrity sha512-q7SMysq2W4tIgQA6+5Q6D39THsICrOuL/vtlEdNZuuXniVoJcpZx2Z3/M+JloXcRX6cGFEDu5hUpJnIteJSNAA==
 
-"@nuintun/gulp-cmd@https://github.com/nuintun/gulp-cmd/archive/master.tar.gz":
-  version "0.2.0"
-  resolved "https://github.com/nuintun/gulp-cmd/archive/master.tar.gz#8369ddcb9382f74f6eb74433bc2c8f7ca1ffacb2"
+"@nuintun/gulp-cmd@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nuintun/gulp-cmd/-/gulp-cmd-1.0.0.tgz#9740295b0f83fca98a2890adc809086bac4fadcf"
+  integrity sha512-zgBgn/brTbzG3ZrTvf6DI+gq7pwLEKr+7m/HE2D4CtU8zezTJyhTKDIvutNFNyGRJVHWFKin1I9tVXpUcrlnLQ==
   dependencies:
-    "@nuintun/bundler" "^1.0.0"
-    "@nuintun/css-deps" "https://github.com/nuintun/css-deps/archive/master.tar.gz"
-    "@nuintun/gulp-util" "https://github.com/nuintun/gulp-util/archive/master.tar.gz"
+    "@nuintun/bundler" "^1.0.1"
+    "@nuintun/css-deps" "^2.0.0"
+    "@nuintun/gulp-util" "^1.0.0"
     "@nuintun/through" "^1.1.1"
-    cmd-deps "https://github.com/nuintun/cmd-deps/archive/master.tar.gz"
+    cmd-deps "^3.0.0"
     micromatch "^3.1.10"
 
-"@nuintun/gulp-css-plugins@https://github.com/nuintun/gulp-css-plugins/archive/master.tar.gz":
-  version "0.2.0"
-  resolved "https://github.com/nuintun/gulp-css-plugins/archive/master.tar.gz#c31014501379ae7bc0e498d332bced4a0ad4379c"
+"@nuintun/gulp-css-plugins@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nuintun/gulp-css-plugins/-/gulp-css-plugins-1.0.0.tgz#34f35ffe8d8531d095faf36f16db90c45076678f"
+  integrity sha512-jSIOoKhtBCNDUy/DhtC//M3/10pKkQbtpztF2oTN3oQsEK4RrD+qW8puMfWaAOIwbsG1Bv6YewrRhlUOd21Ywg==
 
-"@nuintun/gulp-css@https://github.com/nuintun/gulp-css/archive/master.tar.gz":
-  version "0.2.0"
-  resolved "https://github.com/nuintun/gulp-css/archive/master.tar.gz#9d47124c602c1d592681c62c595bc158e8d95210"
+"@nuintun/gulp-css@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nuintun/gulp-css/-/gulp-css-1.0.0.tgz#0c2eaed5f41c68b6b8717e844691137d17f17d17"
+  integrity sha512-UOm2eMw8U/+CfUMUxiJAYcBwKDseTVtaJiV+v0YeCKopfB77cAWYf1DWNV0oHCY8nGBQrz17d8oaLYzph7Kc9A==
   dependencies:
-    "@nuintun/bundler" "^1.0.0"
-    "@nuintun/css-deps" "https://github.com/nuintun/css-deps/archive/master.tar.gz"
-    "@nuintun/gulp-util" "https://github.com/nuintun/gulp-util/archive/master.tar.gz"
+    "@nuintun/bundler" "^1.0.1"
+    "@nuintun/css-deps" "^2.0.0"
+    "@nuintun/gulp-util" "^1.0.0"
     "@nuintun/through" "^1.1.1"
 
-"@nuintun/gulp-util@https://github.com/nuintun/gulp-util/archive/master.tar.gz":
-  version "0.2.0"
-  resolved "https://github.com/nuintun/gulp-util/archive/master.tar.gz#120a3fdbdbb57fcacd492f4ba9b10783c7a6fc5e"
+"@nuintun/gulp-util@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@nuintun/gulp-util/-/gulp-util-1.0.0.tgz#04cfe159d457fa494a9964f1125823e204783ec2"
+  integrity sha512-Hl4eT/nVWzDdTJ/wjqW+O80Va9sJxjBpJazRUTV0M6VNy3yXY+/R0HGkVqOJbWK+QXHLv3fa6WXPIbuLuKrpVw==
   dependencies:
     ajv "^6.9.2"
     ajv-errors "^1.0.1"
@@ -1203,9 +1209,10 @@ cloneable-readable@^1.0.0:
     process-nextick-args "^2.0.0"
     readable-stream "^2.3.5"
 
-"cmd-deps@https://github.com/nuintun/cmd-deps/archive/master.tar.gz":
+cmd-deps@^3.0.0:
   version "3.0.0"
-  resolved "https://github.com/nuintun/cmd-deps/archive/master.tar.gz#76b862d631e8dade77bdc882147cdba686b04b2c"
+  resolved "https://registry.yarnpkg.com/cmd-deps/-/cmd-deps-3.0.0.tgz#1f269848e47e4ee5921a335164e143029f1b5db3"
+  integrity sha512-Lj6i156PR9H5cXduHBD3Fafnbb6jF6totYz/DcunaWA5d8vwSaHo5Zkpl4Z/dvot9xVFAq9CObtsqdniBDMlLg==
   dependencies:
     acorn "^6.1.1"
 

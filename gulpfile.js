@@ -230,55 +230,6 @@ function images(product) {
  * @param {boolean} product
  */
 function script(product) {
-  let uid = 0;
-  const manifest = new Map();
-  const skipCache = new Map();
-
-  /**
-   * @function skipMinifyId
-   * @param {string} path
-   * @returns {boolean}
-   */
-  function skipMinifyId(path) {
-    if (skipCache.has(path)) return skipCache.get(path);
-
-    const src = unixify(path);
-    const skipped = src.includes('/jquery.js') || src.includes('/css-loader.js');
-
-    skipCache.set(path, skipped);
-
-    return skipped;
-  }
-
-  /**
-   * @function map
-   * @param {string} path
-   * @param {string} resolved
-   * @returns {string}
-   */
-  function map(path, resolved) {
-    if (product && !skipMinifyId(resolved)) {
-      if (manifest.has(resolved)) return manifest.get(resolved);
-
-      const id = String(uid++);
-
-      manifest.set(resolved, id);
-
-      return id;
-    }
-
-    return resolveMap(path);
-  }
-
-  /**
-   * @function isBootstrapScript
-   * @param {string} path
-   * @returns {boolean}
-   */
-  function isBootstrapScript(path) {
-    return extname(path).toLowerCase() === '.js' && /[\\/]view[\\/]/.test(path);
-  }
-
   function common() {
     return gulp
       .src('static/develop/js/view/common.js', { base: 'static/develop/js', nodir: true, allowEmpty: true })
@@ -291,7 +242,7 @@ function script(product) {
               IGNORE.add(resolved);
             }
 
-            return map(path, resolved);
+            return resolveMap(path, resolved);
           },
           combine: product,
           alias: getAlias(),
@@ -300,19 +251,6 @@ function script(product) {
           ignore: product ? [...IGNORE] : [],
           css: { onpath, loader: CSS_LOADER },
           plugins: [cmdAddons({ minify: product, sourceMaps: !product })]
-        })
-      )
-      .pipe(
-        through((vinyl, encoding, next) => {
-          if (!product) return next(null, vinyl);
-
-          const path = vinyl.path;
-          const id = manifest.has(path) ? manifest.get(path) : '/static/product/js/view/common.js';
-          const entry = Buffer.from(`${product ? '' : '\n\n'}seajs.use(${JSON.stringify(id)});`);
-
-          vinyl.contents = Buffer.concat([vinyl.contents, entry]);
-
-          return next(null, vinyl);
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -328,7 +266,7 @@ function script(product) {
       .pipe(progress())
       .pipe(
         cmd({
-          map,
+          map: resolveMap,
           alias: getAlias(),
           indent: product ? 0 : 2,
           base: 'static/develop/js',
@@ -336,25 +274,6 @@ function script(product) {
           css: { onpath, loader: CSS_LOADER },
           plugins: [cmdAddons({ minify: product, sourceMaps: !product })],
           combine: module => product && unixify(module).includes('/js/view/')
-        })
-      )
-      .pipe(
-        through((vinyl, encoding, next) => {
-          if (!product) return next(null, vinyl);
-
-          const path = vinyl.path;
-
-          if (isBootstrapScript(path)) {
-            const id = manifest.has(path)
-              ? manifest.get(path)
-              : ('/' + unixify(relative(ROOT, path))).replace('/static/develop/', '/static/product/');
-
-            const entry = Buffer.from(`${product ? '' : '\n\n'}seajs.use(${JSON.stringify(id)});`);
-
-            vinyl.contents = Buffer.concat([vinyl.contents, entry]);
-          }
-
-          return next(null, vinyl);
         })
       )
       .pipe(gulp.dest('static/product/js'));
@@ -415,8 +334,6 @@ function watching() {
    * @param {string} path
    */
   function debugWatcher(event, path) {
-    const now = new Date();
-
     logger.info(
       '%s %s: %s',
       chalk.reset.green.bold.inverse(' • READ '),
