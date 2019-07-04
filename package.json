@@ -44,11 +44,15 @@
     "@nuintun/gulp-css-plugins": "^1.0.0",
     "@babel/plugin-proposal-decorators": "7.3.0",
     "@babel/plugin-proposal-class-properties": "7.3.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.4"
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
+    "snyk": "^1.189.0"
   },
   "scripts": {
     "start": "node_modules/.bin/gulp.cmd watch",
-    "build": "node_modules/.bin/gulp.cmd product"
+    "build": "node_modules/.bin/gulp.cmd product",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
-  "homepage": "https://github.com/nuintun/gulp-sample#readme"
+  "homepage": "https://github.com/nuintun/gulp-sample#readme",
+  "snyk": true
 }
