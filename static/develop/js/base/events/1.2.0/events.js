@@ -20,7 +20,7 @@ function Events() {}
 
 // Bind one or more space separated events, `events`, to a `callback`
 // function. Passing `"all"` will bind the callback to all events fired.
-Events.prototype.on = function(events, callback, context) {
+Events.prototype.on = function (events, callback, context) {
   var cache, event, list;
 
   if (!callback) return this;
@@ -36,9 +36,9 @@ Events.prototype.on = function(events, callback, context) {
   return this;
 };
 
-Events.prototype.once = function(events, callback, context) {
+Events.prototype.once = function (events, callback, context) {
   var that = this;
-  var cb = function() {
+  var cb = function () {
     that.off(events, cb);
     callback.apply(context || that, arguments);
   };
@@ -49,7 +49,7 @@ Events.prototype.once = function(events, callback, context) {
 // Remove one or many callbacks. If `context` is null, removes all callbacks
 // with that function. If `callback` is null, removes all callbacks for the
 // event. If `events` is null, removes all bound callbacks for all events.
-Events.prototype.off = function(events, callback, context) {
+Events.prototype.off = function (events, callback, context) {
   var cache, event, list, i;
 
   // No events, or removing *all* events.
@@ -87,7 +87,7 @@ Events.prototype.off = function(events, callback, context) {
 // passed the same arguments as `trigger` is, apart from the event name
 // (unless you're listening on `"all"`, which will cause your callback to
 // receive the true name of the event as the first argument).
-Events.prototype.trigger = function(events) {
+Events.prototype.trigger = function (events) {
   var cache,
     event,
     all,
@@ -134,7 +134,7 @@ Events.prototype.emit = Events.prototype.trigger;
 var keys = Object.keys;
 
 if (!keys) {
-  keys = function(o) {
+  keys = function (o) {
     var result = [];
 
     for (var name in o) {
@@ -147,7 +147,7 @@ if (!keys) {
 }
 
 // Mix `Events` to object instance or Class function.
-Events.mixTo = function(receiver) {
+Events.mixTo = function (receiver) {
   var proto = Events.prototype;
 
   if (isFunction(receiver)) {
@@ -167,7 +167,7 @@ Events.mixTo = function(receiver) {
   }
 
   function copyProto(key) {
-    receiver[key] = function() {
+    receiver[key] = function () {
       proto[key].apply(event, Array.prototype.slice.call(arguments));
 
       return this;

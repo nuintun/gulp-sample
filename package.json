@@ -26,29 +26,29 @@
     "transport"
   ],
   "dependencies": {
-    "del": "^3.0.0",
-    "gulp": "^4.0.0",
-    "terser": "^3.16.1",
-    "chokidar": "^2.1.2",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "terser": "^4.8.0",
+    "chokidar": "^3.4.0",
     "cssnano": "^4.1.10",
-    "postcss": "^7.0.14",
-    "@babel/core": "^7.3.4",
+    "postcss": "^7.0.32",
+    "@babel/core": "^7.10.2",
     "gulp-concat": "^2.6.1",
-    "autoprefixer": "^9.4.9",
+    "autoprefixer": "^9.8.0",
     "gulp-plumber": "^1.2.1",
-    "@babel/preset-env": "^7.3.4",
-    "@nuintun/gulp-cmd": "^1.0.0",
-    "@nuintun/gulp-css": "^1.0.0",
+    "@babel/preset-env": "^7.10.2",
+    "@nuintun/gulp-cmd": "^2.0.0",
+    "@nuintun/gulp-css": "^2.0.0",
     "@nuintun/switch-stream": "^1.1.1",
-    "@nuintun/gulp-cmd-plugins": "^1.0.0",
-    "@nuintun/gulp-css-plugins": "^1.0.0",
-    "@babel/plugin-proposal-decorators": "7.3.0",
-    "@babel/plugin-proposal-class-properties": "7.3.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.4"
+    "@nuintun/gulp-cmd-plugins": "^1.0.2",
+    "@nuintun/gulp-css-plugins": "^1.0.2",
+    "@babel/plugin-proposal-decorators": "7.10.1",
+    "@babel/plugin-proposal-class-properties": "7.10.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.1"
   },
   "scripts": {
-    "start": "node_modules/.bin/gulp.cmd watch",
-    "build": "node_modules/.bin/gulp.cmd product"
+    "start": "gulp watch",
+    "build": "gulp product"
   },
   "homepage": "https://github.com/nuintun/gulp-sample#readme"
 }

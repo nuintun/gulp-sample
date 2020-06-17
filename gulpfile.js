@@ -54,7 +54,7 @@ function unixify(path) {
  * @description Show progress logger
  */
 function progress() {
-  return through(function(vinyl, encoding, next) {
+  return through(function (vinyl, encoding, next) {
     const file = chalk.reset.green(unixify(join(vinyl.base, vinyl.relative)));
     const info = chalk.reset.reset('Building ') + file;
 
@@ -83,12 +83,10 @@ function inspectError(error) {
 function compress() {
   return switchStream(
     vinyl => {
-      return extname(vinyl.path)
-        .slice(1)
-        .toLowerCase();
+      return extname(vinyl.path).slice(1).toLowerCase();
     },
     {
-      js: through(function(vinyl, encoding, next) {
+      js: through(function (vinyl, encoding, next) {
         const path = vinyl.path;
         const contents = vinyl.contents.toString();
         const options = { ecma: 5, ie8: true, mangle: { eval: true } };
@@ -102,7 +100,7 @@ function compress() {
 
         next(null, vinyl);
       }),
-      css: through(async function(vinyl, encoding, next) {
+      css: through(async function (vinyl, encoding, next) {
         try {
           const result = await cssnano.process(vinyl.contents.toString(), { from: undefined });
 

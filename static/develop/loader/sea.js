@@ -1,7 +1,7 @@
 /**
  * Sea.js @VERSION | seajs.org/LICENSE.md
  */
-(function(global, undefined) {
+(function (global, undefined) {
   // Avoid conflicting when `sea.js` is loaded multiple times
   if (global.seajs) {
     return;
@@ -17,7 +17,7 @@
    * util-lang.js - The minimal language enhancement
    */
   function isType(type) {
-    return function(obj) {
+    return function (obj) {
       return {}.toString.call(obj) == '[object ' + type + ']';
     };
   }
@@ -39,7 +39,7 @@
   var events = (data.events = {});
 
   // Bind event
-  seajs.on = function(name, callback) {
+  seajs.on = function (name, callback) {
     var list = events[name] || (events[name] = []);
 
     list.push(callback);
@@ -50,7 +50,7 @@
   // Remove event. If `callback` is undefined, remove all callbacks for the
   // event. If `event` and `callback` are both undefined, remove all callbacks
   // for all events
-  seajs.off = function(name, callback) {
+  seajs.off = function (name, callback) {
     // Remove *all* events
     if (!(name || callback)) {
       events = data.events = {};
@@ -77,7 +77,7 @@
 
   // Emit event, firing all bound callbacks. Callbacks receive the same
   // arguments as `emit` does, apart from the event name
-  var emit = (seajs.emit = function(name, data) {
+  var emit = (seajs.emit = function (name, data) {
     var list = events[name];
 
     if (list) {
@@ -169,7 +169,7 @@
     var vars = data.vars;
 
     if (vars && id.indexOf('{') > -1) {
-      id = id.replace(VARS_RE, function(m, key) {
+      id = id.replace(VARS_RE, function (m, key) {
         return isString(vars[key]) ? vars[key] : m;
       });
     }
@@ -396,12 +396,12 @@
 
       if (supportOnload) {
         node.onload = onload;
-        node.onerror = function() {
+        node.onerror = function () {
           emit('error', { uri: url, node: node });
           onload(true);
         };
       } else {
-        node.onreadystatechange = function() {
+        node.onreadystatechange = function () {
           if (/loaded|complete/.test(node.readyState)) {
             onload();
           }
@@ -462,7 +462,7 @@
   }
 
   // Resolve module.dependencies
-  Module.prototype.resolve = function() {
+  Module.prototype.resolve = function () {
     var mod = this;
     var ids = mod.dependencies;
     var uris = [];
@@ -474,7 +474,7 @@
     return uris;
   };
 
-  Module.prototype.pass = function() {
+  Module.prototype.pass = function () {
     var mod = this;
     var len = mod.dependencies.length;
 
@@ -508,7 +508,7 @@
   };
 
   // Load module.dependencies and fire onload when all done
-  Module.prototype.load = function() {
+  Module.prototype.load = function () {
     var mod = this;
 
     // If the module is being loaded, just wait it onload call
@@ -560,7 +560,7 @@
   };
 
   // Call this method when module is loaded
-  Module.prototype.onload = function() {
+  Module.prototype.onload = function () {
     var mod = this;
 
     mod.status = STATUS.LOADED;
@@ -578,7 +578,7 @@
   };
 
   // Call this method when module is 404
-  Module.prototype.error = function() {
+  Module.prototype.error = function () {
     var mod = this;
 
     mod.onload();
@@ -587,7 +587,7 @@
   };
 
   // Execute a module
-  Module.prototype.exec = function() {
+  Module.prototype.exec = function () {
     var mod = this;
 
     // When module is executed, DO NOT execute it again. When module
@@ -623,11 +623,11 @@
       return m.exec();
     }
 
-    require.resolve = function(id) {
+    require.resolve = function (id) {
       return Module.resolve(id, uri);
     };
 
-    require.async = function(ids, callback) {
+    require.async = function (ids, callback) {
       Module.use(ids, callback, uri + '_async_' + cid());
 
       return require;
@@ -655,7 +655,7 @@
   };
 
   // Fetch a module
-  Module.prototype.fetch = function(requestCache) {
+  Module.prototype.fetch = function (requestCache) {
     var mod = this;
     var uri = mod.uri;
 
@@ -732,7 +732,7 @@
   };
 
   // Resolve id to uri
-  Module.resolve = function(id, refUri) {
+  Module.resolve = function (id, refUri) {
     // Emit `resolve` event for plugins such as text plugin
     var emitData = { id: id, refUri: refUri };
 
@@ -742,7 +742,7 @@
   };
 
   // Define a module
-  Module.define = function(id, deps, factory) {
+  Module.define = function (id, deps, factory) {
     var argsLen = arguments.length;
 
     // define(factory)
@@ -795,7 +795,7 @@
   };
 
   // Save meta data to cachedMods
-  Module.save = function(uri, meta) {
+  Module.save = function (uri, meta) {
     var mod = Module.get(uri);
 
     // Do NOT override already saved modules
@@ -810,19 +810,19 @@
   };
 
   // Get an existed module or create a new one
-  Module.get = function(uri, deps) {
+  Module.get = function (uri, deps) {
     return cachedMods[uri] || (cachedMods[uri] = new Module(uri, deps));
   };
 
   // Use function is equal to load a anonymous module
-  Module.use = function(ids, callback, uri) {
+  Module.use = function (ids, callback, uri) {
     var mod = Module.get(uri, isArray(ids) ? ids : [ids]);
 
     mod._entry.push(mod);
     mod.history = {};
     mod.remain = 1;
 
-    mod.callback = function() {
+    mod.callback = function () {
       var exports = [];
       var uris = mod.resolve();
 
@@ -844,7 +844,7 @@
   };
 
   // Public API
-  seajs.use = function(ids, callback) {
+  seajs.use = function (ids, callback) {
     Module.use(ids, callback, data.cwd + '_use_' + cid());
 
     return seajs;
@@ -858,7 +858,7 @@
   data.fetchedList = fetchedList;
   data.cid = cid;
 
-  seajs.require = function(id) {
+  seajs.require = function (id) {
     var mod = Module.get(Module.resolve(id));
 
     if (mod.status < STATUS.EXECUTING) {
@@ -897,7 +897,7 @@
   // data.vars - The {xxx} variables in module id
   // data.map - An array containing rules to map module uri
   // data.debug - Debug mode. The default value is false
-  seajs.config = function(configData) {
+  seajs.config = function (configData) {
     for (var key in configData) {
       var curr = configData[key];
       var prev = data[key];
