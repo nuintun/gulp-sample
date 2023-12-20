@@ -36,7 +36,7 @@
     "gulp-concat": "^2.6.1",
     "autoprefixer": "^9.8.0",
     "gulp-plumber": "^1.2.1",
-    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-env": "^7.22.0",
     "@nuintun/gulp-cmd": "^2.0.0",
     "@nuintun/gulp-css": "^2.0.0",
     "@nuintun/switch-stream": "^1.1.1",
