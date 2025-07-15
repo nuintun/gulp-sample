@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "del": "^5.1.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "terser": "^4.8.0",
     "chokidar": "^3.4.0",
     "cssnano": "^4.1.10",
