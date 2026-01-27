@@ -44,7 +44,7 @@
     "@nuintun/gulp-css-plugins": "^1.0.2",
     "@babel/plugin-proposal-decorators": "7.10.1",
     "@babel/plugin-proposal-class-properties": "7.10.1",
-    "@babel/plugin-proposal-object-rest-spread": "^7.10.1"
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7"
   },
   "scripts": {
     "start": "gulp watch",
