@@ -38,7 +38,7 @@
     "gulp-plumber": "^1.2.1",
     "@babel/preset-env": "^7.10.2",
     "@nuintun/gulp-cmd": "^2.0.0",
-    "@nuintun/gulp-css": "^2.0.0",
+    "@nuintun/gulp-css": "^3.0.0",
     "@nuintun/switch-stream": "^1.1.1",
     "@nuintun/gulp-cmd-plugins": "^1.0.2",
     "@nuintun/gulp-css-plugins": "^1.0.2",
